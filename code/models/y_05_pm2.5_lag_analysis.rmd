@@ -1,0 +1,334 @@
+---
+title: "y_05_pm2.5_lag_analysis"
+author: "Yanelli Nunez"
+date: "10/4/2021"
+output:
+ html_document:
+    toc: TRUE
+    toc_float: TRUE
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+```{r include=FALSE}
+
+rm(list=ls())
+
+# 1a Declare root directory
+project.folder <- paste0(print(here::here()),'/')
+
+# add folder locations
+source(paste0(project.folder,'0_00_create_folder_structure.R'))
+
+# add file locations
+source(paste0(file.locations.folder,'file_locations.R'))
+
+# load packages
+#source(paste0(packages.folder,'packages_to_load.R'))
+
+# load packages
+ source(paste0(packages.folder,'packages_yanelli.R'))
+
+# load functions
+ source(paste0(code.folder, 'models/functions_yanelli.R'))
+
+```
+
+## 1. Load data and review
+
+Notes:
+Read data and make sure are categorical variables are specify as factors
+
+```{r}
+
+data <- read_csv(paste0(yanelli_datasets, "lagged_10yrs_parishSES.csv")) %>%
+  mutate(family_SES = as.factor(family_SES),
+         place_birth = as.factor(place_birth),
+         residence = as.factor(residence),
+         civst = as.factor(civst)) %>% 
+  dplyr::filter(residence != "Greenland") %>% # only has 22 observations which is too little and results in unstable estimates so I removed this category 
+  droplevels()
+
+# check how many controls/cases we have
+controls <- data %>%
+dplyr::filter(ck == 0) %>% # selecting controls
+ group_by(nr) %>% 
+  count(lobnr)
+
+cases <- data %>%
+dplyr::filter(ck == 1) %>% # selecting only cases
+ count(nr) 
+
+summary(data)
+
+hist(data$PM25_str)
+
+```
+
+## 2. Organize data 
+
+- Arrange data into the proper format for the lag analysis
+
+```{r}
+
+lag_wide <- data %>%
+  dplyr::select(-CO_str, -NO2_str, -NOX_str, -O3_str, -EC_str) %>% # keep only pm2.5 
+group_by(nr, lobnr) %>%
+mutate(lag = seq(from = 10, to = 0, by = -1)) %>%
+  mutate(lag = paste0("lag_", lag)) %>%
+  ungroup() %>%
+  dplyr::select(-year_exp) %>%
+  spread(lag, PM25_str)
+
+summary(lag_wide)
+
+head(lag_wide, 8)
+  
+```
+
+ 
+## 3. Create matrix of exposure histories 
+
+For lags 1-10
+
+```{r exposure histories}
+
+# matrix with 10 lags
+exp_matrix <- lag_wide %>%
+  dplyr::select(36:46) %>%
+  dplyr::select(lag_1, lag_2, lag_3, lag_4, lag_5, lag_6, lag_7, lag_8, lag_9, lag_10)
+
+head(exp_matrix, 8)
+
+
+```
+
+
+## 4. Prep matrixes for models
+
+### 4a. Color pallett for plots
+
+```{r include = FALSE}
+
+# List of colors for lag plots
+lag.color.list <- c("black", "gray", "darkolivegreen3", "firebrick", "deeppink", "mediumorchid1", "mediumpurple", "royalblue1", "darkblue", "tomato1", "pink")
+
+lag.color.list.2 <- c("mediumpurple", "royalblue1", "darkblue", "tomato1", "pink")
+
+```
+
+
+### 4b. Crossbasis
+
+All crossbases have a linear dose-response relationship
+
+I created 4 crossbases for 10 lags (1-10): 
+
+ - Lag constrained with 4 df
+ - Lag constrained with 3 df
+ 
+
+```{r}
+
+# Crossbasis with 10 lags 
+
+# 4 df 
+cb.lin.4 <- crossbasis(exp_matrix, 
+                 lag=c(1,10),
+                 argvar=list(fun = "lin"), # form of the dose-response within each lag
+                 arglag=list(fun= "ns", df = 4 )) # the form of the curve across all the lags, that is, the lag constrain 
+
+
+
+
+# 3 df 
+cb.lin.3 <- crossbasis(exp_matrix, 
+                 lag=c(1,10),
+                 argvar=list(fun = "lin"), # form of the dose-response within each lag
+                 arglag=list(fun= "ns", df = 3 )) # the form of the curve across all the lags, that is, the lag constrain 
+
+
+
+```
+
+
+## 5. Lag Models
+
+### 5a. Linear conditional logistic regression with 10 lags 
+
+
+#### ii. Lag constrain with 4 df: 
+
+
+```{r}
+
+# run model
+clogit.lin.4 <- survival::clogit(ck ~ cb.lin.4 + 
+                               family_SES +
+                               place_birth +
+                               civst +
+                               residence +
+                               strata(nr), method = "efron", data = lag_wide)
+
+summary(clogit.lin.4)
+AIC(clogit.lin.4)
+
+# Predict
+pred.lin.4 <- crosspred(
+  cb.lin.4, # crossbasis
+  clogit.lin.4, # model
+  at = 1:30, # range values of PM2.5 to use for prediction
+  bylag = 1, # lag increments 
+  cumul = TRUE, # estimate cumulative effect
+  cen = 0) # references for estimate
+
+
+## Visuals
+
+# 3-D plot
+plot(pred.lin.4, zlab="OR", xlab="Exposure", ylab="Lag (years)",
+       theta=40, phi=30, lphi=30)
+
+# Plot lag exposure-response at exposure of 10ug/m3
+plot(pred.lin.4, 
+     var = 10, 
+     col = "red", 
+     ci.arg = list(density = 15, lwd =2),
+      ylab = "OR at 10ug/m3 PM2.5", xlab = "lag (years)")
+
+## Extract estimates per lag
+
+OR_4df <- OR_lag(pred.lin.4, "4-df")
+
+
+## Extract cumulative estimates for 1, 5 and 10 lags
+
+OR_cumm_4df <- OR_cumm(pred.lin.4, "4-df")
+
+```
+
+#### iii. Lag constrain with 3 df: 
+
+
+```{r}
+
+clogit.lin.3 <- survival::clogit(ck ~ cb.lin.3 + 
+                               family_SES +
+                               place_birth +
+                               civst +
+                               residence +
+                               strata(nr), method = "efron", data = lag_wide)
+
+summary(clogit.lin.3)
+AIC(clogit.lin.3)
+
+
+# Predict
+
+pred.lin.3 <- crosspred(
+  cb.lin.3, # crossbasis
+  clogit.lin.3, # model
+  at = 1:30, # range values of PM2.5 to use for prediction
+  bylag = 1, # lag increments 
+  cumul = TRUE, # estimate cumulative effect at each lag
+  cen = 0) # references for nonlinear associations
+
+
+# Visuals
+
+# 3-D plot
+plot(pred.lin.3, zlab="OR", xlab="Exposure", ylab="Lag (years)",
+       theta=40, phi=30, lphi=30)
+
+# Plot lag exposure-response at exposure of 10ug/m3
+
+plot(pred.lin.3, 
+     var = 10, 
+     col = "red", 
+     ci.arg = list(density = 15, lwd =2),
+      ylab = "OR at 10ug/m3 PM2.5", xlab = "lag (years)")
+
+## Extract estimates per lag
+
+OR_3df <- OR_lag(pred.lin.3, "3-df")
+
+## Extract cumulative estimates at each lag
+
+OR_cumm_3df <- OR_cumm(pred.lin.3, "3-df")
+
+```
+
+
+#### ii. Lag constrain with 4 df and adjusted for parish SES
+
+```{r}
+
+clogit.lin.ses <- survival::clogit(ck ~ cb.lin.3 + 
+                               family_SES +
+                               place_birth +
+                               civst +
+                               residence +
+                               parish_ses +
+                               strata(nr), method = "efron", data = lag_wide)
+
+summary(clogit.lin.ses)
+AIC(clogit.lin.ses)
+
+
+# Predict
+
+pred.lin.ses <- crosspred(
+  cb.lin.3, # crossbasis
+  clogit.lin.ses, # model
+  at = 1:30, # range values of PM2.5 to use for prediction
+  bylag = 1, # lag increments 
+  cumul = TRUE, # estimate cumulative effect at each lag
+  cen = 0) # references for nonlinear associations
+
+
+# Visuals
+
+# 3-D plot
+plot(pred.lin.ses, zlab="OR", xlab="Exposure", ylab="Lag (years)",
+       theta=40, phi=30, lphi=30)
+
+# Plot lag exposure-response at exposure of 10ug/m3
+
+plot(pred.lin.ses, 
+     var = 10, 
+     col = "red", 
+     ci.arg = list(density = 15, lwd =2),
+      ylab = "OR at 10ug/m3 PM2.5", xlab = "lag (years)")
+
+## Extract estimates per lag
+
+OR_3df_ses <- OR_lag(pred.lin.ses, "3-df w/parish ses")
+
+
+## Extract cumulative estimates at each lag
+
+OR_cumm_3df_ses <- OR_cumm(pred.lin.ses, "3-df with/parish ses")
+
+```
+
+## Bind datasets
+
+```{r}
+
+# by lag effect estimates
+
+per_lag_effects <- rbind(OR_3df, OR_4df) %>%
+  rbind(., OR_3df_ses)
+
+write_csv(per_lag_effects, paste0(output.folder, "y_05_all_distributed_lags_OR.csv"))
+
+# cummulative estimates 
+
+cumm_effects <- rbind(OR_cumm_3df, OR_cumm_4df) %>%
+  rbind(., OR_cumm_3df_ses)
+
+write_csv(cumm_effects, paste0(output.folder, "y_06_all_cumm_lags_OR.csv"))
+
+
+```
+

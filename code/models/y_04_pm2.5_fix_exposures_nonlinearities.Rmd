@@ -1,0 +1,181 @@
+---
+title: "Nonlinearities in fix expo windows"
+author: "Yanelli Nunez"
+date: "9/30/2021"
+output:
+ html_document:
+    toc: TRUE
+    toc_float: TRUE
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+*Objectives* 
+
+- Use a natural spline with 3 degrees of freedom to test for non-linearities in the outcome-exposure relationship. 
+
+- Use the AIC to compare model fitness between the model with the natural spline and the model without it
+
+*Results*
+
+For all averages (1, 5, and 10yrs), the conditional logistic linear models have lower AIC which means that models with the linear exposure have better goodness of fit based on AIC
+
+
+Note: these models were not adjusted by Parish level SES
+
+## i.  Loading needed packages
+
+```{r include=FALSE}
+
+rm(list=ls())
+
+# 1a Declare root directory
+project.folder <- paste0(print(here::here()),'/')
+
+# add folder locations
+source(paste0(project.folder,'0_00_create_folder_structure.R'))
+
+# add file locations
+source(paste0(file.locations.folder,'file_locations.R'))
+
+# load packages
+ source(paste0(packages.folder,'packages_yanelli.R'))
+
+# load functions
+ source(paste0(code.folder, 'models/functions_yanelli.R'))
+
+# load data
+ source(paste0(code.folder, 'models/y_00_load_datasets.R'))
+```
+
+## ii. View data summaries
+
+```{r}
+summary(data_1yr)
+
+
+summary(data_5yrs)
+
+
+summary(data_10yrs)
+
+```
+
+## 1. Check nonlinearities in the conditional logistic models
+
+
+
+### 1a. 1yr exposure average
+
+```{r}
+
+# nonlinear
+
+clogit.1yr.ns <- survival::clogit(ck ~ ns(PM25_1yr, df = 3) + 
+                           family_SES + 
+                           place_birth +
+                           civst +
+                           residence +
+               strata(nr), # which controls go with which case
+              # weights =  # number of events in each day ?
+               method = "efron", # the method tells the model how to deal with ties
+               data = data_1yr) 
+
+
+summary(clogit.1yr.ns)
+
+# linear
+
+clogit.1yr <- survival::clogit(ck ~ PM25_1yr + 
+                           family_SES + 
+                           place_birth +
+                           civst +
+                           residence +
+               strata(nr), # which controls go with which case
+              # weights =  # number of events in each day ?
+               method = "efron", # the method tells the model how to deal with ties
+               data = data_1yr) 
+
+
+summary(clogit.1yr)
+
+# AIC - lower AIC means  higher model fitness
+AIC(clogit.1yr.ns)
+AIC(clogit.1yr)
+
+```
+
+### 1b. 5 years exposure average
+
+
+```{r}
+
+# linear
+clogit.5yr <- clogit(ck ~ PM25_5yr + 
+                           family_SES + 
+                           place_birth +
+                           civst +
+                       residence +
+               strata(nr), # which controls go with which case
+              # weights =  # number of events in each day ?
+               method = "efron", # the method tells the model how to deal with ties
+               data = data_5yrs) 
+summary(clogit.5yr)
+
+
+# nonlinear
+clogit.5yr.ns <- clogit(ck ~ ns(PM25_5yr, df = 3) + 
+                           family_SES + 
+                           place_birth +
+                           civst +
+                       residence +
+               strata(nr), # which controls go with which case
+              # weights =  # number of events in each day ?
+               method = "efron", # the method tells the model how to deal with ties
+               data = data_5yrs) 
+summary(clogit.5yr.ns)
+
+# Get AICs for each model
+
+AIC(clogit.5yr.ns)
+AIC(clogit.5yr)
+
+```
+
+### 1c. 10 years exposure
+
+```{r}
+
+# Linear
+clogit.10yrs <- clogit(ck ~ PM25_10yr + 
+                           family_SES + 
+                           place_birth +
+                           civst +
+                         residence +
+               strata(nr), # which controls go with which case
+              # weights =  # number of events in each day ?
+               method = "efron", # the method tells the model how to deal with ties
+               data = data_10yrs) 
+
+summary(clogit.10yrs)
+
+# Nonlinear
+
+clogit.10yrs.ns <- clogit(ck ~ ns(PM25_10yr, df =3) + 
+                           family_SES + 
+                           place_birth +
+                           civst +
+                         residence +
+               strata(nr), # which controls go with which case
+              # weights =  # number of events in each day ?
+               method = "efron", # the method tells the model how to deal with ties
+               data = data_10yrs) 
+
+summary(clogit.10yrs.ns)
+
+AIC(clogit.10yrs)
+AIC(clogit.10yrs.ns)
+
+```
+

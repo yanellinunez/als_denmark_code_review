@@ -1,0 +1,208 @@
+---
+title: "Set years analysis"
+author: "Yanelli Nunez"
+date: "03/15/2021"
+output:
+ html_document:
+    toc: TRUE
+    toc_float: TRUE
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+## i.  Loading needed packages
+
+* Objective * 
+
+Construct models for averaged windows of exposure (one model for each window of exposure). The average excluded the 12 months prior to diagnosis (aka year of diagnosis). Models:
+
+- 1 year prior year of hospitalization    
+- 5 years prior year of hospitalization
+- 10 years prior year of hospitalization
+
+Note
+- I ran each of the three models twice, with parish_SES and without parish_SES 
+- When I ran the models with parish SES, I lose observations because for about 800 patients/cases I do not have info on parish SES
+
+```{r include=FALSE}
+
+rm(list=ls())
+
+# 1a Declare root directory
+project.folder <- paste0(print(here::here()),'/')
+
+# add folder locations
+source(paste0(project.folder,'0_00_create_folder_structure.R'))
+
+# add file locations
+source(paste0(file.locations.folder,'file_locations.R'))
+
+# load packages
+ source(paste0(packages.folder,'packages_yanelli.R'))
+
+# load functions
+ source(paste0(code.folder, 'models/functions_yanelli.R'))
+
+# load data
+ source(paste0(code.folder, 'models/y_00_load_datasets.R'))
+
+```
+
+## ii. Load data and view summary
+
+```{r}
+
+summary(data_1yr)
+
+summary(data_5yrs)
+
+summary(data_10yrs)
+
+```
+
+
+## 1. Models adjusted for parish-ses
+
+
+```{r}
+
+## 1-year window of exposure
+
+clogit.1yr.pSES <- survival::clogit(ck ~ PM25_1yr + 
+                           family_SES + 
+                           place_birth +
+                           civst +
+                           residence +
+                             parish_ses +
+               strata(nr), # which controls go with which case
+              # weights =  # number of events in each day ?
+               method = "efron", # the method tells the model how to deal with ties
+               data = data_1yr) 
+
+
+summary(clogit.1yr.pSES)
+# extract betas and estimate rate ratio
+
+## beta_trans_clog is a function I created to extract the effect estimates and organize them into a table. You can find this function in the functions_yanelli.R file within the models folder
+
+clog.1yr.est.pSES <- beta_trans_clog(clogit.1yr.pSES, 'clog_1yr')
+
+
+## 5-year exposure window 
+
+clogit.5yr.pSES <- clogit(ck ~ PM25_5yr + 
+                           family_SES + 
+                           place_birth +
+                           civst +
+                       residence +
+                       parish_ses +
+               strata(nr), # which controls go with which case
+              # weights =  
+               method = "efron", # the method tells the model how to deal with ties
+               data = data_5yrs) 
+summary(clogit.5yr.pSES)
+
+# extract betas and estimate rate ratio
+clog.5yr.est.pSES <- beta_trans_clog(clogit.5yr.pSES, 'clog_5yr')
+
+
+## 10-years exposure window 
+
+clogit.10yrs.pSES <- clogit(ck ~ PM25_10yr + 
+                           family_SES + 
+                           place_birth +
+                           civst +
+                         residence +
+                         parish_ses +
+               strata(nr), # which controls go with which case
+              # weights =  # number of events in each day ?
+               method = "efron", # the method tells the model how to deal with ties
+               data = data_10yrs) 
+
+summary(clogit.10yrs.pSES)
+
+
+# extract betas and estimate rate ratio
+clog.10yr.est.pSES <- beta_trans_clog(clogit.10yrs.pSES, 'clog_10yr')
+
+```
+
+## 2. Models without parish-ses adjustment
+
+```{r}
+
+## 1-year window of exposure
+
+clogit.1yr <- survival::clogit(ck ~ PM25_1yr + 
+                           family_SES + 
+                           place_birth +
+                           civst +
+                           residence +
+               strata(nr), # which controls go with which case
+              # weights =  # number of events in each day ?
+               method = "efron", # the method tells the model how to deal with ties
+               data = data_1yr) 
+
+
+summary(clogit.1yr)
+# extract betas and estimate rate ratio
+
+## beta_trans_clog is a function I created to extract the effect estimates and organize them into a table. You can find this function in the functions_yanelli.R file within the models folder
+
+clog.1yr.est <- beta_trans_clog(clogit.1yr, 'clog_1yr')
+
+
+## 5-year exposure window 
+
+clogit.5yr <- clogit(ck ~ PM25_5yr + 
+                           family_SES + 
+                           place_birth +
+                           civst +
+                       residence +
+               strata(nr), # which controls go with which case
+              # weights =  # number of events in each day ?
+               method = "efron", # the method tells the model how to deal with ties
+               data = data_5yrs) 
+summary(clogit.5yr)
+
+# extract betas and estimate rate ratio
+clog.5yr.est <- beta_trans_clog(clogit.5yr, 'clog_5yr')
+
+
+## 10-years exposure window 
+
+clogit.10yrs <- clogit(ck ~ PM25_10yr + 
+                           family_SES + 
+                           place_birth +
+                           civst +
+                         residence +
+               strata(nr), # which controls go with which case
+              # weights =  # number of events in each day ?
+               method = "efron", # the method tells the model how to deal with ties
+               data = data_10yrs) 
+
+summary(clogit.10yrs)
+
+
+# extract betas and estimate rate ratio
+clog.10yr.est <- beta_trans_clog(clogit.10yrs, 'clog_10yr')
+
+```
+
+
+## 3. Combine estimates from all models 
+I'M HERE
+```{r}
+
+modl_est <- rbind(clog.1yr.est, clog.5yr.est, clog.10yr.est) %>%
+  dplyr::select(model, rr, rr.lci, rr.uci, everything())
+
+knitr::kable(modl_est)
+
+#write_csv(modl_est, paste0(output.folder, "y_04_fix_windows_OR.csv"))
+#write_csv(modl_est, paste0(output.folder, "y_04_parish_SES_fix_windows_OR.csv"))
+
+
+```
+
