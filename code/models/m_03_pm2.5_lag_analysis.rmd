@@ -39,7 +39,7 @@ source(paste0(file.locations.folder,'file_locations.R'))
  source(paste0(code.folder, 'models/functions_yanelli.R'))
 
 # load data
- source(paste0(code.folder, 'models/y_00_load_datasets.R'))
+ source(paste0(code.folder, 'models/m_00_load_datasets.R'))
 
 ```
 
@@ -304,7 +304,7 @@ per_lag_effects <- rbind(OR_3df, OR_4df) %>%
 
 knitr::kable(per_lag_effects)
 
-#write_csv(per_lag_effects, paste0(output.folder, "distributed_lags_OR.csv"))
+# write_csv(per_lag_effects, paste0(output.folder, "distributed_lags_OR.csv"))
 
 # cumulative estimates 
 
@@ -313,7 +313,7 @@ cumm_effects <- rbind(OR_cumm_3df, OR_cumm_4df) %>%
 
 knitr::kable(cumm_effects)
 
-#write_csv(cumm_effects, paste0(output.folder, "cumm_lags_OR.csv"))
+# write_csv(cumm_effects, paste0(output.folder, "cumm_lags_OR.csv"))
 
 
 ```

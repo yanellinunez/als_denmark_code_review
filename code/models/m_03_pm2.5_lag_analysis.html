@@ -1585,7 +1585,7 @@ div.tocify {
 
 <p>Objective:</p>
 <ul>
-<li><p>Run distributed lag models and tested multiple lag constrains. The exposure-response function will be set as linear because the models for the averaged exposures indicate no deviation from linearity in the dose-response.</p></li>
+<li><p>Ran distributed lag models and two different lag constrains (3 and 4 degrees of freedom). The exposure-response function will be set as linear because the models for the averaged exposures indicate no deviation from linearity in the dose-response.</p></li>
 <li><p>To determined df on the lag constrain I used AIC to chose the model with the best fitness</p></li>
 <li><p>I ran the model with the best AIC twice–with and without parish SES adjustment</p></li>
 </ul>
@@ -2173,7 +2173,7 @@ OR_cumm_3df_ses &lt;- OR_cumm(pred.lin.ses, &quot;3-df with/parish ses&quot;)</c
 <div id="compile-and-save-effect-estimates" class="section level2">
 <h2>6. Compile and save effect estimates</h2>
 <ul>
-<li>I combined the effect estimates from the three models (4df and 3df lag constrain, and 3df lag constrained adjusted for parish SES ) into a single dataset both for the single lag effect estimates and the cumulative effect estimates</li>
+<li>I combined the effect estimates from the three models (4df and 3df lag constrain, and 3df lag constrained adjusted for parish SES ) into a single dataset both for the single lag effect estimates and the cumulative effect estimates. I saved the dataset as a .csv into file in the output folder</li>
 </ul>
 <pre class="r"><code># by lag effect estimates
 
@@ -2404,7 +2404,7 @@ knitr::kable(per_lag_effects)</code></pre>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>write_csv(per_lag_effects, paste0(output.folder, &quot;distributed_lags_OR.csv&quot;))
+<pre class="r"><code># write_csv(per_lag_effects, paste0(output.folder, &quot;distributed_lags_OR.csv&quot;))
 
 # cumulative estimates 
 
@@ -2635,7 +2635,7 @@ knitr::kable(cumm_effects)</code></pre>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>write_csv(cumm_effects, paste0(output.folder, &quot;cumm_lags_OR.csv&quot;))</code></pre>
+<pre class="r"><code># write_csv(cumm_effects, paste0(output.folder, &quot;cumm_lags_OR.csv&quot;))</code></pre>
 </div>
 
 
