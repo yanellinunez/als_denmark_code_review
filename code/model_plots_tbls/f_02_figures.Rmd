@@ -1,0 +1,238 @@
+---
+title: "Figures"
+author: "Yanelli Nunez"
+date: "4/21/2021"
+output:
+ html_document:
+    toc: TRUE
+    toc_float: TRUE
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+This code you can run because it doesn't use patient data. Here I used the effect estimates I save from the models to make a figure for the effect estimates of average exposures and the distributed lags
+
+```{r include=FALSE}
+
+rm(list=ls())
+
+# 1a Declare root directory
+project.folder <- paste0(print(here::here()),'/')
+
+# add folder locations
+source(paste0(project.folder,'0_00_create_folder_structure.R'))
+
+# add file locations
+source(paste0(file.locations.folder,'file_locations.R'))
+
+# load packages
+ source(paste0(packages.folder,'packages.R'))
+
+# load functions
+ source(paste0(code.folder, 'models/functions_yanelli.R'))
+
+# load data 
+# I don't need the orginal datasets for the figures
+# source(paste0(code.folder, 'models/y_00_load_datasets.R'))
+
+```
+
+## 1. Load data 
+
+```{r}
+
+
+# lag effect estimates from distributed lag models
+
+distrib_lags <- read_csv(paste0(output.folder, "distributed_lags_OR.csv")) %>%
+  mutate(lag = factor(lag, levels = c("lag1", "lag2", "lag3", "lag4", "lag5", "lag6", "lag7", "lag8", "lag9", "lag10")),
+         lag = recode_factor(lag,
+                          `lag1` = 'Lag 1',
+                          `lag2` = 'Lag 2',
+                          `lag3` = 'Lag 3',
+                          `lag4` = 'Lag 4',
+                          `lag5` = 'Lag 5',
+                          `lag6` = 'Lag 6',
+                          `lag7` = 'Lag 7',
+                          `lag8` = 'Lag 8',
+                          `lag9` = 'Lag 9',
+                          `lag10` = 'Lag 10'))
+
+
+# lag Cumulative estimates 
+
+cum_lags <- read_csv(paste0(output.folder, "cumm_lags_OR.csv")) %>%
+  dplyr::filter(lag %in% c("lag1", "lag5", "lag10")) %>%
+  mutate(exp_wind = as.factor(if_else(lag == "lag1", "1-year",
+                               if_else(lag == "lag5", "5-years",
+                                       if_else(lag == "lag10", "10-years", "x"))))) %>%
+  mutate(exp_wind = factor(exp_wind, levels = c("1-year", "5-years", "10-years"))) %>% dplyr::select(-lag) %>%
+  dplyr::rename(model = lag_constr)
+
+# fix windows 
+
+fix_windw <- read_csv(paste0(output.folder, "fix_windows_OR.csv")) %>%
+  mutate(model.clean = as.factor(if_else(model == "clog_1yr", "1-year",
+                               if_else(model == "clog_5yr", "5-years",
+                                       if_else(model == "clog_10yr", "10-years", "x"))))) %>%
+  mutate(model.clean = factor(model.clean, levels = c("1-year", "5-years", "10-years")))  %>% 
+  dplyr::select(-beta, -beta.se, -model) %>%
+  dplyr::rename(OR_cumm = rr,
+                lower_CI = rr.lci,
+                upper_CI = rr.uci,
+                model = parish.SES,
+                exp_wind = model.clean)
+
+
+# Combined cumulative lags with effect estimates from averaged exposure
+cum_exp_full <- rbind(cum_lags, fix_windw)
+  
+
+```
+
+
+## 2. Forest plots
+
+### 2a. Parish SES adjusted 
+
+- Average windows of exposure and cumulative lag effects 
+- This is figure 1 in the manuscript and the results are from the models adjusted for parish SES
+- For the cumulative effect estimates, the lag constrain is 3df
+
+
+```{r}
+
+pd <- position_dodge(width = 0.5)
+
+averg_cum_expo <- cum_exp_full %>%
+dplyr::filter(model %in% c("3-df with/parish ses", "Parish SES adjusted")) %>%
+  ggplot(aes(x = exp_wind, y = OR_cumm, ymin = lower_CI, ymax = upper_CI, color = model)) +
+   geom_hline(yintercept = 1, linetype = 2) +
+    geom_pointrange(aes(), position = pd) +
+    ylab("Odds Ratio per"~mu*g/m^3~increase) +
+    xlab("") +
+    geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
+ #coord_flip()  +
+ # scale_y_continuous(limits = c(0.95, 1.10), breaks = seq(.95, 1.10, by = 0.05)) +
+  theme_minimal() +
+    theme(
+        axis.ticks.y=element_blank(),
+        axis.text.x = element_text(size = 19, angle = 90),
+        axis.title.x = element_text(vjust = -0.1),
+        axis.text.y = element_text(size = 19),
+        axis.title = element_text(size = 19),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        legend.text = element_text(size = 17),
+        strip.text = element_text(size = 19)) +
+  scale_color_manual(labels = c("Cum. Lag","Averg. exposure"), values = c("black", "#1f78b4"))
+ 
+averg_cum_expo
+```
+
+
+### 2b. Parish SES unadjusted 
+
+This figure is for the sensitivity analysis and will be included in the supplements. It shows the lag cumulative effects and the effect estimates of average exposures from the models that were *NOT* adjusted for Parish SES
+
+```{r}
+
+pd <- position_dodge(width = 0.5)
+
+averg_cum_expo_unadjust <- cum_exp_full %>%
+dplyr::filter(model %in% c("3-df", "Parish SES nonadjusted")) %>%
+  ggplot(aes(x = exp_wind, y = OR_cumm, ymin = lower_CI, ymax = upper_CI, color = model)) +
+   geom_hline(yintercept = 1, linetype = 2) +
+    geom_pointrange(aes(), position = pd) +
+    ylab("Odds Ratio per"~mu*g/m^3~increase) +
+    xlab("") +
+    geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
+ #coord_flip()  +
+ # scale_y_continuous(limits = c(0.95, 1.10), breaks = seq(.95, 1.10, by = 0.05)) +
+  theme_minimal() +
+    theme(
+        axis.ticks.y=element_blank(),
+        axis.text.x = element_text(size = 19, angle = 90),
+        axis.title.x = element_text(vjust = -0.1),
+        axis.text.y = element_text(size = 19),
+        axis.title = element_text(size = 19),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        legend.text = element_text(size = 17),
+        strip.text = element_text(size = 19)) +
+  scale_color_manual(labels = c("Cum. Lag","Averg. exposure"), values = c("#1b9e77", "orange3"))
+ 
+  
+
+averg_cum_expo_unadjust
+```
+
+## 3. Distributed lag figure
+
+### 3b. 3df in the lag constrain
+
+This figure is Figure 2 in the manuscript. It shows the lag effect estimates from the distributed lag model adjusted for parish SES
+
+```{r}
+
+
+distr_lag <- distrib_lags %>%
+  dplyr::filter(lag_constr == "3-df w/parish ses") %>%
+  ggplot(aes(x = lag, y = OR, ymin = lower_CI, ymax = upper_CI)) +
+   geom_hline(yintercept = 1, linetype = 2) +
+    geom_pointrange(aes(), position = pd) +
+    ylab("Odds Ratio per"~mu*g/m^3~increase) +
+    xlab("") +
+    geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
+  scale_y_continuous(limits = c(0.90, 1.10), breaks = seq(.90, 1.10, by = 0.05)) +
+  theme_minimal() +
+    theme(
+        axis.ticks.y=element_blank(),
+        axis.text.x = element_text(size = 18, angle = 90),
+        axis.title.x = element_text(vjust = -0.1),
+        axis.text.y = element_text(size = 18),
+        axis.title = element_text(size = 20),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        legend.text = element_text(size = 18),
+        strip.text = element_text(size = 18)) 
+
+
+distr_lag
+
+
+```
+
+### 3c. 3df in lag constrain Parish SES unadjusted
+
+This figure is part of the sensitivity analysis and is included as a supplementary figure
+
+```{r}
+
+distr_lag_unadjSES <- distrib_lags %>%
+  dplyr::filter(lag_constr == "3-df") %>%
+  ggplot(aes(x = lag, y = OR, ymin = lower_CI, ymax = upper_CI)) +
+   geom_hline(yintercept = 1, linetype = 2) +
+    geom_pointrange(aes(), position = pd) +
+    ylab("Odds Ratio per"~mu*g/m^3~increase) +
+    xlab("") +
+    geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
+  scale_y_continuous(limits = c(0.90, 1.10), breaks = seq(.90, 1.10, by = 0.05)) +
+  theme_minimal() +
+    theme(
+        axis.ticks.y=element_blank(),
+        axis.text.x = element_text(size = 18, angle = 90),
+        axis.title.x = element_text(vjust = -0.1),
+        axis.text.y = element_text(size = 18),
+        axis.title = element_text(size = 20),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        legend.text = element_text(size = 18),
+        strip.text = element_text(size = 18)) 
+
+
+distr_lag_unadjSES
+
+```
+

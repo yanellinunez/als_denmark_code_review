@@ -10,6 +10,15 @@ output:
 editor_options: 
   chunk_output_type: console
 ---
+
+Objective:
+
+- Ran distributed  lag models and two different lag constrains (3 and 4 degrees of freedom). The exposure-response function  will be set as linear because the models for the averaged exposures indicate no deviation from linearity in the dose-response. 
+
+- To  determined df on the lag constrain I used AIC to chose the model with the best fitness
+
+- I ran the model with the best AIC twice--with and without parish SES adjustment 
+
 ```{r include=FALSE}
 
 rm(list=ls())
@@ -24,44 +33,22 @@ source(paste0(project.folder,'0_00_create_folder_structure.R'))
 source(paste0(file.locations.folder,'file_locations.R'))
 
 # load packages
-#source(paste0(packages.folder,'packages_to_load.R'))
-
-# load packages
- source(paste0(packages.folder,'packages_yanelli.R'))
+ source(paste0(packages.folder,'packages.R'))
 
 # load functions
  source(paste0(code.folder, 'models/functions_yanelli.R'))
 
+# load data
+ source(paste0(code.folder, 'models/y_00_load_datasets.R'))
+
 ```
 
-## 1. Load data and review
+## 1. View data
 
-Notes:
-Read data and make sure are categorical variables are specify as factors
 
 ```{r}
 
-data <- read_csv(paste0(yanelli_datasets, "lagged_10yrs_parishSES.csv")) %>%
-  mutate(family_SES = as.factor(family_SES),
-         place_birth = as.factor(place_birth),
-         residence = as.factor(residence),
-         civst = as.factor(civst)) %>% 
-  dplyr::filter(residence != "Greenland") %>% # only has 22 observations which is too little and results in unstable estimates so I removed this category 
-  droplevels()
-
-# check how many controls/cases we have
-controls <- data %>%
-dplyr::filter(ck == 0) %>% # selecting controls
- group_by(nr) %>% 
-  count(lobnr)
-
-cases <- data %>%
-dplyr::filter(ck == 1) %>% # selecting only cases
- count(nr) 
-
-summary(data)
-
-hist(data$PM25_str)
+summary(data_lags)
 
 ```
 
@@ -71,7 +58,7 @@ hist(data$PM25_str)
 
 ```{r}
 
-lag_wide <- data %>%
+lag_wide <- data_lags %>%
   dplyr::select(-CO_str, -NO2_str, -NOX_str, -O3_str, -EC_str) %>% # keep only pm2.5 
 group_by(nr, lobnr) %>%
 mutate(lag = seq(from = 10, to = 0, by = -1)) %>%
@@ -106,23 +93,11 @@ head(exp_matrix, 8)
 
 ## 4. Prep matrixes for models
 
-### 4a. Color pallett for plots
-
-```{r include = FALSE}
-
-# List of colors for lag plots
-lag.color.list <- c("black", "gray", "darkolivegreen3", "firebrick", "deeppink", "mediumorchid1", "mediumpurple", "royalblue1", "darkblue", "tomato1", "pink")
-
-lag.color.list.2 <- c("mediumpurple", "royalblue1", "darkblue", "tomato1", "pink")
-
-```
-
-
-### 4b. Crossbasis
+### 4a. Crossbasis
 
 All crossbases have a linear dose-response relationship
 
-I created 4 crossbases for 10 lags (1-10): 
+I tested two different constrains on the lag: 
 
  - Lag constrained with 4 df
  - Lag constrained with 3 df
@@ -157,7 +132,7 @@ cb.lin.3 <- crossbasis(exp_matrix,
 ### 5a. Linear conditional logistic regression with 10 lags 
 
 
-#### ii. Lag constrain with 4 df: 
+#### i. Lag constrain with 4 df: 
 
 
 ```{r}
@@ -167,7 +142,7 @@ clogit.lin.4 <- survival::clogit(ck ~ cb.lin.4 +
                                family_SES +
                                place_birth +
                                civst +
-                               residence +
+                               residence + 
                                strata(nr), method = "efron", data = lag_wide)
 
 summary(clogit.lin.4)
@@ -177,7 +152,7 @@ AIC(clogit.lin.4)
 pred.lin.4 <- crosspred(
   cb.lin.4, # crossbasis
   clogit.lin.4, # model
-  at = 1:30, # range values of PM2.5 to use for prediction
+  at = 1:30, # range values of PM2.5 to use for prediction select based on min/max pm2.5 concentrations in dataset
   bylag = 1, # lag increments 
   cumul = TRUE, # estimate cumulative effect
   cen = 0) # references for estimate
@@ -196,8 +171,10 @@ plot(pred.lin.4,
      ci.arg = list(density = 15, lwd =2),
       ylab = "OR at 10ug/m3 PM2.5", xlab = "lag (years)")
 
-## Extract estimates per lag
 
+
+## Extract estimates per lag 
+# I created the OR_lag() and OR_cumm() function to extract the per lag and cummulative estimates and organize them into a dataset to use later for figures. The functions aare in  the functions_yanelli.R  file  in this folder
 OR_4df <- OR_lag(pred.lin.4, "4-df")
 
 
@@ -207,8 +184,9 @@ OR_cumm_4df <- OR_cumm(pred.lin.4, "4-df")
 
 ```
 
-#### iii. Lag constrain with 3 df: 
+#### ii. Lag constrain with 3 df: 
 
+This model has a lower AIC relative to the model with a lag constrain of 4df. So we select this models as the model for the main analysis
 
 ```{r}
 
@@ -259,7 +237,9 @@ OR_cumm_3df <- OR_cumm(pred.lin.3, "3-df")
 ```
 
 
-#### ii. Lag constrain with 4 df and adjusted for parish SES
+#### iii. Lag constrain with 3 df adjusted for parish SES
+
+The model with a lag constrain of 3 has the lowest AIC so here I'm running the model again but adjusted for parish SES
 
 ```{r}
 
@@ -311,7 +291,9 @@ OR_cumm_3df_ses <- OR_cumm(pred.lin.ses, "3-df with/parish ses")
 
 ```
 
-## Bind datasets
+## 6. Compile and save effect estimates
+
+- I combined the effect estimates from the three models (4df and 3df lag constrain, and 3df lag constrained adjusted for parish SES ) into a single dataset both for the single lag effect estimates and the cumulative effect estimates. I saved the dataset as a .csv into file in the output folder
 
 ```{r}
 
@@ -320,14 +302,18 @@ OR_cumm_3df_ses <- OR_cumm(pred.lin.ses, "3-df with/parish ses")
 per_lag_effects <- rbind(OR_3df, OR_4df) %>%
   rbind(., OR_3df_ses)
 
-write_csv(per_lag_effects, paste0(output.folder, "y_05_all_distributed_lags_OR.csv"))
+knitr::kable(per_lag_effects)
 
-# cummulative estimates 
+#write_csv(per_lag_effects, paste0(output.folder, "distributed_lags_OR.csv"))
+
+# cumulative estimates 
 
 cumm_effects <- rbind(OR_cumm_3df, OR_cumm_4df) %>%
   rbind(., OR_cumm_3df_ses)
 
-write_csv(cumm_effects, paste0(output.folder, "y_06_all_cumm_lags_OR.csv"))
+knitr::kable(cumm_effects)
+
+#write_csv(cumm_effects, paste0(output.folder, "cumm_lags_OR.csv"))
 
 
 ```

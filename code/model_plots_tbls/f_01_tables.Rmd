@@ -1,0 +1,146 @@
+---
+title: "Data Statistics Summaries"
+author: "Yanelli Nunez"
+date: "8/16/2021"
+output:
+ html_document:
+    toc: TRUE
+    toc_float: TRUE
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+Objectives:
+
+Create Table 1 for paper
+
+```{r include=FALSE}
+
+rm(list=ls())
+
+# 1a Declare root directory
+project.folder <- paste0(print(here::here()),'/')
+
+# add folder locations
+source(paste0(project.folder,'0_00_create_folder_structure.R'))
+
+# add file locations
+source(paste0(file.locations.folder,'file_locations.R'))
+
+# load packages
+ source(paste0(packages.folder,'packages.R'))
+
+# load functions
+ source(paste0(code.folder, 'models/functions_yanelli.R'))
+
+# load data
+ source(paste0(code.folder, 'models/m_00_load_datasets.R'))
+
+```
+
+## i. Number of cases/controls in each data set
+
+Notes: 
+
+- The datasets (1, 5, 10yrs, and lag 10yrs) are largely overlapping so we chose the 5yrs dataset to create the summary statistics of the control/cases (Table 1)
+- O refers to controls and 1 to cases
+
+```{r}
+
+ck_1yr <- data_1yr %>%
+  group_by(ck) %>%
+  summarize(n()) %>%
+  mutate(exp_wind = "1 yrs")
+
+ck_5yrs <- data_5yrs %>% 
+  group_by(ck) %>%
+  summarize(n()) %>%
+  mutate(exp_wind = "5 yrs")
+
+ck_10yrs <- data_10yrs %>% 
+  group_by(ck) %>%
+  summarize(n()) %>%
+  mutate(exp_wind = "10 yrs")
+
+ck_lag <- data_lags %>%
+  dplyr::select(nr, ck, lobnr) %>%
+  unique() %>%
+  group_by(ck) %>%
+  summarize(n()) %>%
+  mutate(exp_wind = "1-yr lags")
+
+ck_full <- rbind(ck_1yr, ck_5yrs, ck_10yrs, ck_lag) %>%
+  mutate(ck = as.factor(if_else(ck == "0", "control", "case")))
+
+knitr::kable(ck_full)
+
+```
+
+## 1. Table 1
+
+Since there is a significant amount of overlapping between the datasets, I would use the 5-year average to create table 1
+
+Used Package suggested by Jenni to create tables (it's so helpful!) 
+http://www.danieldsjoberg.com/gtsummary/articles/tbl_summary.html
+
+```{r}
+
+table1_prep <- data_5yrs %>%
+  dplyr::select(ck, sex, age_diag, civst, place_birth, residence, family_SES, PM25_5yr) %>%
+  unique() %>%
+  mutate(ck = as.factor(if_else(ck == "0", "control", "case")),
+        sex = as.factor(if_else(sex == "2", "Female", "Male")),
+ family_SES = recode_factor(family_SES, 
+         `1`='Group 1 (Highest)',
+         `2`='Group 2',
+         `3`='Group 3',
+         `4`='Group 4',
+         `5`='Group 5 (Lowest)',
+         `9`='Group 9 (Unknown)'),
+  civst = recode_factor(civst, 
+         `4`='Married',
+         `3`='Divorced',
+         `2`='Widower',
+         `1`='Never married'),
+  residence = recode_factor(residence, 
+        `Greater Copenhagen`='Greater Copenhagen',
+        `Big cities of Denmark>10,000`='Big cities of Denmark',
+        `Rest of Denmark`='Rest of Denmark',
+        `Greenland`='Greenland'),
+  place_birth=recode_factor(place_birth, 
+       `copenhagen`='Greater Copenhagen',
+       `other_cities`='Big cities of Denmark',
+       `other_dk`='Rest of Denmark',
+       `greenland`='Greenland',
+       `foreign`='Foreign',
+       `unknown`='Unknown'))  
+ 
+  
+table_1 <- table1_prep %>%
+  gtsummary::tbl_summary(#missing = "no",
+              label = list(age_diag ~ "Average age (years)",
+                           sex ~ "Sex",
+                           family_SES ~ "Family SES",
+                           place_birth ~ "Place of birth",
+                           civst ~ "Civil status",
+                           residence ~ "Place of residence",
+                           PM25_5yr ~ "PM2.5"),
+              by = ck,
+              statistic = list(all_continuous() ~ "{mean} ({sd})",
+                               all_categorical() ~ "{n} ({p}%)")) %>%
+              add_overall() %>%
+  bold_labels()
+
+table_1
+
+```
+
+### i. Save Table 
+
+```{r}
+table_1 %>%
+  gtsummary::as_flex_table() %>%
+  flextable::save_as_docx(path = paste0(tables.folder,'table_1.docx'))
+```
+

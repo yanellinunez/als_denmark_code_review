@@ -15,11 +15,11 @@ editor_options:
 
 * Objective * 
 
-Construct models for averaged windows of exposure (one model for each window of exposure). The average excluded the 12 months prior to diagnosis (aka year of diagnosis). Models:
+Construct models for averaged windows of exposure (one model per window of exposure). The average excluded the 12 months prior to diagnosis (aka year of diagnosis). Models:
 
-- 1 year prior year of hospitalization    
-- 5 years prior year of hospitalization
-- 10 years prior year of hospitalization
+- 1 year pre-hospitalization    
+- 5 years pre-hospitalization
+- 10 years pre-hospitalization
 
 Note
 - I ran each of the three models twice, with parish_SES and without parish_SES 
@@ -39,17 +39,17 @@ source(paste0(project.folder,'0_00_create_folder_structure.R'))
 source(paste0(file.locations.folder,'file_locations.R'))
 
 # load packages
- source(paste0(packages.folder,'packages_yanelli.R'))
+ source(paste0(packages.folder,'packages.R'))
 
 # load functions
  source(paste0(code.folder, 'models/functions_yanelli.R'))
 
 # load data
- source(paste0(code.folder, 'models/y_00_load_datasets.R'))
+ source(paste0(code.folder, 'models/m_00_load_datasets.R'))
 
 ```
 
-## ii. Load data and view summary
+## ii. View data summaries
 
 ```{r}
 
@@ -84,7 +84,7 @@ clogit.1yr.pSES <- survival::clogit(ck ~ PM25_1yr +
 summary(clogit.1yr.pSES)
 # extract betas and estimate rate ratio
 
-## beta_trans_clog is a function I created to extract the effect estimates and organize them into a table. You can find this function in the functions_yanelli.R file within the models folder
+## beta_trans_clog is a function I created to extract the effect estimates and organize them into a table. You can find this function in the functions_yanelli.R file within this folder
 
 clog.1yr.est.pSES <- beta_trans_clog(clogit.1yr.pSES, 'clog_1yr')
 
@@ -192,16 +192,27 @@ clog.10yr.est <- beta_trans_clog(clogit.10yrs, 'clog_10yr')
 
 
 ## 3. Combine estimates from all models 
-I'M HERE
+
+I saved the estimates as a .csv file in the output folder to use it later to make figures
+
 ```{r}
 
 modl_est <- rbind(clog.1yr.est, clog.5yr.est, clog.10yr.est) %>%
+  mutate(parish.SES = "Parish SES nonadjusted")  %>%
   dplyr::select(model, rr, rr.lci, rr.uci, everything())
 
-knitr::kable(modl_est)
+modl_est_pSES <- rbind(clog.1yr.est.pSES, clog.5yr.est.pSES, clog.10yr.est.pSES) %>%
+  mutate(parish.SES = "Parish SES adjusted") %>%
+  dplyr::select(model, rr, rr.lci, rr.uci, everything())
 
-#write_csv(modl_est, paste0(output.folder, "y_04_fix_windows_OR.csv"))
-#write_csv(modl_est, paste0(output.folder, "y_04_parish_SES_fix_windows_OR.csv"))
+
+all_estimates <- rbind(modl_est, modl_est_pSES)
+  
+
+knitr::kable(all_estimates)
+
+#write_csv(all_estimates, paste0(output.folder, "fix_windows_OR.csv"))
+
 
 
 ```
