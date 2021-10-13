@@ -1,0 +1,369 @@
+---
+title: "Windows_exposure"
+author: "Yanelli Nunez"
+date: "08/05/2021"
+output:
+ html_document:
+    toc: TRUE
+    toc_float: TRUE
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+Objective: 
+- To select the months of exposure that follow within the exposure windows periods (1, 5, and 10 years pre-hospitalization). This is done in the individual level and years are estimated from diagnosis date.
+
+- We also set some criteria for the cases/controls that should be included in the analysis. More details about this are presented below. 
+
+
+```{r include=FALSE}
+
+rm(list=ls())
+
+# 1a Declare root directory
+project.folder <- paste0(print(here::here()),'/')
+
+# add folder locations
+source(paste0(project.folder,'0_00_create_folder_structure.R'))
+
+# add file locations
+source(paste0(file.locations.folder,'file_locations.R'))
+
+# load packages
+ source(paste0(packages.folder,'packages.R'))
+
+```
+
+## 1. load merged patient/pollution dataset 
+```{r}
+
+full_dataset <- readRDS(paste0(yanelli_datasets, "joined_datasets.rds")) # this is a large dataset
+
+summary(full_dataset)
+
+```
+
+
+## 2. Nest data by cases 
+
+This allow us to more easily create windows of exposure for each case
+
+```{r}
+
+# a data set made up of sub-dataset. Each data subset corresponds to a patient and his/her controls
+nested_data <- full_dataset %>% 
+  mutate(nr = as.factor(nr),
+         lobnr = as.factor(lobnr),
+         ck = as.factor(ck)) %>%
+  group_by(nr) %>%
+  nest()
+
+summary(nested_data)
+
+### take a look in a single case and corresponding controls 
+test <- as.data.frame(nested_data$data[[1]]) %>%
+ dplyr::filter(date_exp <= year_gap & date_exp >= one_year)
+
+summary(test)
+  
+
+```
+
+
+## 3. Select exposure within window of exposure period
+
+- For each case, select years within exposure window of 1, 5, and 10 years pre-hospitalization with a 1-year gap between start of exposure and first hospitalization
+
+```{r}
+
+# filter data for the 1, 5 and 10 year periods
+
+filtered_data <- nested_data %>%
+  mutate(one_year = purrr::map(data, ~ dplyr::filter(.x, date_exp <= year_gap & date_exp > one_year)),
+         five_yr = purrr::map(data, ~ dplyr::filter(.x, date_exp <= year_gap & date_exp > five_years)),
+         ten_yr = purrr::map(data, ~ dplyr::filter(.x, date_exp <= year_gap & date_exp > ten_years)))
+ 
+# explore a random dataset within the list of datasets to make sure it looks right
+explore <- filtered_data$one_year[[1]]
+summary(explore)
+
+
+```
+
+
+## 4. Explore missing data 
+
+### 4a. One-year exposure window
+
+Notes: 
+
+1) In the original dataset there is a total of 4,011 cases. If each case has 5 controls then there should be a total of 20,055 controls, that is, 24,066 net total. 
+
+2) The one-year window of exposure has a total of 23,732 case/controls with a **total of 3,952 cases** specifically and ***19,780 controls***. This means **59 cases** from the original data have zero observations during this year. That is, the data is missing ***1.5%*** of cases from the original dataset
+
+3) Overall 93 out of 23,732 cases/controls **(0.39%)** are missing one or more of the 12 months for the one year exposure window
+
+
+```{r}
+
+one_year <- filtered_data %>%
+  dplyr::select(-data, -five_yr, -ten_yr) %>%
+  unnest(., cols = one_year)
+
+# check how many cases and controls total we have in this data set
+case_num <- one_year %>%
+  dplyr::filter(ck == 1) %>% # selecting only cases
+  count(nr) # count number of unique "nr" (cases)
+
+control_num <- one_year %>%
+ dplyr::filter(ck == 0) %>% # selecting controls
+  group_by(nr) %>% 
+   count(lobnr)
+
+# check how many cases/controls are missing months
+exp_missing <- one_year %>%
+ group_by(nr, lobnr) %>%
+  summarise(counts = n()) # lowest number of months measure for a given case or control is 1
+
+exp_missing %>%
+  tally(counts<12) %>%
+  summarize(n=sum(n))
+
+# heat map to visualize missingness
+exp_missing %>% ggplot(aes(as.numeric(nr), lobnr, fill= counts)) + 
+  geom_tile() +
+  theme_classic() +
+  scale_fill_gradient('counts', limits=c(1, 12), breaks = c(1, 3, 6, 9, 12),  low = "red", high = "darkblue") 
+
+```
+
+## 4b. 5-year exposure window
+
+Notes: 
+
+1) In the original dataset there is a total of 4011 cases. If each case has 5 controls then they should be a total of 20,055 controls, that is, 24,066 net total
+
+2) The 5-year window of exposure has a total of 23,801 cases/controls. Specifically, it has **3,965 cases** and **19,836 controls**. This means **46 cases** from the original data have zero observations during this 5-year time period. That is, the data is missing ***1.1%*** of cases from the original dataset
+
+3) 434 out of 23,801 cases/controls **(~1%)** are missing one or more of the 60 months of the five year exposure window
+
+
+```{r}
+
+# select the 5-years time window dataset
+five_years <- filtered_data %>%
+  dplyr::select(-data, -one_year, -ten_yr) %>%
+  unnest(., cols = five_yr)
+
+# check how many cases total we have in this dataset
+case_num_5 <- five_years %>%
+ dplyr::filter(ck == 1) %>% # selecting only cases
+  count(nr) # count number of unique "nr" (cases)
+
+# check how many controls total we have in this dataset
+control_num_5 <- five_years %>%
+  dplyr::filter(ck == 0) %>% # selecting controls
+  group_by(nr) %>% 
+   count(lobnr)
+
+# check how many cases/controls are missing months
+exp_missing_5yrs <- five_years %>%
+  group_by(nr, lobnr) %>%
+  summarise(counts = n()) # minimum number of available months is 1
+
+exp_missing_5yrs %>%
+  tally(counts<60) %>%
+  summarize(n=sum(n))
+
+# heat map to visualize missingness
+exp_missing_5yrs %>% ggplot(aes(as.numeric(nr), lobnr, fill= counts)) + 
+  geom_tile() +
+  theme_classic() +
+  scale_fill_gradient('counts', limits=c(1, 60), breaks = c(1, 12, 24, 36, 48, 60),  low = "red", high = "darkblue") 
+
+
+```
+
+
+## 4c. 10-year exposure window
+
+Notes: 
+
+1) In the original dataset there is a total of 4,011 cases. If case has 5 controls then there should be a total of 20,055 controls, that is, 24,066 net total
+
+2) The 10-year window of exposure has a total of 23,848 cases/controls. Specifically, it has **3,974 cases** and ***19,874 controls***. This means **37 cases** from the original data have zero observations during this 10-year time period. That is, the data is missing ***0.9%*** of cases from the original dataset
+
+3) 1284 out of 23,848 cases/controls **(~5%)** are missing one or more of the 120 months of the 10-year exposure period
+
+
+```{r}
+
+# select the ten-years time window dataset
+ten_years <- filtered_data %>%
+  dplyr::select(-data, -one_year, -five_yr) %>%
+  unnest(., cols = ten_yr)
+
+# check how many cases total we have in this dataset
+case_num_10 <- ten_years %>%
+ dplyr::filter(ck == 1) %>% # selecting only cases
+  count(nr) # count number of unique "nr" (cases)
+
+# check how many controls total we have in this dataset
+control_num_10 <- ten_years %>%
+  dplyr::filter(ck == 0) %>% # selecting controls
+  group_by(nr) %>% 
+   count(lobnr)
+
+# check how many cases/controls are missing months
+exp_missing_10yrs <- ten_years %>%
+  group_by(nr, lobnr) %>%
+  summarise(counts = n()) # minimum number of available months is 1
+
+exp_missing_10yrs %>%
+  tally(counts<120) %>%
+  summarize(n=sum(n))
+
+# heat map to visualize missingness
+exp_missing_10yrs %>% ggplot(aes(as.numeric(nr), lobnr, fill= counts)) + geom_tile() +
+  #scale_fill_continuous(limits=c(0, 12), breaks=seq(0,12, by=1)) +
+  #scale_fill_viridis(limits = c(0, 60), discrete=FALSE) +
+  theme_classic() +
+  scale_fill_gradient('counts', limits=c(1, 120), breaks = c(1, 24, 48, 72, 96, 120),  low = "red", high = "darkblue") 
+
+```
+
+## 5. Data selection
+
+Criteria:
+
+For the 1-year exposure window, limit cases and controls to those we have at least 75% of the pollutant measurements. That is, at least **9 out of the 12 months** need to have a pollutant measurement. Furthermore, within those 9 measurements we need to have at least one measure for each of the year seasons (Denmark has 4 seasons) 
+
+For the 5-years and 10-years exposure window, limit cases and controls to those we have at least 50% of the PM2.5 measurements. That is, for the 5-year time window at least **30 out of the 60 months** should have a measurement. For the 10-year window, each case/control should have at least 60 months with pollutant measurements out of the 120 months. 
+
+For all time windows, each case needs to have at least one control that fulfills the requirements described in the above text. 
+
+
+
+### 5a. 1-year exposure windows
+
+Notes: 
+
+- **3,942 cases and 19,406 controls total** after selecting only the data that meets the requirements described above
+Now each case should have at least one control and each entry should have pollutant measurements for at least 9 out of the 12 months and there should be at least one measurement in each of the four weather seasons
+
+
+```{r}
+
+filter_1yr <- one_year %>%
+  group_by(nr, lobnr) %>%
+  dplyr::mutate(months_meas = n()) %>%
+  ungroup() %>%
+  dplyr::filter(months_meas >= 9) %>% # select those with at least 9 months 
+  mutate(month_exp = month(date_exp),
+         season = if_else(month_exp >=3 & month_exp <= 5, "spring", 
+                  if_else(month_exp >=6 & month_exp <=8, "summer",
+                  if_else(month_exp >=9 & month_exp <= 11, "fall",
+                  if_else(month_exp == 12 | month_exp <= 2, "winter", "x"))))) %>%  # season ID
+  group_by(nr, lobnr) %>%
+  mutate(season_num = length(unique(season))) %>% #XX entries are missing measurements in a season
+ungroup() %>%
+  dplyr::filter(season_num >= 4) %>% # filter for entries that have at least 1 measurement in each season
+group_by(nr) %>%
+  dplyr::mutate(case_control = length(unique(ck))) %>% # ID to check that each case has at least one control and that each control has a case 
+  dplyr::filter(case_control >= 2) %>% # filter cases that have  at least  one  control  and controls that have a  case
+  ungroup() %>%
+  dplyr::select(-month_exp, -months_meas, -season, -season_num, -case_control) # remove IDs
+         
+summary(filter_1yr)
+
+
+# final number of cases
+length(unique(filter_1yr$nr))
+
+#final number of controls
+filter_1yr %>%
+  dplyr::filter(ck == 0) %>% #select controls only
+  group_by(nr) %>%
+ count(lobnr) %>%
+  nrow()
+    
+# save data 
+write_csv(filter_1yr, paste0(yanelli_datasets, "one_yr_filtered_data.csv"))
+
+```
+
+
+### 5b. 5-years exposure windows
+
+Notes: 
+
+- **3,942 cases and 19,398 controls** total after selecting only the data that meets the requirements 
+
+```{r}
+
+filter_5yrs <- five_years %>%
+  group_by(nr, lobnr) %>%
+  dplyr::mutate(months_meas = n()) %>% #ID to check mounts measure
+  ungroup() %>%
+  dplyr::filter(months_meas >= 30) %>% # select those with at least 30 months 
+group_by(nr) %>%
+  dplyr::mutate(case_control = length(unique(ck))) %>% # ID to check that each case has at least one control and that each control has a case 
+  dplyr::filter(case_control >= 2) %>%
+  ungroup() %>%
+  dplyr::select(-case_control, -months_meas) # remove IDs
+         
+summary(filter_5yrs)
+
+# final number of cases
+length(unique(filter_5yrs$nr))
+
+#final number of controls
+filter_5yrs %>%
+  dplyr::filter(ck == 0) %>% #select controls only
+  group_by(nr) %>%
+ count(lobnr) %>%
+  nrow()
+    
+
+# save data 
+write_csv(filter_5yrs, paste0(yanelli_datasets, "five_yrs_filtered_data.csv"))
+
+```
+
+### 5c. 10-years exposure window 
+
+Notes: 
+- **3,938 cases and 19,362 controls** total after selecting only the data that meets the requirements
+
+```{r}
+
+filter_10yrs <- ten_years %>%
+  group_by(nr, lobnr) %>%
+  dplyr::mutate(months_meas = n()) %>% #ID to check months measure
+  ungroup() %>%
+  dplyr::filter(months_meas >= 60) %>% # select those with at least 60 months 
+group_by(nr) %>%
+  dplyr::mutate(case_control = length(unique(ck))) %>% # ID to check that each case has at least one control and that each control has a case 
+  dplyr::filter(case_control >= 2) %>%
+  ungroup() %>%
+  dplyr::select(-case_control, -months_meas) # remove ID
+         
+summary(filter_10yrs)
+
+# final number of cases
+length(unique(filter_10yrs$nr))
+
+#final number of controls
+filter_10yrs %>%
+ dplyr::filter(ck == 0) %>% #select controls only
+  group_by(nr) %>%
+ count(lobnr) %>%
+  nrow()
+    
+
+# save data 
+write_csv(filter_10yrs, paste0(yanelli_datasets, "ten_yrs_filtered_data.csv"))
+
+```
+

@@ -1,0 +1,132 @@
+---
+title: "Mergin air pollution & patient data"
+author: "Yanelli"
+date: "8/04/2021"
+output:
+ html_document:
+    toc: TRUE
+    toc_float: TRUE
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+Objective: 
+
+Combine the pollution and patient data into a single dataset
+
+
+```{r include=FALSE}
+
+rm(list=ls())
+
+# 1a Declare root directory
+project.folder <- paste0(print(here::here()),'/')
+
+# add folder locations
+source(paste0(project.folder,'0_00_create_folder_structure.R'))
+
+# add file locations
+source(paste0(file.locations.folder,'file_locations.R'))
+
+# load packages
+ source(paste0(packages.folder,'packages.R'))
+
+```
+
+## 1. Loading data
+
+### 1a. Load pollution data
+
+- Pollution data are in monthly averages
+- There are two different pollution measures in the dataset but the one we are interested on is the one representing street level concentrations. The street level pollution variables have a _str suffix 
+
+```{r}
+
+# Load pollution data
+load(paste0(raw_data_files, "ALS_Final_pol_1989-2013_1989_5_2k.RData"))
+
+# rename file
+pollutant_time_series <- `ALS_Final_pol_1989-2013_1989_5_2k`
+
+# check how many missing observations each variable has
+missing <- as.data.frame(colSums(is.na(pollutant_time_series)))
+
+summary(pollutant_time_series)
+
+# select "str" pollutants
+pollution_data <- pollutant_time_series %>%
+  mutate(date_exp = make_date(year, month)) %>% # merge month and year of exposure into single variable
+  dplyr::select(lobnr, nr, date_exp, PM25_str, CO_str, EC_str, NO2_str, NOX_str, O3_str, PM10_str) # select pollutants of interest
+
+```
+
+### 1b. Load patient data 
+
+- This is the data that with the summarize categorical variables
+- I created variables that represent the time limits for each window of exposure. This facilitates calculating the exposure average for each case/control 
+
+```{r}
+# load patient data
+# create the time limits for the windows of exposure
+patient_data <- readRDS(paste0(raw_data_files, "patient_data_uniform_complete.rds"), NULL) %>%
+  mutate(year_gap = diagdat - years(1), # one year gap pre diagnosis
+         one_year = year_gap - years(1), # date limit for 1 year average
+         five_years = year_gap - years(5), # date limit for 5 year average
+         ten_years = year_gap - years(10)) %>%  #date limit for 10 year average
+  dplyr::select(nr, lobnr, ck, diagtype, diagdat, year_gap, one_year, five_years, ten_years, everything()) %>%   
+  dplyr::select(-daars3, -daars4, -daars5) %>% # I won't need this variables
+  dplyr::rename(family_SES = famses) %>% # this is just a personal preference in the naming style
+  mutate(birth_year = year(bdate)) # create a variable for year of birth
+
+summary(patient_data)
+
+# Check how many cases I have total
+cases <- patient_data %>%
+  dplyr::filter(ck == 1) %>%
+ dplyr::group_by(nr) %>%
+  summarise(count = n())
+
+
+# Check how many controls I have total
+contrl <- patient_data %>%
+ dplyr:: filter(ck == 0) %>%
+  dplyr::group_by(nr, lobnr) %>%
+  summarise(count = n())
+
+
+```
+
+
+
+## 2. Bind hospitalization and exposure date
+
+```{r}
+
+full_dataset <- full_join(patient_data, pollution_data, by = c("nr", "lobnr")) %>%
+  ungroup()
+
+summary(full_dataset)
+
+# check number of cases again
+cases_full <- full_dataset %>%
+  dplyr::filter(ck == 1) %>%
+ dplyr::group_by(nr) %>%
+  summarise(count = n())
+
+
+# check number of controls again
+contrl_full <- full_dataset %>%
+ dplyr:: filter(ck == 0) %>%
+  dplyr::group_by(nr, lobnr) %>%
+  summarise(count = n())
+
+```
+
+## 3. Save dataset 
+
+```{r}
+# save data
+saveRDS(full_dataset, paste0(yanelli_datasets, "joined_datasets.rds")) #save file of hospitalizations and pollution joined dataset
+```
+
