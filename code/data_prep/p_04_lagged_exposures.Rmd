@@ -1,0 +1,279 @@
+---
+title: "Distributed lag"
+author: "Yanelli Nunez"
+date: "2/5/2021"
+output:
+ html_document:
+    toc: TRUE
+    toc_float: TRUE
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+Objective:
+
+To create yearly exposure average back to 10 years from date of diagnosis (individually for each case and control) 
+
+
+```{r include=FALSE}
+
+rm(list=ls())
+
+# 1a Declare root directory
+
+project.folder <- paste0(print(here::here()),'/')
+
+# add folder locations
+source(paste0(project.folder,'0_00_create_folder_structure.R'))
+
+# add file locations
+source(paste0(file.locations.folder,'file_locations.R'))
+
+# load packages
+ source(paste0(packages.folder,'packages.R'))
+
+```
+
+## 1. Load dataset 
+
+Notes: 
+
+Total cases = 4011
+Total controls = 20055
+
+1600 observations missing air pollution data (0.02% observations)
+
+```{r}
+
+full_dataset <- readRDS(paste0(yanelli_datasets, "joined_datasets.rds")) %>%
+  dplyr::select(-year_gap, -one_year, -five_years, -ten_years) %>% # remove variables we don't need
+  mutate(ten_years = diagdat - lubridate::years(10),
+         first_year = diagdat - lubridate::years(1),
+         second_year = first_year - lubridate::years(1)) %>% # date limit for 10 years back from diagnosis date
+  dplyr::select(nr, lobnr, ck, diagtype, diagdat, ten_years, everything())
+
+summary(full_dataset)
+
+# number of cases and controls 
+# cases 
+total_cases <- full_dataset %>%
+  dplyr::filter(ck == 1) %>%
+ dplyr::group_by(nr) %>%
+  summarise(count = n())
+
+count(total_cases)
+
+#controls
+total_contrl <- full_dataset %>%
+ dplyr::filter(ck == 0) %>%
+  dplyr::group_by(nr, lobnr) %>%
+  summarise(count = n())
+
+count(total_contrl)
+
+
+```
+
+## 2. Nest data
+
+- Nest data by cases so we can easily select 10 years of exposure for each case/control
+- The nested dataset is made up of sub-dataset. Each data subset corresponds to a patient and his/her controls
+```{r}
+
+# nest data
+nested_data <- full_dataset %>% 
+  mutate(nr = as.factor(nr),
+         lobnr = as.factor(lobnr),
+         ck = as.factor(ck)) %>%
+  group_by(nr) %>%
+  tidyr::nest()
+
+
+
+### take a look in a single case and corresponding controls 
+test <- as.data.frame(nested_data$data[[2]]) %>%
+ dplyr::filter(date_exp <= diagdat & date_exp >= ten_years)
+
+summary(test)
+  
+```
+
+
+## 3. Select exposure during the 10 year period
+
+For each case/control, filter 10 years of exposure from date of hospitalization  
+
+```{r}
+
+filtered_data <- nested_data %>%
+  mutate(ten_yrs = purrr::map(data, ~ dplyr::filter(.x, date_exp <= diagdat & date_exp > ten_years)))
+  
+
+# explore a random dataset within the list of datasets to make sure it looks right
+explore <- filtered_data$ten_yrs[[2]]
+summary(explore)
+
+
+# unnest dataset for 10 years 
+ten_year <- filtered_data %>%
+  dplyr::select(-data) %>%
+  unnest(., cols = ten_yrs)
+
+
+```
+
+
+```{r}
+
+review <- ten_year %>%
+  mutate(year_exp = year(date_exp)) %>%
+ group_by(nr, lobnr, year_exp) %>%
+  mutate(months_meas = n()) %>%
+  ungroup() %>%
+  group_by(nr, lobnr, year_exp) %>%
+ dplyr::select(nr, lobnr, year_exp, months_meas) %>%
+  unique() %>%
+  ungroup() %>%
+ group_by(nr, lobnr, months_meas) %>%
+  summarise(numb_years = n()) %>%
+  ungroup()  %>%
+dplyr::filter(months_meas == 1) %>%
+  dplyr::select(nr, lobnr) %>%
+  unique()
+
+review
+
+```
+
+
+## 4. Annual averages 
+
+I estimated annual averages of exposure for the six pollutants we have data for. I'm only working with PM2.5 but Robbie use the other pollutants for his analysis
+
+
+```{r}
+
+# averaging 
+avgr <- ten_year %>%
+  mutate(year_exp = year(date_exp)) %>%
+  dplyr::select(-PM10_str) %>% #remove because otherwise the following step leads to so many observations that the rest in the pipe fails--we don't need pm10 anyways
+  gather(., pollutant, concentration, 32:37) %>%
+  group_by(nr, lobnr, pollutant, year_exp) %>%
+  mutate(mean_conc = mean(concentration)) %>%
+  dplyr::select(-concentration, -date_exp) %>%
+  dplyr::distinct() %>%
+  spread(., pollutant, mean_conc) %>%
+  ungroup()
+
+unique(avgr$pollutant)
+
+summary(avgr)
+
+ write_csv(avgr, paste0(yanelli_datasets, "lagged_10yrs.csv")) # your dataset contains the updated file
+avgr <- read_csv(paste0(yanelli_datasets, "lagged_10yrs.csv"))
+
+
+```
+
+# Visualize data
+
+Notes: 
+-We have a total of **3981 cases** and **19,889** controls in the 10-year lagged by year data
+-3603 cases have measurements for all years (90.50%)
+-17,991 controls have measurements for all years (90.51%)
+- 258,476 observations total 
+
+
+
+```{r}
+
+# check how many cases total we have in this dataset
+
+avgr_cases <- avgr %>%
+ dplyr::filter(ck == 1) %>% # selecting only cases
+    dplyr::group_by(nr) %>% 
+  dplyr::count(nr) # count number of unique "nr" (cases)
+
+summary(avgr_cases)
+
+# check how many controls total we have in this dataset
+
+avgr_contrl <- avgr %>%
+  dplyr:: filter(ck == 0) %>% # selecting controls
+  dplyr::group_by(nr) %>% 
+  dplyr:: count(lobnr)
+
+summary(avgr_contrl)
+
+# heat map to visualize missingness
+
+avgr_viz <- avgr %>% 
+  group_by(nr,lobnr) %>%
+  summarise(counts = n())
+
+ 
+ avgr_viz %>% ggplot(aes(as.numeric(nr), as.factor(lobnr), fill= counts)) + 
+  geom_tile() +
+  #scale_fill_continuous(limits=c(0, 12), breaks=seq(0,12, by=1)) +
+  #scale_fill_viridis(limits = c(0, 60), discrete=FALSE) 
+  theme_classic() +
+  scale_fill_gradient('counts', limits=c(1, 11), breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),  low = "red", high = "darkblue")
+
+
+# missingess distribution
+avgr_viz %>% ggplot(aes(as.factor(counts))) +
+    geom_histogram(stat = "count") 
+
+```
+
+# select only the cases that have measurenments for all 10 years backwards from diagnosis 
+
+Notes:
+We have *17991* complete controls (annual pm2.5 measurement wise)
+We have *3603* complete cases (annual pm2.5 measurement wise)
+
+All case have at least 2 controls
+
+
+
+OLD DATA
+We have 8549 complete controls (annual pm2.5 measurement wise)
+We have 1714 complete cases (annual pm2.5 measurement wise)
+
+85 cases don't have any controls
+384 controls don't have any cases
+
+```{r}
+
+complete_avgr <- avgr %>%
+  dplyr:: group_by(nr,lobnr) %>%
+ dplyr::mutate(counts = n()) %>%
+  dplyr::filter(counts == 11) %>%
+  dplyr::select(-counts) 
+  
+
+write_csv(complete_avgr, paste0(yanelli_datasets, "lagged_10yrs_complete.csv")) # your dataset folder contains the updated file
+
+# check how many cases and controls we ended up with
+
+num_controls <- complete_avgr %>%
+dplyr::filter(ck == 0) %>% # selecting controls
+ group_by(nr) %>% 
+  count(lobnr)
+
+num_cases <- complete_avgr %>%
+dplyr::filter(ck == 1) %>% # selecting only cases
+ count(nr) 
+
+#number of controls each case has
+
+cont_case <- complete_avgr %>%
+  dplyr::group_by(nr, lobnr) %>%
+  dplyr::summarize() %>%
+  ungroup() %>%
+  dplyr::group_by(nr) %>%
+  mutate(numb = n())
+  
+```
+

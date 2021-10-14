@@ -1,0 +1,143 @@
+---
+title: "Averages"
+author: "Yanelli Nunez"
+date: "08/05/2021"
+output:
+ html_document:
+    toc: TRUE
+    toc_float: TRUE
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+Objective:
+
+To created averages for exposure for window period (1-, 5-, 10-years). Currently the exposure data is in monthly averages so I will average the months within each exposure window time period
+
+```{r include=FALSE}
+
+rm(list=ls())
+
+# 1a Declare root directory
+project.folder <- paste0(print(here::here()),'/')
+
+# add folder locations
+source(paste0(project.folder,'0_00_create_folder_structure.R'))
+
+# add file locations
+source(paste0(file.locations.folder,'file_locations.R'))
+
+# load packages
+ source(paste0(packages.folder,'packages.R'))
+
+
+```
+
+
+
+## 1. Average exposures
+
+### 1a. 1-year exposure window 
+
+
+```{r}
+
+avg_1yr <- read_csv(paste0(yanelli_datasets, "one_yr_filtered_data.csv")) %>%
+  group_by(nr, lobnr) %>%
+  mutate(PM25_1yr = mean(PM25_str),
+         CO_1yr = mean(CO_str),
+         NO2_1yr = mean(NO2_str),
+         NOX_1yr = mean(NOX_str),
+         O3_1yr = mean(O3_str),
+         PM10_1yr = mean(PM10_str),
+         EC_1yr = mean (EC_str)) %>%
+  ungroup() %>%
+   dplyr::select(-year_gap, -one_year, -five_years, -ten_years, -PM25_str, -CO_str, -EC_str, -NOX_str, -O3_str, -PM10_str, -NO2_str, -date_exp) %>% # remove monthly measures and keep only the 1-year average estimates
+  unique() 
+
+summary(avg_1yr)
+
+# check that we have the 3942 cases 
+check_cases <- avg_1yr %>%
+  group_by(nr) %>%
+  summarise()
+
+count(check_cases)
+
+
+# save data file 
+
+#write_csv(avg_1yr, paste0(yanelli_datasets, "one_yr_avg_data.csv"))
+
+```
+
+
+### 1b. 5-years exposure window
+
+
+```{r}
+
+avg_5yr <- read_csv(paste0(yanelli_datasets, "five_yrs_filtered_data.csv")) %>%
+  group_by(nr, lobnr) %>%
+  mutate(PM25_5yr = mean(PM25_str),
+         CO_5yr = mean(CO_str),
+         NO2_5yr = mean(NO2_str),
+         NOX_5yr = mean(NOX_str),
+         O3_5yr = mean(O3_str),
+         PM10_5yr = mean(PM10_str),
+         EC_5yr = mean (EC_str)) %>%
+  ungroup() %>%
+   dplyr::select(-year_gap, -one_year, -five_years, -ten_years, -PM25_str, -CO_str, -EC_str, -NOX_str, -O3_str, -PM10_str, -NO2_str, -date_exp) %>%
+  unique() 
+
+summary(avg_5yr)
+
+# check that we have the 3942 cases 
+
+check_cases <- avg_5yr %>%
+  group_by(nr) %>%
+  summarise()
+
+count(check_cases)
+
+# save data file 
+
+#write_csv(avg_5yr, paste0(yanelli_datasets, "five_yrs_avg_data.csv"))
+
+```
+
+### 1c. 10-years exposure window
+
+
+```{r}
+
+avg_10yr <- read_csv(paste0(yanelli_datasets, "ten_yrs_filtered_data.csv")) %>%
+  group_by(nr, lobnr) %>%
+  mutate(PM25_10yr = mean(PM25_str),
+         CO_10yr = mean(CO_str),
+         NO2_10yr = mean(NO2_str),
+         NOX_10yr = mean(NOX_str),
+         O3_10yr = mean(O3_str),
+         PM10_10yr = mean(PM10_str),
+         EC_10yr = mean (EC_str)) %>%
+  ungroup() %>%
+   dplyr::select(-year_gap, -one_year, -five_years, -ten_years, -PM25_str, -CO_str, -EC_str, -NOX_str, -O3_str, -PM10_str, -NO2_str, -date_exp) %>%
+  unique() 
+   
+
+summary(avg_10yr)
+
+# check that we have the 3938 cases 
+check_cases <- avg_10yr %>%
+  group_by(nr) %>%
+  summarise()
+
+count(check_cases)
+
+# save data file 
+
+# write_csv(avg_10yr, paste0(yanelli_datasets, "ten_yrs_avg_data.csv"))
+
+```
+
