@@ -47,11 +47,19 @@ Total controls = 20055
 ```{r}
 
 full_dataset <- readRDS(paste0(yanelli_datasets, "joined_datasets.rds")) %>%
-  dplyr::select(-year_gap, -one_year, -five_years, -ten_years) %>% # remove variables we don't need
-  mutate(ten_years = diagdat - lubridate::years(10),
-         first_year = diagdat - lubridate::years(1),
-         second_year = first_year - lubridate::years(1)) %>% # date limit for 10 years back from diagnosis date
-  dplyr::select(nr, lobnr, ck, diagtype, diagdat, ten_years, everything())
+  dplyr::select(-year_gap, -one_year, -five_years, -ten_years, -CO_str, -EC_str, -NO2_str, -NOX_str, -O3_str, -PM10_str) %>% # remove variables we don't need
+  mutate(lag_0 = diagdat - lubridate::years(1), # create date limits for each lag
+         lag_1 = lag_0 - lubridate::years(1),
+         lag_2 = lag_1 - lubridate::years(1),
+         lag_3 = lag_2 - lubridate::years(1),
+         lag_4 = lag_3 - lubridate::years(1),
+         lag_5 = lag_4  - lubridate::years(1),
+         lag_6 = lag_5 - lubridate::years(1),
+         lag_7 = lag_6 - lubridate::years(1),
+         lag_8 = lag_7 - lubridate::years(1),
+         lag_9 = lag_8 - lubridate::years(1),
+         lag_10 = lag_9 - lubridate::years(1)) %>%
+  dplyr::select(nr, lobnr, ck, diagtype, diagdat, everything())
 
 summary(full_dataset)
 
@@ -68,7 +76,8 @@ count(total_cases)
 total_contrl <- full_dataset %>%
  dplyr::filter(ck == 0) %>%
   dplyr::group_by(nr, lobnr) %>%
-  summarise(count = n())
+  summarise(count = n()) %>%
+  ungroup()
 
 count(total_contrl)
 
@@ -93,21 +102,22 @@ nested_data <- full_dataset %>%
 
 ### take a look in a single case and corresponding controls 
 test <- as.data.frame(nested_data$data[[2]]) %>%
- dplyr::filter(date_exp <= diagdat & date_exp >= ten_years)
+ dplyr::filter(date_exp <= diagdat & date_exp > lag_10) #test code to select only exposures up to 10 years before hospitalization 
 
 summary(test)
   
 ```
 
 
-## 3. Select exposure during the 10 year period
+## 3. Select exposures within the 10 year period
 
 For each case/control, filter 10 years of exposure from date of hospitalization  
 
 ```{r}
 
 filtered_data <- nested_data %>%
-  mutate(ten_yrs = purrr::map(data, ~ dplyr::filter(.x, date_exp <= diagdat & date_exp > ten_years)))
+  mutate(ten_yrs = purrr::map(data, ~ dplyr::filter(.x, date_exp <= diagdat & date_exp > lag_10)),
+         ten_yrs =) # select years up to lag_10
   
 
 # explore a random dataset within the list of datasets to make sure it looks right
@@ -123,50 +133,73 @@ ten_year <- filtered_data %>%
 
 ```
 
+## 4. Lag periods
+
+- I create a variable lags that labels each exposure with the lag number they belong to
+- I checked how many exposure estimates each lag has
+- Exposure estimates are per month so we set the requirement that each lag should at estimates for at least 9  months. After removing cases with < 9 exposure estimates, we ended up with *3825 cases* and *19121 controls* (~4% cases removed)
 
 ```{r}
 
-review <- ten_year %>%
-  mutate(year_exp = year(date_exp)) %>%
- group_by(nr, lobnr, year_exp) %>%
-  mutate(months_meas = n()) %>%
-  ungroup() %>%
-  group_by(nr, lobnr, year_exp) %>%
- dplyr::select(nr, lobnr, year_exp, months_meas) %>%
-  unique() %>%
-  ungroup() %>%
- group_by(nr, lobnr, months_meas) %>%
-  summarise(numb_years = n()) %>%
-  ungroup()  %>%
-dplyr::filter(months_meas == 1) %>%
-  dplyr::select(nr, lobnr) %>%
+lags <- ten_year %>%
+  mutate(lags = if_else(date_exp < diagdat & date_exp >= lag_0, 0,
+                if_else(date_exp < lag_0 & date_exp >= lag_1, 1, 
+                if_else(date_exp < lag_1 & date_exp >= lag_2, 2,
+                if_else(date_exp < lag_2 & date_exp >= lag_3, 3,
+                if_else(date_exp < lag_3 & date_exp >= lag_4, 4,
+                if_else(date_exp < lag_4 & date_exp >= lag_5, 5,
+                if_else(date_exp < lag_5 & date_exp >= lag_6, 6,
+                if_else(date_exp < lag_6 & date_exp >= lag_7, 7,
+                if_else(date_exp < lag_7 & date_exp >= lag_8, 8,
+                if_else(date_exp < lag_8 & date_exp >= lag_9, 9, 10))))))))))) %>%
+  dplyr::select(-lag_0, -lag_1, -lag_2, -lag_3, -lag_4, -lag_5, -lag_6, -lag_7, -lag_8, -lag_9, -lag_10) %>%
+  group_by(nr, lobnr, lags) %>%
+  mutate(mean_pm2.5 = mean(PM25_str),
+         months_lag = n()) %>%  # check how many observations each lag has
+ungroup()
+
+# identify ID of cases and controls that have lags with fewer than  9 exposure estimates
+labels_incomp <- lags %>%
+dplyr::filter(months_lag < 9) %>%
+dplyr::select(nr, lobnr) %>%
   unique()
 
-review
+# remove  cases and controls with lags that have miss estimates
+
+lags_filt <- anti_join(lags, labels_incomp)
+
+
+# check how many cases and controls we end up with
+
+# cases 
+lag_cases <- lags_filt %>%
+  dplyr::filter(ck == 1) %>%
+ dplyr::group_by(nr) %>%
+  summarise(count = n())
+
+count(lag_cases)
+
+#controls
+lag_contrl <- lags_filt %>%
+ dplyr::filter(ck == 0) %>%
+  dplyr::group_by(nr, lobnr) %>%
+  summarise(count = n()) %>%
+  ungroup()
+
+count(lag_contrl)
+
 
 ```
 
 
-## 4. Annual averages 
+## 4. Save data 
 
-I estimated annual averages of exposure for the six pollutants we have data for. I'm only working with PM2.5 but Robbie use the other pollutants for his analysis
+I cleaned the dataset a bit. Removed variables I don't need 
 
 
 ```{r}
 
-# averaging 
-avgr <- ten_year %>%
-  mutate(year_exp = year(date_exp)) %>%
-  dplyr::select(-PM10_str) %>% #remove because otherwise the following step leads to so many observations that the rest in the pipe fails--we don't need pm10 anyways
-  gather(., pollutant, concentration, 32:37) %>%
-  group_by(nr, lobnr, pollutant, year_exp) %>%
-  mutate(mean_conc = mean(concentration)) %>%
-  dplyr::select(-concentration, -date_exp) %>%
-  dplyr::distinct() %>%
-  spread(., pollutant, mean_conc) %>%
-  ungroup()
 
-unique(avgr$pollutant)
 
 summary(avgr)
 
