@@ -16,7 +16,7 @@ Contains all code organized into 4 sub-folders:
  
 2c. *models*: contains the code for all models. All files in this folder start with m ('m'odel) and I recommend you to start with m_00, then m_01, and so on.
 
-    i. functions_yanelli.R  --> has functions that were use in various analyses. This file is load in the first code chunk of each .rmd
+ i. functions_yanelli.R --> has functions that were use in various analyses. This file is load in the first code chunk of each .rmd
     
    ii. m_00_load_datasets.R --> calls for the datasets and is load in the first code chunk of each .rmd 
    
