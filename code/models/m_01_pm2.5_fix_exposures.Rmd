@@ -211,7 +211,7 @@ all_estimates <- rbind(modl_est, modl_est_pSES)
 
 knitr::kable(all_estimates)
 
-#write_csv(all_estimates, paste0(output.folder, "fix_windows_OR.csv"))
+write_csv(all_estimates, paste0(output.folder, "fix_windows_OR.csv"))
 
 
 

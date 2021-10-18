@@ -29,12 +29,6 @@ source(paste0(file.locations.folder,'file_locations.R'))
 # load packages
  source(paste0(packages.folder,'packages.R'))
 
-# load functions
- source(paste0(code.folder, 'models/functions_yanelli.R'))
-
-# load data 
-# I don't need the orginal datasets for the figures
-# source(paste0(code.folder, 'models/y_00_load_datasets.R'))
 
 ```
 
@@ -67,7 +61,8 @@ cum_lags <- read_csv(paste0(output.folder, "cumm_lags_OR.csv")) %>%
   mutate(exp_wind = as.factor(if_else(lag == "lag1", "1-year",
                                if_else(lag == "lag5", "5-years",
                                        if_else(lag == "lag10", "10-years", "x"))))) %>%
-  mutate(exp_wind = factor(exp_wind, levels = c("1-year", "5-years", "10-years"))) %>% dplyr::select(-lag) %>%
+  mutate(exp_wind = factor(exp_wind, levels = c("1-year", "5-years", "10-years"))) %>% 
+  dplyr::select(-lag) %>%
   dplyr::rename(model = lag_constr)
 
 # fix windows 

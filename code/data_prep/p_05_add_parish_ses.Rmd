@@ -1,0 +1,180 @@
+---
+title: "Lag analysis"
+author: "Yanelli Nunez"
+date: "9/29/2021"
+output:
+ html_document:
+    toc: TRUE
+    toc_float: TRUE
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+The SES indicator is based on the proportion (2009) of highest attained educational level in a parish (the smallest administrative unit level in Denmark) of inhabitants aged 30 to 60 years old. We unfortunately only have this information for the year (2009).
+
+SES variable dictionary (numbers in each column represent percentage:
+ses0 = unknown
+ses1 = Basic
+ses23 = II High School
+ses4 = III vocational
+ses567 = IV short to middle long academic training
+ses89 = V university
+sesto = total sum of percentage
+
+For using as an SES variable we added SEs for II high school and above
+
+```{r include=FALSE}
+
+rm(list=ls())
+
+# 1a Declare root directory
+project.folder <- paste0(print(here::here()),'/')
+
+# add folder locations
+source(paste0(project.folder,'0_00_create_folder_structure.R'))
+
+# add file locations
+source(paste0(file.locations.folder,'file_locations.R'))
+
+# load packages
+ source(paste0(packages.folder,'packages.R'))
+
+
+```
+
+## 1. Load data
+
+- I removed cases/controls with Greenland residence because there is only 5 of them 
+
+- I also removed cases/controls with missing civic status (civist) since this is one of the covariants we use in the models 
+
+- After removing the above, I checked that all cases still have at least one control
+
+- I converted all categorical variables to factors
+
+```{r}
+
+# 1 year
+
+data_1yr <- read_csv(paste0(robbie_datasets, "one_yr_avg_data.csv")) %>%
+ mutate(family_SES = as.factor(family_SES),
+        sex = as.factor(sex),
+        geokode = as.factor(geokode),
+        civst = as.factor(civst),
+        place_birth = as.factor(place_birth),
+        residence = as.factor(residence)) %>%
+ dplyr::filter(residence != "Greenland") %>%
+   droplevels() %>%
+  tidyr::drop_na(civst) %>%
+  group_by(nr) %>% 
+  mutate(sum=sum(ck)) %>% 
+  dplyr::filter(sum==1) %>%
+   dplyr::select(-sum) %>%
+  ungroup()
+
+class(data_1yr)
+summary(data_1yr)
+
+# 5 years
+
+data_5yrs <- read_csv(paste0(robbie_datasets, "five_yrs_avg_data.csv")) %>%
+  mutate(family_SES = as.factor(family_SES),
+         sex = as.factor(sex),
+         geokode = as.factor(geokode),
+         civst = as.factor(civst),
+         place_birth = as.factor(place_birth),
+         residence = as.factor(residence)) %>%
+  dplyr::filter(residence != "Greenland") %>%
+  droplevels() %>%
+  tidyr::drop_na(civst) %>%
+  group_by(nr) %>% mutate(sum=sum(ck)) %>% 
+  dplyr::filter(sum==1) %>% # keeping only the controls that have a case
+  dplyr::select(-sum, -familyses, -prop_hs_ses) %>%
+  ungroup() 
+
+
+summary(data_5yrs)
+
+# 10 years
+
+data_10yrs <- read_csv(paste0(robbie_datasets, "ten_yrs_avg_data.csv"))%>%
+  mutate(family_SES = as.factor(family_SES),
+         sex = as.factor(sex),
+         geokode = as.factor(geokode),
+         civst = as.factor(civst),
+         place_birth = as.factor(place_birth),
+         residence = as.factor(residence)) %>%
+  dplyr::filter(residence != "Greenland") %>%
+   droplevels() %>%
+  tidyr::drop_na(civst) %>%
+  group_by(nr) %>% mutate(sum=sum(ck)) %>%
+  dplyr::filter(sum==1) %>% #keeping only the controls that have a case
+  dplyr::select(-sum) %>%
+  ungroup()
+
+summary(data_10yrs)
+
+# lags
+lag_10yrs <- read_csv(paste0(yanelli_datasets, "lagged_10yrs.csv")) %>%
+  mutate(family_SES = as.factor(family_SES),
+         place_birth = as.factor(place_birth),
+         residence = as.factor(residence),
+         civst = as.factor(civst)) %>%
+   dplyr::filter(residence != "Greenland") %>%
+   droplevels() %>%
+  tidyr::drop_na(civst) %>%
+  group_by(nr) %>% mutate(sum=sum(ck)) %>% 
+  dplyr::filter(sum==11) %>% # keeping only the controls that have a case
+   dplyr::select(-sum) %>%
+  ungroup()
+
+class(lag_10yrs)
+
+```
+
+
+## 2. Parish SES
+
+- I added SES to each of the datasets 
+- Johnni sent us the Parish SES data which is percentage of population in various educational levels. We combined groups to estimate percentage of the population with a high school degree or higher
+
+```{r}
+# load parish SES
+load(paste0(data.folder,'parish_ses/sogn_udd_2009b_1aR')) 
+
+parish_ses <- sogn_udd_2009b_1aR %>%
+  rowwise() %>% 
+  mutate(parish_ses = sum(ses23,ses4,ses567,ses89, na.rm=TRUE)) %>% # create ses variable
+  dplyr::select(-ses0, -ses1, -ses23, -ses4, -ses567, -ses89, -sesto) 
+sogn_udd_2009b_1aR = NULL # remove parish SES r file
+
+# load look-up for each participant's parish code
+
+parish_lookup = haven::read_dta(paste0(data.folder,'parish_ses/ALS_geo_adr_1989_2013_1989_5_2.dta'))
+
+# merge parish code at index date for each participant, then merge parish ses info 
+data_1yr = left_join(data_1yr, parish_lookup, by=c('nr','lobnr','ck'))
+data_1yr = left_join(data_1yr, parish_ses, by=c('sognecode'))
+summary(data_1yr)
+
+#write_csv(data_1yr, paste0(yanelli_datasets, "one_yr_avg_data_ses.csv")) 
+
+data_5yrs = left_join(data_5yrs, parish_lookup, by=c('nr','lobnr','ck'))
+data_5yrs = left_join(data_5yrs, parish_ses, by=c('sognecode'))
+summary(data_5yrs)
+
+#write_csv(data_5yrs, paste0(yanelli_datasets, "five_yr_avg_data_ses.csv")) 
+
+data_10yrs = left_join(data_10yrs, parish_lookup, by=c('nr','lobnr','ck'))
+data_10yrs = left_join(data_10yrs, parish_ses, by=c('sognecode'))
+summary(data_10yrs)
+
+#write_csv(data_10yrs, paste0(yanelli_datasets, "ten_yrs_avg_data_ses.csv")) 
+
+lag_10yrs = left_join(lag_10yrs, parish_lookup, by=c('nr','lobnr','ck'))
+lag_10yrs = left_join(lag_10yrs, parish_ses, by=c('sognecode'))
+
+#write_csv(lag_10yrs, paste0(yanelli_datasets, "lagged_10yrs_parishSES.csv")) 
+
+```
+

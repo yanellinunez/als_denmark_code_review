@@ -99,7 +99,6 @@ nested_data <- full_dataset %>%
   tidyr::nest()
 
 
-
 ### take a look in a single case and corresponding controls 
 test <- as.data.frame(nested_data$data[[2]]) %>%
  dplyr::filter(date_exp <= diagdat & date_exp > lag_10) #test code to select only exposures up to 10 years before hospitalization 
@@ -162,7 +161,7 @@ ungroup()
 labels_incomp <- lags %>%
 dplyr::filter(months_lag < 9) %>%
 dplyr::select(nr, lobnr) %>%
-  unique()
+ dplyr::distinct()
 
 # remove  cases and controls with lags that have miss estimates
 
@@ -188,125 +187,68 @@ lag_contrl <- lags_filt %>%
 
 count(lag_contrl)
 
-
 ```
 
 
-## 4. Save data 
 
-I cleaned the dataset a bit. Removed variables I don't need 
+## 5. Clean & criteria selection
 
-
-```{r}
-
-
-
-summary(avgr)
-
- write_csv(avgr, paste0(yanelli_datasets, "lagged_10yrs.csv")) # your dataset contains the updated file
-avgr <- read_csv(paste0(yanelli_datasets, "lagged_10yrs.csv"))
-
-
-```
-
-# Visualize data
-
-Notes: 
--We have a total of **3981 cases** and **19,889** controls in the 10-year lagged by year data
--3603 cases have measurements for all years (90.50%)
--17,991 controls have measurements for all years (90.51%)
-- 258,476 observations total 
-
-
-
-```{r}
-
-# check how many cases total we have in this dataset
-
-avgr_cases <- avgr %>%
- dplyr::filter(ck == 1) %>% # selecting only cases
-    dplyr::group_by(nr) %>% 
-  dplyr::count(nr) # count number of unique "nr" (cases)
-
-summary(avgr_cases)
-
-# check how many controls total we have in this dataset
-
-avgr_contrl <- avgr %>%
-  dplyr:: filter(ck == 0) %>% # selecting controls
-  dplyr::group_by(nr) %>% 
-  dplyr:: count(lobnr)
-
-summary(avgr_contrl)
-
-# heat map to visualize missingness
-
-avgr_viz <- avgr %>% 
-  group_by(nr,lobnr) %>%
-  summarise(counts = n())
-
- 
- avgr_viz %>% ggplot(aes(as.numeric(nr), as.factor(lobnr), fill= counts)) + 
-  geom_tile() +
-  #scale_fill_continuous(limits=c(0, 12), breaks=seq(0,12, by=1)) +
-  #scale_fill_viridis(limits = c(0, 60), discrete=FALSE) 
-  theme_classic() +
-  scale_fill_gradient('counts', limits=c(1, 11), breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),  low = "red", high = "darkblue")
-
-
-# missingess distribution
-avgr_viz %>% ggplot(aes(as.factor(counts))) +
-    geom_histogram(stat = "count") 
-
-```
-
-# select only the cases that have measurenments for all 10 years backwards from diagnosis 
+- Removed variables we don't need and keep only the lag averages (remove monthly estimates)
+- Kept only the cases/controls that have exposure estimates for all 11 lags (0-10)
+- Kept only cases that have at least one control and controls that have an associated case
 
 Notes:
-We have *17991* complete controls (annual pm2.5 measurement wise)
-We have *3603* complete cases (annual pm2.5 measurement wise)
+We have *18265* complete controls 
+We have *3801* complete cases 
 
 All case have at least 2 controls
 
-
-
-OLD DATA
-We have 8549 complete controls (annual pm2.5 measurement wise)
-We have 1714 complete cases (annual pm2.5 measurement wise)
-
-85 cases don't have any controls
-384 controls don't have any cases
-
 ```{r}
 
-complete_avgr <- avgr %>%
+# keep only the average estimates and remove the monthly estimates
+clean_lag <- lags_filt %>%
+  ungroup() %>%
+  dplyr::select(-PM25_str, -date_exp, -months_lag) %>%
+  dplyr::distinct()
+
+summary(clean_lag)
+
+# keep only cases/controls that have all the 11 lags (0-10 lag) and cases that have at least one control
+complete_lags <- clean_lag %>%
   dplyr:: group_by(nr,lobnr) %>%
  dplyr::mutate(counts = n()) %>%
   dplyr::filter(counts == 11) %>%
-  dplyr::select(-counts) 
-  
+  dplyr::select(-counts) %>%
+  ungroup() %>%
+  group_by(nr) %>%
+  dplyr::mutate(case_control = length(unique(ck))) %>% # ID to check that each case has at least one control and that each control has a case
+  dplyr::filter(case_control == 2) %>%
+  dplyr::select(-case_control)
 
-write_csv(complete_avgr, paste0(yanelli_datasets, "lagged_10yrs_complete.csv")) # your dataset folder contains the updated file
+summary(complete_lags)
 
 # check how many cases and controls we ended up with
-
-num_controls <- complete_avgr %>%
+num_controls <- complete_lags %>%
 dplyr::filter(ck == 0) %>% # selecting controls
  group_by(nr) %>% 
-  count(lobnr)
+  count(lobnr) %>%
+  ungroup()
 
-num_cases <- complete_avgr %>%
+count(num_controls)
+
+num_cases <- complete_lags %>%
 dplyr::filter(ck == 1) %>% # selecting only cases
- count(nr) 
+ count(nr) %>%
+  ungroup()
 
-#number of controls each case has
+count(num_cases)
 
-cont_case <- complete_avgr %>%
-  dplyr::group_by(nr, lobnr) %>%
-  dplyr::summarize() %>%
-  ungroup() %>%
-  dplyr::group_by(nr) %>%
-  mutate(numb = n())
-  
+
+```
+
+## 6. Save data 
+
+```{r}
+ write_csv(complete_lags, paste0(yanelli_datasets, "lagged_10yrs.csv"))
 ```
 
