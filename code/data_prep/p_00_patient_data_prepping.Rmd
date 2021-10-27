@@ -39,7 +39,7 @@ source(paste0(file.locations.folder,'file_locations.R'))
 
 ## 1. Load raw patient data from Johnni
 
-The famSES variable refers to the lowest SES category of index-person and spouse. However, in this case the lowest SES (1) refers to highest pay job title
+The famSES variable refers to the lowest SES category of index-person and spouse. Note that the lowest value (1) refers to highest pay job title
 
 ```{r}
 
@@ -106,13 +106,71 @@ patient_data$residence<- factor(patient_data$residence,levels=c('1','2' , '3','4
          "Unknown"))
 
 # View summary of variable 
+
 table(patient_data$residence )
 
 summary(patient_data)
 ```
 
 
-## 4. Save data
+## 4. Make a table 1
+
+```{r}
+
+table1_prep <- patient_data %>%
+  dplyr::select(nr, lobnr, ck, sex, civst, place_birth, residence, famses) %>%
+  unique() %>%
+  dplyr::select(-nr, -lobnr) %>%
+  mutate(ck = as.factor(if_else(ck == "0", "control", "case")),
+        sex = as.factor(if_else(sex == "2", "Female", "Male")),
+ famses = recode_factor(famses, 
+         `1`='Group 1 (Highest)',
+         `2`='Group 2',
+         `3`='Group 3',
+         `4`='Group 4',
+         `5`='Group 5 (Lowest)',
+         `9`='Group 9 (Unemployed)'),
+  civst = recode_factor(civst, 
+         `4`='Married',
+         `3`='Divorced',
+         `2`='Widower',
+         `1`='Never married'),
+  residence = recode_factor(residence, 
+        `Greater Copenhagen`='Greater Copenhagen',
+        `Big cities of Denmark>10,000`='Big cities of Denmark',
+        `Rest of Denmark`='Rest of Denmark',
+        `Greenland`='Greenland'),
+  place_birth=recode_factor(place_birth, 
+       `copenhagen`='Greater Copenhagen',
+       `other_cities`='Big cities of Denmark',
+       `other_dk`='Rest of Denmark',
+       `greenland`='Greenland',
+       `foreign`='Foreign',
+       `unknown`='Unknown'))  
+ 
+  
+table_1 <- table1_prep %>%
+  gtsummary::tbl_summary(#missing = "no",
+              label = list(sex ~ "Sex",
+                           famses ~ "Family SES",
+                           place_birth ~ "Place of birth",
+                           civst ~ "Civil status",
+                           residence ~ "Place of residence"),
+              by = ck,
+              statistic = list(all_continuous() ~ "{mean} ({sd})",
+                               all_categorical() ~ "{n} ({p}%)")) %>%
+              add_overall() %>%
+  bold_labels()
+
+table_1
+
+table_1 %>%
+  gtsummary::as_flex_table() %>%
+  flextable::save_as_docx(path = paste0(tables.folder,'table_1_full_data.docx'))
+```
+
+
+## 5. Save data
 
 ```{r}
 saveRDS(patient_data, file = "//fsmsph/msph_ehs$/APALS_DanishData/fromJohnni/patient_data_uniform_complete.rds")

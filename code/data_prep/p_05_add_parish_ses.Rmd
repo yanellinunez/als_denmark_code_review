@@ -44,7 +44,7 @@ source(paste0(file.locations.folder,'file_locations.R'))
 
 ## 1. Load data
 
-- I removed cases/controls with Greenland residence because there is only 5 of them 
+- I removed cases/controls with Greenland residence because there is only very few of them 
 
 - I also removed cases/controls with missing civic status (civist) since this is one of the covariants we use in the models 
 
@@ -56,7 +56,7 @@ source(paste0(file.locations.folder,'file_locations.R'))
 
 # 1 year
 
-data_1yr <- read_csv(paste0(robbie_datasets, "one_yr_avg_data.csv")) %>%
+data_1yr <- read_csv(paste0(yanelli_datasets, "one_yr_avg_data.csv")) %>%
  mutate(family_SES = as.factor(family_SES),
         sex = as.factor(sex),
         geokode = as.factor(geokode),
@@ -77,7 +77,7 @@ summary(data_1yr)
 
 # 5 years
 
-data_5yrs <- read_csv(paste0(robbie_datasets, "five_yrs_avg_data.csv")) %>%
+data_5yrs <- read_csv(paste0(yanelli_datasets, "five_yrs_avg_data.csv")) %>%
   mutate(family_SES = as.factor(family_SES),
          sex = as.factor(sex),
          geokode = as.factor(geokode),
@@ -89,7 +89,7 @@ data_5yrs <- read_csv(paste0(robbie_datasets, "five_yrs_avg_data.csv")) %>%
   tidyr::drop_na(civst) %>%
   group_by(nr) %>% mutate(sum=sum(ck)) %>% 
   dplyr::filter(sum==1) %>% # keeping only the controls that have a case
-  dplyr::select(-sum, -familyses, -prop_hs_ses) %>%
+   dplyr::select(-sum) %>%
   ungroup() 
 
 
@@ -97,7 +97,7 @@ summary(data_5yrs)
 
 # 10 years
 
-data_10yrs <- read_csv(paste0(robbie_datasets, "ten_yrs_avg_data.csv"))%>%
+data_10yrs <- read_csv(paste0(yanelli_datasets, "ten_yrs_avg_data.csv"))%>%
   mutate(family_SES = as.factor(family_SES),
          sex = as.factor(sex),
          geokode = as.factor(geokode),
@@ -157,24 +157,35 @@ data_1yr = left_join(data_1yr, parish_lookup, by=c('nr','lobnr','ck'))
 data_1yr = left_join(data_1yr, parish_ses, by=c('sognecode'))
 summary(data_1yr)
 
-#write_csv(data_1yr, paste0(yanelli_datasets, "one_yr_avg_data_ses.csv")) 
+write_csv(data_1yr, paste0(yanelli_datasets, "one_yr_avg_data_ses.csv")) 
+
 
 data_5yrs = left_join(data_5yrs, parish_lookup, by=c('nr','lobnr','ck'))
 data_5yrs = left_join(data_5yrs, parish_ses, by=c('sognecode'))
 summary(data_5yrs)
 
-#write_csv(data_5yrs, paste0(yanelli_datasets, "five_yr_avg_data_ses.csv")) 
+# number of cases and controls with missing parish-level SES
+k <- data_10yrs %>% 
+  dplyr::filter(ck == 1)
+sum(is.na(k$parish_ses))
+
+c <- data_10yrs %>%
+  dplyr::filter(ck == 0)
+sum(is.na(c$parish_ses))
+
+write_csv(data_5yrs, paste0(yanelli_datasets, "five_yr_avg_data_ses.csv")) 
 
 data_10yrs = left_join(data_10yrs, parish_lookup, by=c('nr','lobnr','ck'))
 data_10yrs = left_join(data_10yrs, parish_ses, by=c('sognecode'))
 summary(data_10yrs)
 
-#write_csv(data_10yrs, paste0(yanelli_datasets, "ten_yrs_avg_data_ses.csv")) 
+write_csv(data_10yrs, paste0(yanelli_datasets, "ten_yrs_avg_data_ses.csv")) 
 
 lag_10yrs = left_join(lag_10yrs, parish_lookup, by=c('nr','lobnr','ck'))
 lag_10yrs = left_join(lag_10yrs, parish_ses, by=c('sognecode'))
+summary(lag_10yrs)
 
-#write_csv(lag_10yrs, paste0(yanelli_datasets, "lagged_10yrs_parishSES.csv")) 
+write_csv(lag_10yrs, paste0(yanelli_datasets, "lagged_10yrs_parishSES.csv")) 
 
 ```
 
