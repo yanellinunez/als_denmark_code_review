@@ -58,6 +58,8 @@ summary(data_5yrs)
 
 summary(data_10yrs)
 
+library(AICcmodavg)
+
 ```
 
 ## 1. Check nonlinearities in the conditional logistic models
@@ -66,24 +68,12 @@ summary(data_10yrs)
 
 ### 1a. 1yr exposure average
 
-Model with linear term has a lower AIC 13176 vs 13179
+Model with linear term has a lower AIC 
+
+Site with info about using AIC to compare models:
+
+https://www.scribbr.com/statistics/akaike-information-criterion/#:~:text=The%20AIC%20function%20is%202K,it%20is%20being%20compared%20to.
 ```{r}
-
-# nonlinear
-
-clogit.1yr.ns <- survival::clogit(ck ~ ns(PM25_1yr, df = 3) + 
-                           family_SES + 
-                           place_birth +
-                           civst +
-                           residence +
-                             parish_ses +
-               strata(nr), # which controls go with which case
-              # weights =  # number of events in each day ?
-               method = "efron", # the method tells the model how to deal with ties
-               data = data_1yr) 
-
-
-summary(clogit.1yr.ns)
 
 # linear
 
@@ -101,15 +91,32 @@ clogit.1yr <- survival::clogit(ck ~ PM25_1yr +
 
 summary(clogit.1yr)
 
-# AIC - lower AIC means  higher model fitness
-AIC(clogit.1yr.ns)
-AIC(clogit.1yr)
+# nonlinear
+
+clogit.1yr.ns <- survival::clogit(ck ~ ns(PM25_1yr, df = 3) + 
+                           family_SES + 
+                           place_birth +
+                           civst +
+                           residence +
+                             parish_ses +
+               strata(nr), # which controls go with which case
+              # weights =  # number of events in each day ?
+               method = "efron", # the method tells the model how to deal with ties
+               data = data_1yr) 
+
+
+summary(clogit.1yr.ns)
+
+
+
+# AIC - lower AIcC means  higher model fitness
+aictab(cand.set = list(clogit.1yr, clogit.1yr.ns), modnames = c('linear', 'nonlinear'))
 
 ```
 
 ### 1b. 5 years exposure average
 
-Model with linear term has a lower AIC 13148 vs 13150
+Model with linear exposure term has better AIC
 ```{r}
 
 # linear
@@ -141,14 +148,12 @@ summary(clogit.5yr.ns)
 
 # Get AICs for each model
 
-AIC(clogit.5yr.ns)
-AIC(clogit.5yr)
+aictab(cand.set = list(clogit.5yr, clogit.5yr.ns), modnames = c('linear', 'nonlinear'))
 
 ```
 
 ### 1c. 10 years exposure
-
-Model with linear term has a lower AIC 13114 vs 13115
+In this case the AIC values are very similar but the linear model still has a better AIC
 ```{r}
 
 # Linear
@@ -180,8 +185,8 @@ clogit.10yrs.ns <- clogit(ck ~ ns(PM25_10yr, df =3) +
 
 summary(clogit.10yrs.ns)
 
-AIC(clogit.10yrs)
-AIC(clogit.10yrs.ns)
+# AIC comparison
+aictab(cand.set = list(clogit.10yrs, clogit.10yrs.ns), modnames = c('linear', 'nonlinear'))
 
 ```
 
