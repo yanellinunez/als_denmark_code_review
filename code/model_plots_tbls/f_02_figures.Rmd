@@ -41,7 +41,7 @@ source(paste0(file.locations.folder,'file_locations.R'))
 
 distrib_lags <- read_csv(paste0(output.folder, "distributed_lags_OR.csv")) %>%
   mutate(lag = factor(lag, levels = c("lag1", "lag2", "lag3", "lag4", "lag5", "lag6", "lag7", "lag8", "lag9", "lag10")),
-         lag = recode_factor(lag,
+         lag = recode_factor(lag,       # made names tidyer
                           `lag1` = 'Lag 1',
                           `lag2` = 'Lag 2',
                           `lag3` = 'Lag 3',
@@ -105,29 +105,29 @@ dplyr::filter(model %in% c("3-df with/parish ses", "Parish SES adjusted")) %>%
   ggplot(aes(x = exp_wind, y = OR_cumm, ymin = lower_CI, ymax = upper_CI, color = model)) +
    geom_hline(yintercept = 1, linetype = 2) +
     geom_pointrange(aes(), position = pd) +
-    ylab("Odds Ratio per"~mu*g/m^3~increase) +
-    xlab("") +
+    ylab("Odds ratio per"~mu*g/m^3~increase) +
+    xlab("Exposure time window (pre-diagnosis)") +
     geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
  #coord_flip()  +
  # scale_y_continuous(limits = c(0.95, 1.10), breaks = seq(.95, 1.10, by = 0.05)) +
   theme_minimal() +
     theme(
         axis.ticks.y=element_blank(),
-        axis.text.x = element_text(size = 19, angle = 90),
-        axis.title.x = element_text(vjust = -0.1),
+        axis.text.x = element_text(size = 19),
+       # axis.title.x = element_text(vjust = -0.1),
         axis.text.y = element_text(size = 19),
         axis.title = element_text(size = 19),
-        legend.position = "bottom",
+        legend.position = "right",
         legend.title = element_blank(),
         legend.text = element_text(size = 17),
         strip.text = element_text(size = 19)) +
-  scale_color_manual(labels = c("Cum. Lag","Averg. exposure"), values = c("black", "#1f78b4"))
+  scale_color_manual(labels = c("Cum. Exposure","Averg. Exposure"), values = c("black", "#1f78b4"))
  
 averg_cum_expo
 ```
 
 
-### 2b. Parish SES unadjusted 
+### 2b. NOT adjusted for parish-level SES
 
 This figure is for the sensitivity analysis and will be included in the supplements. It shows the lag cumulative effects and the effect estimates of average exposures from the models that were *NOT* adjusted for Parish SES
 
@@ -140,23 +140,23 @@ dplyr::filter(model %in% c("3-df", "Parish SES nonadjusted")) %>%
   ggplot(aes(x = exp_wind, y = OR_cumm, ymin = lower_CI, ymax = upper_CI, color = model)) +
    geom_hline(yintercept = 1, linetype = 2) +
     geom_pointrange(aes(), position = pd) +
-    ylab("Odds Ratio per"~mu*g/m^3~increase) +
-    xlab("") +
+    ylab("Odds ratio per"~mu*g/m^3~increase) +
+    xlab("Exposure time window (pre-diagnosis)") +
     geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
  #coord_flip()  +
  # scale_y_continuous(limits = c(0.95, 1.10), breaks = seq(.95, 1.10, by = 0.05)) +
   theme_minimal() +
     theme(
         axis.ticks.y=element_blank(),
-        axis.text.x = element_text(size = 19, angle = 90),
-        axis.title.x = element_text(vjust = -0.1),
+        axis.text.x = element_text(size = 19),
+       # axis.title.x = element_text(vjust = -0.1),
         axis.text.y = element_text(size = 19),
         axis.title = element_text(size = 19),
-        legend.position = "bottom",
+        legend.position = "right",
         legend.title = element_blank(),
         legend.text = element_text(size = 17),
         strip.text = element_text(size = 19)) +
-  scale_color_manual(labels = c("Cum. Lag","Averg. exposure"), values = c("#1b9e77", "orange3"))
+  scale_color_manual(labels = c("Cum. Exposure","Averg. Exposure"), values = c("#1b9e77", "orange3"))
  
   
 
@@ -165,9 +165,9 @@ averg_cum_expo_unadjust
 
 ## 3. Distributed lag figure
 
-### 3b. 3df in the lag constrain
+### 3b. 3df in the lag constrain 
 
-This figure is Figure 2 in the manuscript. It shows the lag effect estimates from the distributed lag model adjusted for parish SES
+This figure is Figure 2 in the manuscript. It shows the lag effect estimates from the distributed lag model adjusted for parish SES with 3-df in the lag constraint
 
 ```{r}
 
@@ -177,15 +177,15 @@ distr_lag <- distrib_lags %>%
   ggplot(aes(x = lag, y = OR, ymin = lower_CI, ymax = upper_CI)) +
    geom_hline(yintercept = 1, linetype = 2) +
     geom_pointrange(aes(), position = pd) +
-    ylab("Odds Ratio per"~mu*g/m^3~increase) +
-    xlab("") +
+    ylab("Odds ratio per"~mu*g/m^3~increase) +
+    xlab("Exposure time window (pre-diagnosis)") +
     geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
-  scale_y_continuous(limits = c(0.90, 1.10), breaks = seq(.90, 1.10, by = 0.05)) +
+  scale_y_continuous(limits = c(0.95, 1.10), breaks = seq(.95, 1.10, by = 0.05)) +
   theme_minimal() +
     theme(
         axis.ticks.y=element_blank(),
-        axis.text.x = element_text(size = 18, angle = 90),
-        axis.title.x = element_text(vjust = -0.1),
+        axis.text.x = element_text(size = 18, angle = 75),
+        #axis.title.x = element_text(vjust = -0.1),
         axis.text.y = element_text(size = 18),
         axis.title = element_text(size = 20),
         legend.position = "bottom",
@@ -199,7 +199,7 @@ distr_lag
 
 ```
 
-### 3c. 3df in lag constrain Parish SES unadjusted
+### 3c. 3df in lag constrain models NOT adjusted for parish-level SES
 
 This figure is part of the sensitivity analysis and is included as a supplementary figure
 
@@ -210,15 +210,15 @@ distr_lag_unadjSES <- distrib_lags %>%
   ggplot(aes(x = lag, y = OR, ymin = lower_CI, ymax = upper_CI)) +
    geom_hline(yintercept = 1, linetype = 2) +
     geom_pointrange(aes(), position = pd) +
-    ylab("Odds Ratio per"~mu*g/m^3~increase) +
-    xlab("") +
+    ylab("Odds ratio per"~mu*g/m^3~increase) +
+    xlab("Exposure time window (pre-diagnosis)") +
     geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
-  scale_y_continuous(limits = c(0.90, 1.10), breaks = seq(.90, 1.10, by = 0.05)) +
+  scale_y_continuous(limits = c(0.95, 1.10), breaks = seq(.95, 1.10, by = 0.05)) +
   theme_minimal() +
     theme(
         axis.ticks.y=element_blank(),
-        axis.text.x = element_text(size = 18, angle = 90),
-        axis.title.x = element_text(vjust = -0.1),
+        axis.text.x = element_text(size = 18, angle = 75),
+       # axis.title.x = element_text(vjust = -0.1),
         axis.text.y = element_text(size = 18),
         axis.title = element_text(size = 20),
         legend.position = "bottom",
