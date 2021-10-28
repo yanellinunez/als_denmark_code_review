@@ -2038,8 +2038,10 @@ OR_3df &lt;- OR_lag(pred.lin.3, &quot;3-df&quot;)
 
 OR_cumm_3df &lt;- OR_cumm(pred.lin.3, &quot;3-df&quot;)</code></pre>
 </div>
-<div id="iii.-compare-aic-values" class="section level4">
-<h4>iii. Compare AIC values</h4>
+</div>
+</div>
+<div id="b.-compare-aic-values" class="section level2">
+<h2>b. Compare AIC values</h2>
 <ul>
 <li>Compare the AIC values for the 3-df and 4-df lag constraint models</li>
 <li>The model with the 3df constrain has a better fit based on AIC</li>
@@ -2051,9 +2053,8 @@ OR_cumm_3df &lt;- OR_cumm(pred.lin.3, &quot;3-df&quot;)</code></pre>
 ##                 K     AICc Delta_AICc AICcWt Cum.Wt       LL
 ## 3df-constraint 19 13324.49          0   0.73   0.73 -6643.23
 ## 4df-constraint 20 13326.49          2   0.27   1.00 -6643.23</code></pre>
-</div>
-<div id="iii.-lag-constrain-with-3-df-adjusted-for-parish-ses" class="section level4">
-<h4>iii. Lag constrain with 3 df adjusted for parish SES</h4>
+<div id="c.-lag-constrain-with-3-df-adjusted-for-parish-ses" class="section level3">
+<h3>c. Lag constrain with 3 df adjusted for parish SES</h3>
 <p>The model with a lag constrain with 3df has the lowest AIC so here I’m running the model again but adjusted for parish SES</p>
 <pre class="r"><code>clogit.lin.ses &lt;- survival::clogit(ck ~ cb.lin.3 + 
                                family_SES +
@@ -2155,7 +2156,6 @@ OR_3df_ses &lt;- OR_lag(pred.lin.ses, &quot;3-df w/parish ses&quot;)
 ## Extract cumulative estimates at each lag
 
 OR_cumm_3df_ses &lt;- OR_cumm(pred.lin.ses, &quot;3-df with/parish ses&quot;)</code></pre>
-</div>
 </div>
 </div>
 <div id="compile-and-save-effect-estimates" class="section level2">

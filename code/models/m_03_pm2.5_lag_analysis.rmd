@@ -234,7 +234,7 @@ OR_cumm_3df <- OR_cumm(pred.lin.3, "3-df")
 
 ```
 
-## b. Compare AIC values
+### b. Compare AIC values
 
 - Compare the AIC values for the 3-df and 4-df lag constraint models
 - The model with the 3df constrain has a better fit based on AIC
