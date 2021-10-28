@@ -144,7 +144,7 @@ clogit.lin.4 <- survival::clogit(ck ~ cb.lin.4 +
                                strata(nr), method = "efron", data = lag_wide)
 
 summary(clogit.lin.4)
-AIC(clogit.lin.4)
+
 
 # Predict
 pred.lin.4 <- crosspred(
@@ -196,7 +196,7 @@ clogit.lin.3 <- survival::clogit(ck ~ cb.lin.3 +
                                strata(nr), method = "efron", data = lag_wide)
 
 summary(clogit.lin.3)
-AIC(clogit.lin.3)
+
 
 
 # Predict
@@ -234,10 +234,20 @@ OR_cumm_3df <- OR_cumm(pred.lin.3, "3-df")
 
 ```
 
+## b. Compare AIC values
 
-#### iii. Lag constrain with 3 df adjusted for parish SES
+- Compare the AIC values for the 3-df and 4-df lag constraint models
+- The model with the 3df constrain has a better fit based on AIC
 
-The model with a lag constrain of 3 has the lowest AIC so here I'm running the model again but adjusted for parish SES
+```{r}
+aictab(cand.set = list(clogit.lin.3, clogit.lin.4), modnames = c('3df-constraint', '4df-constraint'))
+```
+
+
+
+### c. Lag constrain with 3 df adjusted for parish SES
+
+The model with a lag constrain with 3df has the lowest AIC so here I'm running the model again but adjusted for parish SES
 
 ```{r}
 
@@ -250,7 +260,6 @@ clogit.lin.ses <- survival::clogit(ck ~ cb.lin.3 +
                                strata(nr), method = "efron", data = lag_wide)
 
 summary(clogit.lin.ses)
-AIC(clogit.lin.ses)
 
 
 # Predict
@@ -302,7 +311,7 @@ per_lag_effects <- rbind(OR_3df, OR_4df) %>%
 
 knitr::kable(per_lag_effects)
 
- write_csv(per_lag_effects, paste0(output.folder, "distributed_lags_OR.csv"))
+# write_csv(per_lag_effects, paste0(output.folder, "distributed_lags_OR.csv"))
 
 # cumulative estimates 
 
@@ -311,7 +320,7 @@ cumm_effects <- rbind(OR_cumm_3df, OR_cumm_4df) %>%
 
 knitr::kable(cumm_effects)
 
- write_csv(cumm_effects, paste0(output.folder, "cumm_lags_OR.csv"))
+# write_csv(cumm_effects, paste0(output.folder, "cumm_lags_OR.csv"))
 
 
 ```

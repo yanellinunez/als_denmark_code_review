@@ -58,8 +58,6 @@ summary(data_5yrs)
 
 summary(data_10yrs)
 
-library(AICcmodavg)
-
 ```
 
 ## 1. Check nonlinearities in the conditional logistic models
