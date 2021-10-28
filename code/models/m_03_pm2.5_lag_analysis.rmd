@@ -127,7 +127,7 @@ cb.lin.3 <- crossbasis(exp_matrix,
 
 ## 5. Lag Models
 
-### 5a. Linear conditional logistic regression with 10 lags 
+### 5a. Linear conditional logistic models with 10 lags 
 
 
 #### i. Lag constrain with 4 df: 
@@ -234,7 +234,7 @@ OR_cumm_3df <- OR_cumm(pred.lin.3, "3-df")
 
 ```
 
-### b. Compare AIC values
+### 5b. Compare models' AIC values 
 
 - Compare the AIC values for the 3-df and 4-df lag constraint models
 - The model with the 3df constrain has a better fit based on AIC
@@ -245,7 +245,7 @@ aictab(cand.set = list(clogit.lin.3, clogit.lin.4), modnames = c('3df-constraint
 
 
 
-### c. Lag constrain with 3 df adjusted for parish SES
+### 5c. Lag constrain with 3 df adjusted for parish SES
 
 The model with a lag constrain with 3df has the lowest AIC so here I'm running the model again but adjusted for parish SES
 

@@ -1837,8 +1837,8 @@ cb.lin.3 &lt;- crossbasis(exp_matrix,
 </div>
 <div id="lag-models" class="section level2">
 <h2>5. Lag Models</h2>
-<div id="a.-linear-conditional-logistic-regression-with-10-lags" class="section level3">
-<h3>5a. Linear conditional logistic regression with 10 lags</h3>
+<div id="a.-linear-conditional-logistic-models-with-10-lags" class="section level3">
+<h3>5a. Linear conditional logistic models with 10 lags</h3>
 <div id="i.-lag-constrain-with-4-df" class="section level4">
 <h4>i. Lag constrain with 4 df:</h4>
 <pre class="r"><code># run model
@@ -2039,9 +2039,8 @@ OR_3df &lt;- OR_lag(pred.lin.3, &quot;3-df&quot;)
 OR_cumm_3df &lt;- OR_cumm(pred.lin.3, &quot;3-df&quot;)</code></pre>
 </div>
 </div>
-</div>
-<div id="b.-compare-aic-values" class="section level2">
-<h2>b. Compare AIC values</h2>
+<div id="b.-compare-models-aic-values" class="section level3">
+<h3>5b. Compare models’ AIC values</h3>
 <ul>
 <li>Compare the AIC values for the 3-df and 4-df lag constraint models</li>
 <li>The model with the 3df constrain has a better fit based on AIC</li>
@@ -2053,8 +2052,9 @@ OR_cumm_3df &lt;- OR_cumm(pred.lin.3, &quot;3-df&quot;)</code></pre>
 ##                 K     AICc Delta_AICc AICcWt Cum.Wt       LL
 ## 3df-constraint 19 13324.49          0   0.73   0.73 -6643.23
 ## 4df-constraint 20 13326.49          2   0.27   1.00 -6643.23</code></pre>
+</div>
 <div id="c.-lag-constrain-with-3-df-adjusted-for-parish-ses" class="section level3">
-<h3>c. Lag constrain with 3 df adjusted for parish SES</h3>
+<h3>5c. Lag constrain with 3 df adjusted for parish SES</h3>
 <p>The model with a lag constrain with 3df has the lowest AIC so here I’m running the model again but adjusted for parish SES</p>
 <pre class="r"><code>clogit.lin.ses &lt;- survival::clogit(ck ~ cb.lin.3 + 
                                family_SES +
