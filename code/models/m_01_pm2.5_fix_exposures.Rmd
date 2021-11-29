@@ -61,6 +61,21 @@ summary(data_10yrs)
 
 ```
 
+## ii. Remove cases with missing parish-ses
+
+```{r}
+
+excl_1yr <- data_1yr %>%
+  drop_na(parish_ses)
+
+excl_5yrs <- data_5yrs %>%
+  drop_na(parish_ses)
+
+excl_10yrs <- data_10yrs %>%
+  drop_na(parish_ses)
+
+```
+
 
 ## 1. Models adjusted for parish-ses
 
@@ -191,6 +206,68 @@ clog.10yr.est <- beta_trans_clog(clogit.10yrs, 'clog_10yr')
 ```
 
 
+## 2. Models without parish-ses adjustment AND EXCLUDING individuals with missing parish-level SES
+
+```{r}
+
+## 1-year window of exposure
+
+clogit.1yr.excl <- survival::clogit(ck ~ PM25_1yr + 
+                           family_SES + 
+                           place_birth +
+                           civst +
+                           residence +
+               strata(nr), # which controls go with which case
+              # weights =  # number of events in each day ?
+               method = "efron", # the method tells the model how to deal with ties
+               data = excl_1yr) 
+
+
+summary(clogit.1yr.excl)
+# extract betas and estimate rate ratio
+
+## beta_trans_clog is a function I created to extract the effect estimates and organize them into a table. You can find this function in the functions_yanelli.R file within the models folder
+
+clog.1yr.est.excl <- beta_trans_clog(clogit.1yr.excl, 'clog_1yr')
+
+
+## 5-year exposure window 
+
+clogit.5yr.excl <- clogit(ck ~ PM25_5yr + 
+                           family_SES + 
+                           place_birth +
+                           civst +
+                       residence +
+               strata(nr), # which controls go with which case
+              # weights =  # number of events in each day ?
+               method = "efron", # the method tells the model how to deal with ties
+               data = excl_5yrs) 
+summary(clogit.5yr.excl)
+
+# extract betas and estimate rate ratio
+clog.5yr.est.excl <- beta_trans_clog(clogit.5yr.excl, 'clog_5yr')
+
+
+## 10-years exposure window 
+
+clogit.10yrs.excl <- clogit(ck ~ PM25_10yr + 
+                           family_SES + 
+                           place_birth +
+                           civst +
+                         residence +
+               strata(nr), # which controls go with which case
+              # weights =  # number of events in each day ?
+               method = "efron", # the method tells the model how to deal with ties
+               data = excl_10yrs) 
+
+summary(clogit.10yrs.excl)
+
+
+# extract betas and estimate rate ratio
+clog.10yr.est.excl <- beta_trans_clog(clogit.10yrs.excl, 'clog_10yr')
+
+```
+
 ## 3. Combine estimates from all models 
 
 I saved the estimates as a .csv file in the output folder to use it later to make figures
@@ -205,15 +282,17 @@ modl_est_pSES <- rbind(clog.1yr.est.pSES, clog.5yr.est.pSES, clog.10yr.est.pSES)
   mutate(parish.SES = "Parish SES adjusted") %>%
   dplyr::select(model, rr, rr.lci, rr.uci, everything())
 
+modl_est_exclud <- rbind(clog.1yr.est.excl, clog.5yr.est.excl, clog.10yr.est.excl) %>%
+  mutate(parish.SES = "W/out Parish SES/individ") %>%
+  dplyr::select(model, rr, rr.lci, rr.uci, everything())
 
-all_estimates <- rbind(modl_est, modl_est_pSES)
+all_estimates <- rbind(modl_est, modl_est_pSES) %>%
+ rbind(modl_est_exclud)
   
 
 knitr::kable(all_estimates)
 
 write_csv(all_estimates, paste0(output.folder, "fix_windows_OR.csv"))
-
-
 
 ```
 
