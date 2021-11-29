@@ -63,8 +63,8 @@ cum_lags <- read_csv(paste0(output.folder, "cumm_lags_OR.csv")) %>%
                                        if_else(lag == "lag10", "10-years", "x"))))) %>%
   mutate(exp_wind = factor(exp_wind, levels = c("1-year", "5-years", "10-years"))) %>% 
   dplyr::select(-lag) %>%
-  mutate(model = "cumm_exp",
-         parish.SES = if_else(lag_constr == "3-df" | lag_constr == "4-df","Parish SES nonadjusted", "Parish SES adjusted")) %>%
+  mutate(model = "cumm_exp", parish.SES = if_else(lag_constr == "3-df" | lag_constr == "4-df","Parish SES nonadjusted",                                                   if_else(lag_constr == "3-df with/parish ses", "Parish SES adjusted",
+                                          if_else(lag_constr == "3-df w/out parish ses/indiv", "W/out Parish SES/individ", lag_constr)))) %>%
   dplyr::filter(lag_constr != "4-df") %>%
   dplyr::select(-lag_constr)
 
@@ -95,7 +95,7 @@ cum_exp_full <- rbind(cum_lags, fix_windw) %>%
 
 ## 2. Forest plots
 
-### 2a. Parish SES adjusted 
+### 2a. Sensitivity analysis for parish-level SES 
 
 - Average windows of exposure and cumulative lag effects 
 - This is figure 1 in the manuscript and the results are from the models adjusted for parish SES
@@ -106,8 +106,8 @@ cum_exp_full <- rbind(cum_lags, fix_windw) %>%
 
 pd <- position_dodge(width = 0.5)
 
-averg_cum_expo <- cum_exp_full %>%
-#dplyr::filter(model %in% c("3-df with/parish ses", "Parish SES adjusted")) %>%
+averg_cum_expo_SES <- cum_exp_full %>%
+dplyr::filter(parish.SES %in% c("W/out Parish SES/individ", "Parish SES adjusted")) %>%
   ggplot(aes(x = exp_wind, y = OR_cumm, ymin = lower_CI, ymax = upper_CI)) +
    geom_hline(yintercept = 1, linetype = 1) +
     geom_pointrange(aes(color = model, linetype = parish.SES), position = pd, size = 0.5) +
@@ -129,7 +129,7 @@ averg_cum_expo <- cum_exp_full %>%
         strip.text = element_text(size = 18),
         legend.key.size = unit(2.5, "lines")) +
   scale_color_manual(labels = c("Averg. Exposure", "Cum. Exposure"), values = c("black", "#1f78b4")) +
-  scale_linetype_manual(labels = c("Parish-SES adjusted", "Parish-SES non-adjusted"), values = c("solid", "dashed"),
+  scale_linetype_manual(labels = c("Parish-SES adjusted", "Parish-SES not adjusted"), values = c("solid", "dashed"),
                          guide = guide_legend(override.aes = list(shape = NA)))
 
 
@@ -144,7 +144,7 @@ averg_cum_expo
 ```
 
 
-### 2b. NOT adjusted for parish-level SES
+### 2b. Sensitivity analysis for including/excluding individuals missing parish SES
 
 This figure is for the sensitivity analysis and will be included in the supplements. It shows the lag cumulative effects and the effect estimates of average exposures from the models that were *NOT* adjusted for Parish SES
 
@@ -152,28 +152,32 @@ This figure is for the sensitivity analysis and will be included in the suppleme
 
 pd <- position_dodge(width = 0.5)
 
-averg_cum_expo_unadjust <- cum_exp_full %>%
-dplyr::filter(model %in% c("3-df", "Parish SES nonadjusted")) %>%
-  ggplot(aes(x = exp_wind, y = OR_cumm, ymin = lower_CI, ymax = upper_CI, color = model)) +
-   geom_hline(yintercept = 1, linetype = 2) +
-    geom_pointrange(aes(), position = pd) +
+
+averg_cum_expo_missing <- cum_exp_full %>%
+dplyr::filter(parish.SES %in% c("Parish SES nonadjusted", "W/out Parish SES/individ")) %>%
+  ggplot(aes(x = exp_wind, y = OR_cumm, ymin = lower_CI, ymax = upper_CI)) +
+   geom_hline(yintercept = 1, linetype = 1) +
+    geom_pointrange(aes(color = model, linetype = parish.SES), position = pd, size = 0.5) +
     ylab("Odds ratio per"~mu*g/m^3~increase) +
     xlab("Exposure time window (pre-diagnosis)") +
-    geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
+   #geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
  #coord_flip()  +
  # scale_y_continuous(limits = c(0.95, 1.10), breaks = seq(.95, 1.10, by = 0.05)) +
   theme_minimal() +
     theme(
         axis.ticks.y=element_blank(),
-        axis.text.x = element_text(size = 19),
-       # axis.title.x = element_text(vjust = -0.1),
-        axis.text.y = element_text(size = 19),
-        axis.title = element_text(size = 19),
+        axis.text.x = element_text(size = 17),
+        axis.title.x = element_text(vjust = - 0.3),
+        axis.text.y = element_text(size = 17),
+        axis.title = element_text(size = 18),
         legend.position = "right",
         legend.title = element_blank(),
         legend.text = element_text(size = 17),
-        strip.text = element_text(size = 19)) +
-  scale_color_manual(labels = c("Cum. Exposure","Averg. Exposure"), values = c("#1b9e77", "orange3"))
+        strip.text = element_text(size = 18),
+        legend.key.size = unit(2.5, "lines")) +
+  scale_color_manual(labels = c("Averg. Exposure", "Cum. Exposure"), values = c("gray24", "darkgreen")) +
+  scale_linetype_manual(labels = c("Full dataset", "Data subset"), values = c("solid", "dashed"),
+                         guide = guide_legend(override.aes = list(shape = NA)))
  
   
 
@@ -184,13 +188,14 @@ averg_cum_expo_unadjust
 
 ### 3b. 3df in the lag constrain 
 
-This figure is Figure 2 in the manuscript. It shows the lag effect estimates from the distributed lag model adjusted for parish SES with 3-df in the lag constraint
+This figure compares the distributed lag results from including parish SES vs excluding parish SES
 
 ```{r}
 
 
-distr_lag <- distrib_lags %>%
-  dplyr::filter(lag_constr %in% c("3-df w/parish ses", "3-df")) %>%
+distr_lag_pSES <- distrib_lags %>%
+  dplyr::filter(lag_constr %in% c("3-df w/parish ses", "3-df w/out parish ses/indiv")) %>%
+   mutate(lag_constr = factor(lag_constr, levels = c("3-df w/parish ses", "3-df w/out parish ses/indiv"))) %>%
   ggplot(aes(x = lag, y = OR, ymin = lower_CI, ymax = upper_CI)) +
    geom_hline(yintercept = 1, linetype = 1) +
    geom_pointrange(aes(linetype = lag_constr), position = pd, size = 0.5) +
@@ -210,7 +215,7 @@ distr_lag <- distrib_lags %>%
         legend.text = element_text(size = 17),
         strip.text = element_text(size = 18),
         legend.key.size = unit(2.5, "lines"))  +
-   scale_linetype_manual(labels = c("Parish-SES adjusted", "Parish-SES non-adjusted"), values = c("solid", "dashed"),
+   scale_linetype_manual(labels = c("Parish-SES adjusted", "Parish-SES not adjusted"), values = c("solid", "dashed"),
                          guide = guide_legend(override.aes = list(shape = NA)))
 
 
@@ -225,29 +230,30 @@ This figure is part of the sensitivity analysis and is included as a supplementa
 
 ```{r}
 
-distr_lag_unadjSES <- distrib_lags %>%
-  dplyr::filter(lag_constr == "3-df") %>%
+distr_lag_pSES <- distrib_lags %>%
+  dplyr::filter(lag_constr %in% c("3-df w/parish ses", "3-df w/out parish ses/indiv")) %>%
+   mutate(lag_constr = factor(lag_constr, levels = c("3-df w/parish ses", "3-df w/out parish ses/indiv"))) %>%
   ggplot(aes(x = lag, y = OR, ymin = lower_CI, ymax = upper_CI)) +
-   geom_hline(yintercept = 1, linetype = 2) +
-    geom_pointrange(aes(), position = pd) +
+   geom_hline(yintercept = 1, linetype = 1) +
+   geom_pointrange(aes(linetype = lag_constr), position = pd, size = 0.5) +
     ylab("Odds ratio per"~mu*g/m^3~increase) +
     xlab("Exposure time window (pre-diagnosis)") +
-    geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
+    #geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
   scale_y_continuous(limits = c(0.95, 1.10), breaks = seq(.95, 1.10, by = 0.05)) +
   theme_minimal() +
     theme(
         axis.ticks.y=element_blank(),
-        axis.text.x = element_text(size = 18, angle = 75),
-       # axis.title.x = element_text(vjust = -0.1),
-        axis.text.y = element_text(size = 18),
-        axis.title = element_text(size = 20),
-        legend.position = "bottom",
+        axis.text.x = element_text(size = 17, angle = 75),
+        axis.title.x = element_text(vjust = - 0.2),
+        axis.text.y = element_text(size = 17),
+        axis.title = element_text(size = 18),
+        legend.position = "right",
         legend.title = element_blank(),
-        legend.text = element_text(size = 18),
-        strip.text = element_text(size = 18)) 
-
-
-distr_lag_unadjSES
+        legend.text = element_text(size = 17),
+        strip.text = element_text(size = 18),
+        legend.key.size = unit(2.5, "lines"))  +
+   scale_linetype_manual(labels = c("Parish-SES adjusted", "Parish-SES not adjusted"), values = c("solid", "dashed"),
+                         guide = guide_legend(override.aes = list(shape = NA)))
 
 ```
 
