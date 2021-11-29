@@ -224,15 +224,15 @@ distr_lag
 
 ```
 
-### 3c. 3df in lag constrain models NOT adjusted for parish-level SES
+### 3c. 3df in lag constrain models including/excluding participants with missing parish-level SES
 
-This figure is part of the sensitivity analysis and is included as a supplementary figure
+
 
 ```{r}
 
-distr_lag_pSES <- distrib_lags %>%
-  dplyr::filter(lag_constr %in% c("3-df w/parish ses", "3-df w/out parish ses/indiv")) %>%
-   mutate(lag_constr = factor(lag_constr, levels = c("3-df w/parish ses", "3-df w/out parish ses/indiv"))) %>%
+distr_lag_missing <- distrib_lags %>%
+  dplyr::filter(lag_constr %in% c("3-df", "3-df w/out parish ses/indiv")) %>%
+   mutate(lag_constr = factor(lag_constr, levels = c("3-df", "3-df w/out parish ses/indiv"))) %>%
   ggplot(aes(x = lag, y = OR, ymin = lower_CI, ymax = upper_CI)) +
    geom_hline(yintercept = 1, linetype = 1) +
    geom_pointrange(aes(linetype = lag_constr), position = pd, size = 0.5) +
@@ -252,7 +252,7 @@ distr_lag_pSES <- distrib_lags %>%
         legend.text = element_text(size = 17),
         strip.text = element_text(size = 18),
         legend.key.size = unit(2.5, "lines"))  +
-   scale_linetype_manual(labels = c("Parish-SES adjusted", "Parish-SES not adjusted"), values = c("solid", "dashed"),
+   scale_linetype_manual(labels = c("Full dataset", "Data subset"), values = c("solid", "dashed"),
                          guide = guide_legend(override.aes = list(shape = NA)))
 
 ```
