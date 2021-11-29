@@ -55,6 +55,7 @@ summary(data_lags)
 ## 2. Organize data 
 
 - Arrange data into the proper format for the lag analysis
+- 768 individuals with parish-level SES missing were removed
 
 ```{r}
 
@@ -68,6 +69,10 @@ lag_wide <- data_lags %>%
 summary(lag_wide)
 
 head(lag_wide, 8)
+
+# dataset excluding cases with missing parish-level SES
+excluded_neigh_SES <- lag_wide %>%
+  drop_na(parish_ses)
   
 ```
 
@@ -84,6 +89,10 @@ exp_matrix <- lag_wide %>%
   dplyr::select(lag_1, lag_2, lag_3, lag_4, lag_5, lag_6, lag_7, lag_8, lag_9, lag_10)
 
 head(exp_matrix, 8)
+
+exp_excluded_neigh_SES <- excluded_neigh_SES %>%
+  dplyr::select(33:43) %>%
+  dplyr::select(lag_1, lag_2, lag_3, lag_4, lag_5, lag_6, lag_7, lag_8, lag_9, lag_10)
 
 
 ```
@@ -116,6 +125,13 @@ cb.lin.4 <- crossbasis(exp_matrix,
 
 # 3 df 
 cb.lin.3 <- crossbasis(exp_matrix, 
+                 lag=c(1,10),
+                 argvar=list(fun = "lin"), # form of the dose-response within each lag
+                 arglag=list(fun= "ns", df = 3 )) # the form of the curve across all the lags, that is, the lag constrain 
+
+
+# 3 df excluding people with missing parish-level SES
+cb.lin.3.excluded.SES <- crossbasis(exp_excluded_neigh_SES, 
                  lag=c(1,10),
                  argvar=list(fun = "lin"), # form of the dose-response within each lag
                  arglag=list(fun= "ns", df = 3 )) # the form of the curve across all the lags, that is, the lag constrain 
@@ -184,7 +200,9 @@ OR_cumm_4df <- OR_cumm(pred.lin.4, "4-df")
 
 #### ii. Lag constrain with 3 df: 
 
-This model has a lower AIC relative to the model with a lag constrain of 4df. So we select this models as the model for the main analysis
+- This model has a lower AIC relative to the model with a lag constrain of 4df. So we select this models as the model for the main analysis
+
+- This model is not adjusted for neighborhood-level SES and includes participants with missing neighborhood-level SES
 
 ```{r}
 
@@ -247,7 +265,9 @@ aictab(cand.set = list(clogit.lin.3, clogit.lin.4), modnames = c('3df-constraint
 
 ### 5c. Lag constrain with 3 df adjusted for parish SES
 
-The model with a lag constrain with 3df has the lowest AIC so here I'm running the model again but adjusted for parish SES
+- The model with a lag constrain with 3df has the lowest AIC so here I'm running the model again but adjusted for parish SES
+
+- Because I'm adjusting for parish-level SES, this model does not include individuals without parish-level SES info
 
 ```{r}
 
@@ -298,7 +318,62 @@ OR_cumm_3df_ses <- OR_cumm(pred.lin.ses, "3-df with/parish ses")
 
 ```
 
-## 6. Compile and save effect estimates
+### 5c. Lag constrain with 3 df without adjusting for parish SES
+
+- This model doesn't adjust for parish-level SES AND EXCLUDES individuals with missing parish-level SES
+
+```{r}
+
+clogit.lin.excluded <- survival::clogit(ck ~ cb.lin.3.excluded.SES + 
+                               family_SES +
+                               place_birth +
+                               civst +
+                               residence +
+                               strata(nr), method = "efron", data = excluded_neigh_SES)
+
+summary(clogit.lin.excluded)
+
+
+# Predict
+
+pred.lin.exclud <- crosspred(
+  cb.lin.3.excluded.SES, # crossbasis
+  clogit.lin.excluded, # model
+  at = 1:30, # range values of PM2.5 to use for prediction
+  bylag = 1, # lag increments 
+  cumul = TRUE, # estimate cumulative effect at each lag
+  cen = 0) # references for nonlinear associations
+
+
+# Visuals
+
+# 3-D plot
+plot(pred.lin.exclud, zlab="OR", xlab="Exposure", ylab="Lag (years)",
+       theta=40, phi=30, lphi=30)
+
+# Plot lag exposure-response at exposure of 10ug/m3
+
+plot(pred.lin.exclud, 
+     var = 10, 
+     col = "red", 
+     ci.arg = list(density = 15, lwd =2),
+      ylab = "OR at 10ug/m3 PM2.5", xlab = "lag (years)")
+
+## Extract estimates per lag
+
+OR_3df_exclud <- OR_lag(pred.lin.exclud, "3-df w/out parish ses/indiv")
+
+
+## Extract cumulative estimates at each lag
+
+OR_cumm_3df_exclud <- OR_cumm(pred.lin.exclud, "3-df w/out parish ses/indiv")
+
+```
+
+
+
+
+## 7. Compile and save effect estimates
 
 - I combined the effect estimates from the three models (4df and 3df lag constrain, and 3df lag constrained adjusted for parish SES ) into a single dataset both for the single lag effect estimates and the cumulative effect estimates. I saved the dataset as a .csv into file in the output folder
 
@@ -307,20 +382,22 @@ OR_cumm_3df_ses <- OR_cumm(pred.lin.ses, "3-df with/parish ses")
 # by lag effect estimates
 
 per_lag_effects <- rbind(OR_3df, OR_4df) %>%
-  rbind(., OR_3df_ses)
+  rbind(., OR_3df_ses) %>%
+  rbind(., OR_3df_exclud)
 
 knitr::kable(per_lag_effects)
 
-# write_csv(per_lag_effects, paste0(output.folder, "distributed_lags_OR.csv"))
+ write_csv(per_lag_effects, paste0(output.folder, "distributed_lags_OR.csv"))
 
 # cumulative estimates 
 
 cumm_effects <- rbind(OR_cumm_3df, OR_cumm_4df) %>%
-  rbind(., OR_cumm_3df_ses)
+  rbind(., OR_cumm_3df_ses) %>%
+  rbind(., OR_cumm_3df_exclud)
 
 knitr::kable(cumm_effects)
 
-# write_csv(cumm_effects, paste0(output.folder, "cumm_lags_OR.csv"))
+ write_csv(cumm_effects, paste0(output.folder, "cumm_lags_OR.csv"))
 
 
 ```
