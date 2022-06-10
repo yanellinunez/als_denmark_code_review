@@ -1584,14 +1584,14 @@ div.tocify {
 
 
 <p>Objective:</p>
-<p>Combin the pollution and patient data into a single dataset</p>
+<p>Combine the pollution and patient data into a single dataset</p>
 <div id="loading-data" class="section level2">
 <h2>1. Loading data</h2>
 <div id="a.-load-pollution-data" class="section level3">
 <h3>1a. Load pollution data</h3>
 <ul>
 <li>Pollution data are in monthly averages</li>
-<li>There are two different pollution measures in the dataset but the one we are interested on is the one representing street level concentrations. The street level pollution variables have a _str suffix</li>
+<li>There are two different pollution measures in the dataset but the one we are interested in is the one representing street level concentrations. The street level pollution variables have a _str suffix</li>
 </ul>
 <pre class="r"><code># Load pollution data
 load(paste0(raw_data_files, &quot;ALS_Final_pol_1989-2013_1989_5_2k.RData&quot;))
@@ -1717,75 +1717,67 @@ patient_data &lt;- readRDS(paste0(raw_data_files, &quot;patient_data_uniform_com
 summary(patient_data)</code></pre>
 <pre><code>##        nr           lobnr           ck            diagtype    diagdat          
 ##  Min.   :   2   Min.   :0.0   Min.   :0.0000   Min.   :1   Min.   :1989-01-02  
-##  1st Qu.:1211   1st Qu.:1.0   1st Qu.:0.0000   1st Qu.:1   1st Qu.:1997-05-23  
-##  Median :2394   Median :2.5   Median :0.0000   Median :1   Median :2003-11-25  
-##  Mean   :2375   Mean   :2.5   Mean   :0.1667   Mean   :1   Mean   :2003-02-11  
-##  3rd Qu.:3587   3rd Qu.:4.0   3rd Qu.:0.0000   3rd Qu.:1   3rd Qu.:2009-02-17  
+##  1st Qu.:1204   1st Qu.:1.0   1st Qu.:0.0000   1st Qu.:1   1st Qu.:1997-05-09  
+##  Median :2379   Median :2.5   Median :0.0000   Median :1   Median :2003-10-27  
+##  Mean   :2364   Mean   :2.5   Mean   :0.1667   Mean   :1   Mean   :2003-01-26  
+##  3rd Qu.:3566   3rd Qu.:4.0   3rd Qu.:0.0000   3rd Qu.:1   3rd Qu.:2009-02-03  
 ##  Max.   :4608   Max.   :5.0   Max.   :1.0000   Max.   :1   Max.   :2013-12-30  
 ##                                                                                
 ##     year_gap             one_year            five_years        
 ##  Min.   :1988-01-02   Min.   :1987-01-02   Min.   :1983-01-02  
-##  1st Qu.:1996-05-22   1st Qu.:1995-05-22   1st Qu.:1991-05-22  
-##  Median :2002-11-21   Median :2001-11-21   Median :1997-11-21  
-##  Mean   :2002-02-08   Mean   :2001-02-08   Mean   :1997-02-08  
-##  3rd Qu.:2008-02-11   3rd Qu.:2007-02-11   3rd Qu.:2003-02-11  
+##  1st Qu.:1996-05-08   1st Qu.:1995-05-08   1st Qu.:1991-05-08  
+##  Median :2002-10-25   Median :2001-10-25   Median :1997-10-25  
+##  Mean   :2002-01-24   Mean   :2001-01-23   Mean   :1997-01-23  
+##  3rd Qu.:2008-02-02   3rd Qu.:2007-02-02   3rd Qu.:2003-02-02  
 ##  Max.   :2012-12-30   Max.   :2011-12-30   Max.   :2007-12-30  
 ##  NA&#39;s   :18           NA&#39;s   :18           NA&#39;s   :18          
 ##    ten_years                ID         aegtesocial        bdate           
 ##  Min.   :1978-01-02   Min.   :    9   Min.   :1.000   Min.   :1901-02-06  
-##  1st Qu.:1986-05-22   1st Qu.: 9669   1st Qu.:3.000   1st Qu.:1927-06-01  
-##  Median :1992-11-21   Median :19132   Median :5.000   Median :1936-12-06  
-##  Mean   :1992-02-08   Mean   :18967   Mean   :5.308   Mean   :1937-08-06  
-##  3rd Qu.:1998-02-11   3rd Qu.:28650   3rd Qu.:9.000   3rd Qu.:1946-04-01  
+##  1st Qu.:1986-05-08   1st Qu.: 9613   1st Qu.:3.000   1st Qu.:1927-05-01  
+##  Median :1992-10-25   Median :19012   Median :5.000   Median :1936-12-01  
+##  Mean   :1992-01-24   Mean   :18885   Mean   :5.309   Mean   :1937-07-13  
+##  3rd Qu.:1998-02-02   3rd Qu.:28482   3rd Qu.:9.000   3rd Qu.:1946-04-01  
 ##  Max.   :2002-12-30   Max.   :36806   Max.   :9.000   Max.   :1987-06-01  
-##  NA&#39;s   :18                           NA&#39;s   :2741                        
+##  NA&#39;s   :18                           NA&#39;s   :2715                        
 ##      civst         civstdat5             d_inddto             d_uddto          
 ##  Min.   :1.000   Min.   :1900-07-01   Min.   :1989-01-02   Min.   :1989-01-06  
-##  1st Qu.:2.000   1st Qu.:1960-11-10   1st Qu.:1997-05-26   1st Qu.:1997-09-23  
-##  Median :4.000   Median :1973-06-25   Median :2003-11-27   Median :2004-05-21  
-##  Mean   :3.238   Mean   :1974-10-11   Mean   :2003-02-18   Mean   :2003-08-16  
-##  3rd Qu.:4.000   3rd Qu.:1989-08-12   3rd Qu.:2009-02-27   3rd Qu.:2009-10-15  
+##  1st Qu.:2.000   1st Qu.:1960-10-22   1st Qu.:1997-05-11   1st Qu.:1997-09-09  
+##  Median :4.000   Median :1973-06-02   Median :2003-11-03   Median :2004-04-23  
+##  Mean   :3.241   Mean   :1974-09-23   Mean   :2003-02-03   Mean   :2003-07-31  
+##  3rd Qu.:4.000   3rd Qu.:1989-07-22   3rd Qu.:2009-02-17   3rd Qu.:2009-09-21  
 ##  Max.   :4.000   Max.   :2013-08-30   Max.   :2013-12-30   Max.   :2014-11-01  
-##  NA&#39;s   :3       NA&#39;s   :2282                                                  
-##     daars1             daars2              diag                diy      
-##  Length:24066       Length:24066       Length:24066       Min.   :1989  
-##  Class :character   Class :character   Class :character   1st Qu.:1997  
-##  Mode  :character   Mode  :character   Mode  :character   Median :2003  
-##                                                           Mean   :2003  
-##                                                           3rd Qu.:2009  
-##                                                           Max.   :2013  
-##                                                                         
-##    family_SES       geokode           mynkod        pattype         postnr    
-##  Min.   :1.000   Min.   : 1.000   Min.   :   0   Min.   :1.00   Min.   :1050  
-##  1st Qu.:3.000   1st Qu.: 2.000   1st Qu.:7103   1st Qu.:1.00   1st Qu.:3060  
-##  Median :4.000   Median : 4.000   Median :7724   Median :2.00   Median :5260  
-##  Mean   :4.056   Mean   : 7.339   Mean   :7102   Mean   :1.59   Mean   :5564  
-##  3rd Qu.:5.000   3rd Qu.: 7.000   3rd Qu.:8378   3rd Qu.:2.00   3rd Qu.:7830  
-##  Max.   :9.000   Max.   :62.000   Max.   :9999   Max.   :3.00   Max.   :9990  
-##                                                                 NA&#39;s   :174   
-##       sex           social         statdat               status     
-##  Min.   :1.00   Min.   :1.000   Min.   :1989-01-18   Min.   : 1.00  
-##  1st Qu.:1.00   1st Qu.:3.000   1st Qu.:2002-04-03   1st Qu.: 1.00  
-##  Median :1.00   Median :4.000   Median :2007-11-20   Median : 1.00  
-##  Mean   :1.47   Mean   :5.198   Mean   :2006-10-01   Mean   :44.22  
-##  3rd Qu.:2.00   3rd Qu.:9.000   3rd Qu.:2011-12-25   3rd Qu.:90.00  
-##  Max.   :2.00   Max.   :9.000   Max.   :2017-03-20   Max.   :90.00  
-##                                 NA&#39;s   :12306                       
-##     stilkod            place_birth                          residence    
-##  Min.   :  0.0   copenhagen  :5032   Greater Copenhagen          : 1940  
-##  1st Qu.:204.0   foreign     :1168   Big cities of Denmark&gt;10,000: 9649  
-##  Median :666.0   greenland   : 310   Greenland                   :   54  
-##  Mean   :588.1   other_cities:8173   Rest of Denmark             :12249  
-##  3rd Qu.:999.0   other_dk    :9228   Unknown                     :  174  
-##  Max.   :999.0   unknown     : 155                                       
-##                                                                          
-##    birth_year  
-##  Min.   :1901  
-##  1st Qu.:1927  
-##  Median :1936  
-##  Mean   :1937  
-##  3rd Qu.:1946  
-##  Max.   :1987  
+##  NA&#39;s   :3       NA&#39;s   :2249                                                  
+##     daars1             daars2              diag            diy      
+##  Length:23898       Length:23898       34809 : 2628   Min.   :1989  
+##  Class :character   Class :character   DG122 :18714   1st Qu.:1997  
+##  Mode  :character   Mode  :character   DG122G: 2556   Median :2003  
+##                                                       Mean   :2003  
+##                                                       3rd Qu.:2009  
+##                                                       Max.   :2013  
+##                                                                     
+##    family_SES       geokode           mynkod     pattype       postnr    
+##  Min.   :1.000   Min.   : 1.000   Min.   :   0   1: 9882   Min.   :1050  
+##  1st Qu.:3.000   1st Qu.: 2.000   1st Qu.:7103   2:13938   1st Qu.:3060  
+##  Median :4.000   Median : 4.000   Median :7724   3:   78   Median :5260  
+##  Mean   :4.053   Mean   : 7.338   Mean   :7102             Mean   :5565  
+##  3rd Qu.:5.000   3rd Qu.: 7.000   3rd Qu.:8378             3rd Qu.:7830  
+##  Max.   :9.000   Max.   :62.000   Max.   :9999             Max.   :9990  
+##                                                            NA&#39;s   :173   
+##       sex            social         statdat               status     
+##  Min.   :1.000   Min.   :1.000   Min.   :1989-01-18   Min.   : 1.00  
+##  1st Qu.:1.000   1st Qu.:3.000   1st Qu.:2002-03-24   1st Qu.: 1.00  
+##  Median :1.000   Median :4.000   Median :2007-11-08   Median : 1.00  
+##  Mean   :1.469   Mean   :5.193   Mean   :2006-09-23   Mean   :44.36  
+##  3rd Qu.:2.000   3rd Qu.:9.000   3rd Qu.:2011-12-18   3rd Qu.:90.00  
+##  Max.   :2.000   Max.   :9.000   Max.   :2017-03-20   Max.   :90.00  
+##                                  NA&#39;s   :12184                       
+##     stilkod            place_birth     birth_year  
+##  Min.   :  0.0   copenhagen  :4991   Min.   :1901  
+##  1st Qu.:204.0   foreign     :1160   1st Qu.:1927  
+##  Median :664.0   greenland   : 307   Median :1936  
+##  Mean   :587.6   other_cities:8116   Mean   :1937  
+##  3rd Qu.:999.0   other_dk    :9170   3rd Qu.:1946  
+##  Max.   :999.0   unknown     : 154   Max.   :1987  
 ## </code></pre>
 <pre class="r"><code># Check how many cases I have total
 cases &lt;- patient_data %&gt;%
@@ -1808,94 +1800,86 @@ contrl &lt;- patient_data %&gt;%
   ungroup()
 
 summary(full_dataset)</code></pre>
-<pre><code>##        nr           lobnr             ck           diagtype
-##  Min.   :   2   Min.   :0.000   Min.   :0.000   Min.   :1  
-##  1st Qu.:1341   1st Qu.:1.000   1st Qu.:0.000   1st Qu.:1  
-##  Median :2664   Median :2.000   Median :0.000   Median :1  
-##  Mean   :2552   Mean   :2.497   Mean   :0.167   Mean   :1  
-##  3rd Qu.:3844   3rd Qu.:4.000   3rd Qu.:0.000   3rd Qu.:1  
-##  Max.   :4608   Max.   :5.000   Max.   :1.000   Max.   :1  
-##                                                            
+<pre><code>##        nr           lobnr             ck           diagtype    
+##  Min.   :   2   Min.   :0.000   Min.   :0.00    Min.   :1      
+##  1st Qu.:1341   1st Qu.:1.000   1st Qu.:0.00    1st Qu.:1      
+##  Median :2664   Median :2.000   Median :0.00    Median :1      
+##  Mean   :2552   Mean   :2.497   Mean   :0.17    Mean   :1      
+##  3rd Qu.:3844   3rd Qu.:4.000   3rd Qu.:0.00    3rd Qu.:1      
+##  Max.   :4608   Max.   :5.000   Max.   :1.00    Max.   :1      
+##                                 NA&#39;s   :59707   NA&#39;s   :59707  
 ##     diagdat              year_gap             one_year         
 ##  Min.   :1989-01-02   Min.   :1988-01-02   Min.   :1987-01-02  
-##  1st Qu.:2000-03-04   1st Qu.:1999-03-02   1st Qu.:1998-03-02  
-##  Median :2006-03-13   Median :2005-03-10   Median :2004-03-10  
-##  Mean   :2004-12-23   Mean   :2003-12-21   Mean   :2002-12-21  
-##  3rd Qu.:2010-06-16   3rd Qu.:2009-06-07   3rd Qu.:2008-06-07  
+##  1st Qu.:2000-02-11   1st Qu.:1999-02-10   1st Qu.:1998-02-10  
+##  Median :2006-02-28   Median :2005-02-28   Median :2004-02-28  
+##  Mean   :2004-12-09   Mean   :2003-12-07   Mean   :2002-12-07  
+##  3rd Qu.:2010-05-26   3rd Qu.:2009-05-20   3rd Qu.:2008-05-20  
 ##  Max.   :2013-12-30   Max.   :2012-12-30   Max.   :2011-12-30  
-##                       NA&#39;s   :7137         NA&#39;s   :7137        
+##  NA&#39;s   :59707        NA&#39;s   :66844        NA&#39;s   :66844       
 ##    five_years           ten_years                ID         aegtesocial    
 ##  Min.   :1983-01-02   Min.   :1978-01-02   Min.   :    9   Min.   :1.0     
-##  1st Qu.:1994-03-02   1st Qu.:1989-03-02   1st Qu.:10705   1st Qu.:3.0     
-##  Median :2000-03-10   Median :1995-03-10   Median :21284   Median :4.0     
-##  Mean   :1998-12-21   Mean   :1993-12-21   Mean   :20381   Mean   :5.2     
-##  3rd Qu.:2004-06-07   3rd Qu.:1999-06-07   3rd Qu.:30707   3rd Qu.:9.0     
+##  1st Qu.:1994-02-10   1st Qu.:1989-02-10   1st Qu.:10619   1st Qu.:3.0     
+##  Median :2000-02-28   Median :1995-02-28   Median :21102   Median :4.0     
+##  Mean   :1998-12-07   Mean   :1993-12-06   Mean   :20289   Mean   :5.2     
+##  3rd Qu.:2004-05-20   3rd Qu.:1999-05-20   3rd Qu.:30606   3rd Qu.:9.0     
 ##  Max.   :2007-12-30   Max.   :2002-12-30   Max.   :36806   Max.   :9.0     
-##  NA&#39;s   :7137         NA&#39;s   :7137                         NA&#39;s   :762265  
-##      bdate                civst        civstdat5             d_inddto         
-##  Min.   :1901-02-06   Min.   :1.00   Min.   :1900-07-01   Min.   :1989-01-02  
-##  1st Qu.:1929-11-14   1st Qu.:2.00   1st Qu.:1962-08-04   1st Qu.:2000-03-07  
-##  Median :1938-12-02   Median :4.00   Median :1975-05-17   Median :2006-03-23  
-##  Mean   :1939-05-10   Mean   :3.24   Mean   :1976-07-12   Mean   :2004-12-31  
-##  3rd Qu.:1947-05-02   3rd Qu.:4.00   3rd Qu.:1991-06-01   3rd Qu.:2010-07-12  
-##  Max.   :1987-06-01   Max.   :4.00   Max.   :2013-08-30   Max.   :2013-12-30  
-##                       NA&#39;s   :1105   NA&#39;s   :664932                           
-##     d_uddto              daars1             daars2              diag          
-##  Min.   :1989-01-06   Length:6884192     Length:6884192     Length:6884192    
-##  1st Qu.:2000-08-03   Class :character   Class :character   Class :character  
-##  Median :2006-10-19   Mode  :character   Mode  :character   Mode  :character  
-##  Mean   :2005-07-08                                                           
-##  3rd Qu.:2011-01-19                                                           
-##  Max.   :2014-11-01                                                           
-##                                                                               
-##       diy         family_SES      geokode           mynkod        pattype     
-##  Min.   :1989   Min.   :1.00   Min.   : 1.000   Min.   :   0   Min.   :1.000  
-##  1st Qu.:2000   1st Qu.:3.00   1st Qu.: 2.000   1st Qu.:7103   1st Qu.:1.000  
-##  Median :2006   Median :4.00   Median : 4.000   Median :7725   Median :2.000  
-##  Mean   :2004   Mean   :3.97   Mean   : 6.965   Mean   :7127   Mean   :1.645  
-##  3rd Qu.:2010   3rd Qu.:5.00   3rd Qu.: 7.000   3rd Qu.:8379   3rd Qu.:2.000  
-##  Max.   :2013   Max.   :9.00   Max.   :62.000   Max.   :9999   Max.   :3.000  
-##                                                                               
-##      postnr           sex            social        statdat          
-##  Min.   :1050    Min.   :1.000   Min.   :1.00   Min.   :1989-01-18  
-##  1st Qu.:3060    1st Qu.:1.000   1st Qu.:3.00   1st Qu.:2004-01-23  
-##  Median :5260    Median :1.000   Median :4.00   Median :2009-01-28  
-##  Mean   :5571    Mean   :1.466   Mean   :5.09   Mean   :2007-11-18  
-##  3rd Qu.:7840    3rd Qu.:2.000   3rd Qu.:9.00   3rd Qu.:2012-08-16  
-##  Max.   :9990    Max.   :2.000   Max.   :9.00   Max.   :2017-03-20  
-##  NA&#39;s   :25899                                  NA&#39;s   :3885161     
-##      status         stilkod            place_birth     
-##  Min.   : 1.00   Min.   :  0.0   copenhagen  :1474021  
-##  1st Qu.: 1.00   1st Qu.:202.0   foreign     : 305733  
-##  Median : 1.00   Median :570.0   greenland   :  68821  
-##  Mean   :39.55   Mean   :574.2   other_cities:2382631  
-##  3rd Qu.:90.00   3rd Qu.:999.0   other_dk    :2614695  
-##  Max.   :90.00   Max.   :999.0   unknown     :  38291  
-##                                                        
-##                         residence         birth_year      date_exp         
-##  Greater Copenhagen          : 552746   Min.   :1901   Min.   :1979-01-01  
-##  Big cities of Denmark&gt;10,000:2788180   1st Qu.:1929   1st Qu.:1985-03-01  
-##  Greenland                   :   2239   Median :1938   Median :1991-05-01  
-##  Rest of Denmark             :3515128   Mean   :1939   Mean   :1992-04-03  
-##  Unknown                     :  25899   3rd Qu.:1947   3rd Qu.:1998-08-01  
-##                                         Max.   :1987   Max.   :2013-12-01  
-##                                                        NA&#39;s   :1600        
-##     PM25_str           CO_str            EC_str           NO2_str        
-##  Min.   :  1.572   Min.   :  90.16   Min.   : 0.0289   Min.   :  0.4666  
-##  1st Qu.: 11.171   1st Qu.: 187.93   1st Qu.: 0.5507   1st Qu.: 14.1007  
-##  Median : 14.476   Median : 244.88   Median : 0.8060   Median : 19.1741  
-##  Mean   : 15.139   Mean   : 282.02   Mean   : 0.9474   Mean   : 20.3902  
-##  3rd Qu.: 18.053   3rd Qu.: 321.68   3rd Qu.: 1.1712   3rd Qu.: 24.9813  
-##  Max.   :102.817   Max.   :3398.74   Max.   :15.4809   Max.   :100.3371  
-##  NA&#39;s   :1600      NA&#39;s   :1600      NA&#39;s   :1600      NA&#39;s   :1600      
-##     NOX_str             O3_str            PM10_str      
-##  Min.   :  0.5487   Min.   :  0.3113   Min.   :  3.986  
-##  1st Qu.: 16.3453   1st Qu.: 35.9618   1st Qu.: 17.284  
-##  Median : 23.9377   Median : 50.4190   Median : 20.586  
-##  Mean   : 30.5219   Mean   : 50.4873   Mean   : 21.309  
-##  3rd Qu.: 35.1733   3rd Qu.: 65.2587   3rd Qu.: 24.546  
-##  Max.   :515.6581   Max.   :144.9146   Max.   :123.447  
-##  NA&#39;s   :1600       NA&#39;s   :1600       NA&#39;s   :1600</code></pre>
+##  NA&#39;s   :66844        NA&#39;s   :66844        NA&#39;s   :59707   NA&#39;s   :813438  
+##      bdate                civst         civstdat5             d_inddto         
+##  Min.   :1901-02-06   Min.   :1.00    Min.   :1900-07-01   Min.   :1989-01-02  
+##  1st Qu.:1929-11-02   1st Qu.:2.00    1st Qu.:1962-07-21   1st Qu.:2000-02-15  
+##  Median :1938-12-01   Median :4.00    Median :1975-05-03   Median :2006-03-08  
+##  Mean   :1939-04-18   Mean   :3.24    Mean   :1976-06-24   Mean   :2004-12-17  
+##  3rd Qu.:1947-05-02   3rd Qu.:4.00    3rd Qu.:1991-05-08   3rd Qu.:2010-06-28  
+##  Max.   :1987-06-01   Max.   :4.00    Max.   :2013-08-30   Max.   :2013-12-30  
+##  NA&#39;s   :59707        NA&#39;s   :60812   NA&#39;s   :714097       NA&#39;s   :59707       
+##     d_uddto              daars1             daars2              diag        
+##  Min.   :1989-01-06   Length:6884192     Length:6884192     34809 : 411292  
+##  1st Qu.:2000-07-11   Class :character   Class :character   DG122 :5516319  
+##  Median :2006-10-02   Mode  :character   Mode  :character   DG122G: 896874  
+##  Mean   :2005-06-24                                         NA&#39;s  :  59707  
+##  3rd Qu.:2011-01-10                                                         
+##  Max.   :2014-11-01                                                         
+##  NA&#39;s   :59707                                                              
+##       diy          family_SES       geokode          mynkod      pattype       
+##  Min.   :1989    Min.   :1.00    Min.   : 1.00   Min.   :   0    1   :2444017  
+##  1st Qu.:2000    1st Qu.:3.00    1st Qu.: 2.00   1st Qu.:7103    2   :4358970  
+##  Median :2006    Median :4.00    Median : 4.00   Median :7725    3   :  21498  
+##  Mean   :2004    Mean   :3.97    Mean   : 6.96   Mean   :7127    NA&#39;s:  59707  
+##  3rd Qu.:2010    3rd Qu.:5.00    3rd Qu.: 7.00   3rd Qu.:8378                  
+##  Max.   :2013    Max.   :9.00    Max.   :62.00   Max.   :9999                  
+##  NA&#39;s   :59707   NA&#39;s   :59707   NA&#39;s   :59707   NA&#39;s   :59707                 
+##      postnr           sex            social         statdat          
+##  Min.   :1050    Min.   :1.00    Min.   :1.00    Min.   :1989-01-18  
+##  1st Qu.:3070    1st Qu.:1.00    1st Qu.:3.00    1st Qu.:2004-01-07  
+##  Median :5260    Median :1.00    Median :4.00    Median :2009-01-15  
+##  Mean   :5572    Mean   :1.46    Mean   :5.08    Mean   :2007-11-08  
+##  3rd Qu.:7840    3rd Qu.:2.00    3rd Qu.:9.00    3rd Qu.:2012-08-03  
+##  Max.   :9990    Max.   :2.00    Max.   :9.00    Max.   :2017-03-20  
+##  NA&#39;s   :85338   NA&#39;s   :59707   NA&#39;s   :59707   NA&#39;s   :3901921     
+##      status         stilkod            place_birth        birth_year   
+##  Min.   : 1.00   Min.   :  0.0   copenhagen  :1459581   Min.   :1901   
+##  1st Qu.: 1.00   1st Qu.:202.0   foreign     : 302770   1st Qu.:1929   
+##  Median : 1.00   Median :562.0   greenland   :  67757   Median :1938   
+##  Mean   :39.67   Mean   :573.5   other_cities:2362202   Mean   :1939   
+##  3rd Qu.:90.00   3rd Qu.:999.0   other_dk    :2593928   3rd Qu.:1947   
+##  Max.   :90.00   Max.   :999.0   unknown     :  38247   Max.   :1987   
+##  NA&#39;s   :59707   NA&#39;s   :59707   NA&#39;s        :  59707   NA&#39;s   :59707  
+##     date_exp             PM25_str           CO_str            EC_str       
+##  Min.   :1979-01-01   Min.   :  1.572   Min.   :  90.16   Min.   : 0.0289  
+##  1st Qu.:1985-03-01   1st Qu.: 11.171   1st Qu.: 187.93   1st Qu.: 0.5507  
+##  Median :1991-05-01   Median : 14.476   Median : 244.88   Median : 0.8060  
+##  Mean   :1992-04-03   Mean   : 15.139   Mean   : 282.02   Mean   : 0.9474  
+##  3rd Qu.:1998-08-01   3rd Qu.: 18.053   3rd Qu.: 321.68   3rd Qu.: 1.1712  
+##  Max.   :2013-12-01   Max.   :102.817   Max.   :3398.74   Max.   :15.4809  
+##  NA&#39;s   :1600         NA&#39;s   :1600      NA&#39;s   :1600      NA&#39;s   :1600     
+##     NO2_str            NOX_str             O3_str            PM10_str      
+##  Min.   :  0.4666   Min.   :  0.5487   Min.   :  0.3113   Min.   :  3.986  
+##  1st Qu.: 14.1007   1st Qu.: 16.3453   1st Qu.: 35.9618   1st Qu.: 17.284  
+##  Median : 19.1741   Median : 23.9377   Median : 50.4190   Median : 20.586  
+##  Mean   : 20.3902   Mean   : 30.5219   Mean   : 50.4873   Mean   : 21.309  
+##  3rd Qu.: 24.9813   3rd Qu.: 35.1733   3rd Qu.: 65.2587   3rd Qu.: 24.546  
+##  Max.   :100.3371   Max.   :515.6581   Max.   :144.9146   Max.   :123.447  
+##  NA&#39;s   :1600       NA&#39;s   :1600       NA&#39;s   :1600       NA&#39;s   :1600</code></pre>
 <pre class="r"><code># check number of cases again
 cases_full &lt;- full_dataset %&gt;%
   dplyr::filter(ck == 1) %&gt;%

@@ -45,7 +45,10 @@ The famSES variable refers to the lowest SES category of index-person and spouse
 
 load(paste0(raw_data_files, "ALS_desc_1989_2013_1989_5_2k.RData"))
 
-patient_data <- ALS_desc_1989_2013_1989_5_2k 
+patient_data <- ALS_desc_1989_2013_1989_5_2k %>%
+  dplyr::filter(diag %in% c("DG122", "34809", "DG122G")) %>% # select only codes for ALS and motor neurond disease
+   mutate(diag = as.factor(diag),
+          pattype = as.factor(pattype))
 
 summary(patient_data)
 ```
@@ -88,36 +91,104 @@ Categories:
 4) Rest of Denmark
 5) Unknown
 
+***The comment out code chunk inaccurate codes the zipcode into the above categories. It actually places most observations into the rest of Denmark. 
+
 ```{r}
 
 # classify the residency codes
 
-patient_data$residence <- ifelse(patient_data$postnr>=1000 & patient_data$postnr<2500, 1,                                   ifelse(patient_data$postnr==8722|patient_data$postnr==4690|patient_data$postnr==2800|patient_data$postnr==8300|patient_data$postnr==2791|patient_data$postnr==9500|patient_data$postnr==2640|patient_data$postnr==7600|patient_data$postnr==3060|patient_data$postnr==9700|patient_data$postnr==4760|patient_data$postnr==3300|patient_data$postnr==6800|patient_data$postnr==7700|patient_data$postnr==3500|patient_data$postnr==2625|patient_data$postnr==2665|patient_data$postnr==8660|patient_data$postnr==5500|patient_data$postnr==3700|patient_data$postnr==4900|patient_data$postnr==8500|patient_data$postnr==3600|patient_data$postnr==7430|patient_data$postnr==2680|patient_data$postnr==4220|patient_data$postnr==5800|patient_data$postnr==4400|patient_data$postnr==6200|patient_data$postnr==4800|patient_data$postnr==3520|patient_data$postnr==3460|patient_data$postnr==2635|patient_data$postnr==3660|patient_data$postnr==4100|patient_data$postnr==4129|patient_data$postnr==2600|patient_data$postnr==7800|patient_data$postnr==6100|patient_data$postnr==9400|patient_data$postnr==9900|patient_data$postnr==4300|patient_data$postnr==9800|patient_data$postnr==6400|patient_data$postnr==5700|patient_data$postnr==2610|patient_data$postnr==2620|patient_data$postnr==3400|patient_data$postnr==2630|patient_data$postnr==4200|patient_data$postnr==7500|patient_data$postnr==4600|patient_data$postnr==8800|patient_data$postnr==3000|patient_data$postnr==2970|patient_data$postnr==7000|patient_data$postnr==7007|patient_data$postnr==7029|patient_data$postnr==2720|patient_data$postnr==2750|patient_data$postnr==2920|patient_data$postnr==4700|patient_data$postnr==8600|patient_data$postnr==4000|patient_data$postnr==7400|patient_data$postnr==7429|patient_data$postnr==7429|patient_data$postnr==2670|patient_data$postnr==2650|patient_data$postnr==8700|patient_data$postnr==7100|patient_data$postnr==7120|patient_data$postnr==6000|patient_data$postnr==8960|patient_data$postnr==8900|patient_data$postnr==6715|patient_data$postnr==6700|patient_data$postnr==9220|patient_data$postnr==9000|patient_data$postnr==5270|patient_data$postnr==5000|patient_data$postnr==8000|patient_data$postnr==8210, 2,
-ifelse(patient_data$postnr>=3900 & patient_data$postnr<3993,3,
-ifelse(is.na(patient_data$postnr),5,4))) ) 
-
-patient_data$residence <- ifelse(is.na(patient_data$postnr),5,patient_data$residence)
-
-# label categories 
-patient_data$residence<- factor(patient_data$residence,levels=c('1','2' , '3','4','5'), labels=c("Greater Copenhagen", 
-         "Big cities of Denmark>10,000",
-         "Greenland", 
-         "Rest of Denmark",
-         "Unknown"))
-
-# View summary of variable 
-
-table(patient_data$residence )
-
-summary(patient_data)
+#patient_data$residence <- ifelse(patient_data$postnr>=1000 & patient_data$postnr<2500, 1,          #                         ifelse(patient_data$postnr==8722|patient_data$postnr==4690|patient_data$po#stnr==2800|patient_data$postnr==8300|patient_data$postnr==2791|patient_data$postnr==9500|patient_da#ta$postnr==2640|patient_data$postnr==7600|patient_data$postnr==3060|patient_data$postnr==9700|patie#nt_data$postnr==4760|patient_data$postnr==3300|patient_data$postnr==6800|patient_data$postnr==7700|#patient_data$postnr==3500|patient_data$postnr==2625|patient_data$postnr==2665|patient_data$postnr==#8660|patient_data$postnr==5500|patient_data$postnr==3700|patient_data$postnr==4900|patient_data$pos#tnr==8500|patient_data$postnr==3600|patient_data$postnr==7430|patient_data$postnr==2680|patient_dat#a$postnr==4220|patient_data$postnr==5800|patient_data$postnr==4400|patient_data$postnr==6200|patien#t_data$postnr==4800|patient_data$postnr==3520|patient_data$postnr==3460|patient_data$postnr==2635|p#atient_data$postnr==3660|patient_data$postnr==4100|patient_data$postnr==4129|patient_data$postnr==2#600|patient_data$postnr==7800|patient_data$postnr==6100|patient_data$postnr==9400|patient_data$post#nr==9900|patient_data$postnr==4300|patient_data$postnr==9800|patient_data$postnr==6400|patient_data#$postnr==5700|patient_data$postnr==2610|patient_data$postnr==2620|patient_data$postnr==3400|patient#_data$postnr==2630|patient_data$postnr==4200|patient_data$postnr==7500|patient_data$postnr==4600|pa#tient_data$postnr==8800|patient_data$postnr==3000|patient_data$postnr==2970|patient_data$postnr==70#00|patient_data$postnr==7007|patient_data$postnr==7029|patient_data$postnr==2720|patient_data$postn#r==2750|patient_data$postnr==2920|patient_data$postnr==4700|patient_data$postnr==8600|patient_data$#postnr==4000|patient_data$postnr==7400|patient_data$postnr==7429|patient_data$postnr==7429|patient_#data$postnr==2670|patient_data$postnr==2650|patient_data$postnr==8700|patient_data$postnr==7100|pat#ient_data$postnr==7120|patient_data$postnr==6000|patient_data$postnr==8960|patient_data$postnr==890#0|patient_data$postnr==6715|patient_data$postnr==6700|patient_data$postnr==9220|patient_data$postnr#==9000|patient_data$postnr==5270|patient_data$postnr==5000|patient_data$postnr==8000|patient_data$p#ostnr==8210, 2,
+#ifelse(patient_data$postnr>=3900 & patient_data$postnr<3993,3,
+#ifelse(is.na(patient_data$postnr),5,4))) ) 
+#
+#patient_data$residence <- ifelse(is.na(patient_data$postnr),5,patient_data$residence)
+#
+## label categories 
+#patient_data$residence<- factor(patient_data$residence,levels=c('1','2' , '3','4','5'), #labels=c("Greater Copenhagen", 
+#         "Big cities of Denmark>10,000",
+#         "Greenland", 
+#         "Rest of Denmark",
+#         "Unknown"))
+#
+## View summary of variable 
+#
+#table(patient_data$residence )
+#
+#summary(patient_data)
 ```
+
+Corrected categorical variable for place of residence. 
+
+Most populated cities of Denamrk
+Copenhagen	1,153,615
+Aarhus	237,551
+Odense	145,931
+Aalborg	122,219
+Esbjerg 72,205
+Horsens	58,646
+Randers	55,780
+Kolding
+Vejle 
+
+New Residence categories:
+
+Capital area, which includes Copenhagen
+Cities with >50K population  (the cities listed above other than Copenhagen)
+Greenland
+Rest of Denmark
+Unknown
+
+```{r}
+
+patient_data_resid <- patient_data %>%
+ mutate(residence = if_else(postnr == 3950 |
+                            postnr == 3985 |
+                            postnr == 3952 |
+                            postnr == 3910 |
+                            postnr == 3912 |
+                            postnr == 3921 |
+                            postnr == 3905 |
+                            postnr == 3971 |
+                            postnr == 3951 |
+                            postnr == 3911 |
+                            postnr == 3913 |
+                            postnr == 3919 |  
+                            postnr == 3984 |  
+                            postnr == 3980 |  
+                            postnr == 3930 |
+                            postnr == 3982 |
+                            postnr == 3923 |  
+                            postnr == 3940 |  
+                            postnr == 3964 |  
+                            postnr == 3953 |  
+                            postnr == 3992 |  
+                            postnr == 3962, "Greenland",
+                    if_else(postnr >= 1050 & postnr <= 4050, "Capital Region of Denmark",
+                    if_else(postnr >= 5000 & postnr <= 5320, "Cities >50K population", # Odese
+                    if_else(postnr >= 8000 & postnr <= 8381, "Cities >50K population", # Aarhus
+                    if_else(postnr >= 9000 & postnr <= 9220, "Cities >50K population", # Aalborg
+                    if_else(postnr >= 6700 & postnr <= 6715, "Cities >50K population", 
+                    if_else(postnr >= 8900 & postnr < 8960,  "Cities >50K population",   
+                    if_else(postnr == 7100 | postnr == 7120, "Cities >50K population", 
+                    if_else(postnr == 8830, "Cities >50K population", 
+                    if_else(postnr == 6000, "Cities >50K population", 
+                    if_else(postnr == 8700, "Cities >50K population", "Rest of Denmark")))))))))))) %>% 
+  mutate(residence = replace_na(residence, "Unknown")) %>%
+  mutate(residence = as.factor(residence))
+
+
+summary(patient_data_resid)                                
+                                
+                                  
+```
+
 
 
 ## 4. Make a table 1
 
 ```{r}
 
-table1_prep <- patient_data %>%
+table1_prep <- patient_data_resid %>%
   dplyr::select(nr, lobnr, ck, sex, civst, place_birth, residence, famses) %>%
   unique() %>%
   dplyr::select(-nr, -lobnr) %>%
@@ -136,13 +207,13 @@ table1_prep <- patient_data %>%
          `2`='Widower',
          `1`='Never married'),
   residence = recode_factor(residence, 
-        `Greater Copenhagen`='Greater Copenhagen',
-        `Big cities of Denmark>10,000`='Big cities of Denmark',
+        `Capital Region of Denmark`='Capital Region of Denmark',
+        `Cities >50K population`='Cities >50K population',
         `Rest of Denmark`='Rest of Denmark',
         `Greenland`='Greenland'),
   place_birth=recode_factor(place_birth, 
        `copenhagen`='Greater Copenhagen',
-       `other_cities`='Big cities of Denmark',
+       `other_cities`='Other Major Cities',
        `other_dk`='Rest of Denmark',
        `greenland`='Greenland',
        `foreign`='Foreign',

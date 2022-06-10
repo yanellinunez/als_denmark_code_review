@@ -17,6 +17,9 @@ Objective:
 - We also set some criteria for the cases/controls that should be included in the analysis. More details about this are presented below. 
 
 
+***Note, I re-run all code to remove the G12.2A:F subcategories but didn't update the numbers in the notes below. The numbers remain pretty similar though 
+
+
 ```{r include=FALSE}
 
 rm(list=ls())
@@ -103,6 +106,17 @@ Notes:
 2) The one-year window of exposure has a total of 23,732 case/controls with a **total of 3,952 cases** specifically and ***19,780 controls***. This means **59 cases** from the original data have zero observations during this year. That is, the data is missing ***1.5%*** of cases from the original dataset
 
 3) Overall 93 out of 23,732 cases/controls **(0.39%)** are missing one or more of the 12 months for the one year exposure window
+
+
+***After removing the G12.2A:F subcategories codes. The numbers are as follow:
+
+Notes: 
+
+1) In the original dataset there is a total of 3,941 cases. If each case has 5 controls then there should be a total of 19,705 controls, that is, 23,326 net total. 
+
+2) The one-year window of exposure has a total of 23,567 case/controls with a **total of 3,924 cases** specifically and ***19,643 controls***. This means **28 cases** from the original data have zero observations during this year. That is, the data is missing ***0.7%*** of cases from the original dataset
+
+3) Overall 92 out of 23,326 cases/controls **(0.39%)** are missing one or more of the 12 months for the one year exposure window
 
 
 ```{r}
