@@ -98,9 +98,8 @@ exp_excluded_neigh_SES <- excluded_neigh_SES %>%
 ```
 
 
-## 4. Prep matrixes for models
+## 4. Crossbasis
 
-### 4a. Crossbasis
 
 All crossbases have a linear dose-response relationship
 

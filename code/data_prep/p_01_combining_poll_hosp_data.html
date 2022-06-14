@@ -1771,13 +1771,21 @@ summary(patient_data)</code></pre>
 ##  3rd Qu.:2.000   3rd Qu.:9.000   3rd Qu.:2011-12-18   3rd Qu.:90.00  
 ##  Max.   :2.000   Max.   :9.000   Max.   :2017-03-20   Max.   :90.00  
 ##                                  NA&#39;s   :12184                       
-##     stilkod            place_birth     birth_year  
-##  Min.   :  0.0   copenhagen  :4991   Min.   :1901  
-##  1st Qu.:204.0   foreign     :1160   1st Qu.:1927  
-##  Median :664.0   greenland   : 307   Median :1936  
-##  Mean   :587.6   other_cities:8116   Mean   :1937  
-##  3rd Qu.:999.0   other_dk    :9170   3rd Qu.:1946  
-##  Max.   :999.0   unknown     : 154   Max.   :1987  
+##     stilkod            place_birth                       residence    
+##  Min.   :  0.0   copenhagen  :4991   Capital Region of Denmark: 7959  
+##  1st Qu.:204.0   foreign     :1160   Cities &gt;50K population   : 3771  
+##  Median :664.0   greenland   : 307   Greenland                :   41  
+##  Mean   :587.6   other_cities:8116   Rest of Denmark          :11954  
+##  3rd Qu.:999.0   other_dk    :9170   Unknown                  :  173  
+##  Max.   :999.0   unknown     : 154                                    
+##                                                                       
+##    birth_year  
+##  Min.   :1901  
+##  1st Qu.:1927  
+##  Median :1936  
+##  Mean   :1937  
+##  3rd Qu.:1946  
+##  Max.   :1987  
 ## </code></pre>
 <pre class="r"><code># Check how many cases I have total
 cases &lt;- patient_data %&gt;%
@@ -1856,30 +1864,38 @@ summary(full_dataset)</code></pre>
 ##  3rd Qu.:7840    3rd Qu.:2.00    3rd Qu.:9.00    3rd Qu.:2012-08-03  
 ##  Max.   :9990    Max.   :2.00    Max.   :9.00    Max.   :2017-03-20  
 ##  NA&#39;s   :85338   NA&#39;s   :59707   NA&#39;s   :59707   NA&#39;s   :3901921     
-##      status         stilkod            place_birth        birth_year   
-##  Min.   : 1.00   Min.   :  0.0   copenhagen  :1459581   Min.   :1901   
-##  1st Qu.: 1.00   1st Qu.:202.0   foreign     : 302770   1st Qu.:1929   
-##  Median : 1.00   Median :562.0   greenland   :  67757   Median :1938   
-##  Mean   :39.67   Mean   :573.5   other_cities:2362202   Mean   :1939   
-##  3rd Qu.:90.00   3rd Qu.:999.0   other_dk    :2593928   3rd Qu.:1947   
-##  Max.   :90.00   Max.   :999.0   unknown     :  38247   Max.   :1987   
-##  NA&#39;s   :59707   NA&#39;s   :59707   NA&#39;s        :  59707   NA&#39;s   :59707  
-##     date_exp             PM25_str           CO_str            EC_str       
-##  Min.   :1979-01-01   Min.   :  1.572   Min.   :  90.16   Min.   : 0.0289  
-##  1st Qu.:1985-03-01   1st Qu.: 11.171   1st Qu.: 187.93   1st Qu.: 0.5507  
-##  Median :1991-05-01   Median : 14.476   Median : 244.88   Median : 0.8060  
-##  Mean   :1992-04-03   Mean   : 15.139   Mean   : 282.02   Mean   : 0.9474  
-##  3rd Qu.:1998-08-01   3rd Qu.: 18.053   3rd Qu.: 321.68   3rd Qu.: 1.1712  
-##  Max.   :2013-12-01   Max.   :102.817   Max.   :3398.74   Max.   :15.4809  
-##  NA&#39;s   :1600         NA&#39;s   :1600      NA&#39;s   :1600      NA&#39;s   :1600     
-##     NO2_str            NOX_str             O3_str            PM10_str      
-##  Min.   :  0.4666   Min.   :  0.5487   Min.   :  0.3113   Min.   :  3.986  
-##  1st Qu.: 14.1007   1st Qu.: 16.3453   1st Qu.: 35.9618   1st Qu.: 17.284  
-##  Median : 19.1741   Median : 23.9377   Median : 50.4190   Median : 20.586  
-##  Mean   : 20.3902   Mean   : 30.5219   Mean   : 50.4873   Mean   : 21.309  
-##  3rd Qu.: 24.9813   3rd Qu.: 35.1733   3rd Qu.: 65.2587   3rd Qu.: 24.546  
-##  Max.   :100.3371   Max.   :515.6581   Max.   :144.9146   Max.   :123.447  
-##  NA&#39;s   :1600       NA&#39;s   :1600       NA&#39;s   :1600       NA&#39;s   :1600</code></pre>
+##      status         stilkod            place_birth     
+##  Min.   : 1.00   Min.   :  0.0   copenhagen  :1459581  
+##  1st Qu.: 1.00   1st Qu.:202.0   foreign     : 302770  
+##  Median : 1.00   Median :562.0   greenland   :  67757  
+##  Mean   :39.67   Mean   :573.5   other_cities:2362202  
+##  3rd Qu.:90.00   3rd Qu.:999.0   other_dk    :2593928  
+##  Max.   :90.00   Max.   :999.0   unknown     :  38247  
+##  NA&#39;s   :59707   NA&#39;s   :59707   NA&#39;s        :  59707  
+##                      residence         birth_year       date_exp         
+##  Capital Region of Denmark:2281740   Min.   :1901    Min.   :1979-01-01  
+##  Cities &gt;50K population   :1076245   1st Qu.:1929    1st Qu.:1985-03-01  
+##  Greenland                :   1607   Median :1938    Median :1991-05-01  
+##  Rest of Denmark          :3439262   Mean   :1939    Mean   :1992-04-03  
+##  Unknown                  :  25631   3rd Qu.:1947    3rd Qu.:1998-08-01  
+##  NA&#39;s                     :  59707   Max.   :1987    Max.   :2013-12-01  
+##                                      NA&#39;s   :59707   NA&#39;s   :1600        
+##     PM25_str           CO_str            EC_str           NO2_str        
+##  Min.   :  1.572   Min.   :  90.16   Min.   : 0.0289   Min.   :  0.4666  
+##  1st Qu.: 11.171   1st Qu.: 187.93   1st Qu.: 0.5507   1st Qu.: 14.1007  
+##  Median : 14.476   Median : 244.88   Median : 0.8060   Median : 19.1741  
+##  Mean   : 15.139   Mean   : 282.02   Mean   : 0.9474   Mean   : 20.3902  
+##  3rd Qu.: 18.053   3rd Qu.: 321.68   3rd Qu.: 1.1712   3rd Qu.: 24.9813  
+##  Max.   :102.817   Max.   :3398.74   Max.   :15.4809   Max.   :100.3371  
+##  NA&#39;s   :1600      NA&#39;s   :1600      NA&#39;s   :1600      NA&#39;s   :1600      
+##     NOX_str             O3_str            PM10_str      
+##  Min.   :  0.5487   Min.   :  0.3113   Min.   :  3.986  
+##  1st Qu.: 16.3453   1st Qu.: 35.9618   1st Qu.: 17.284  
+##  Median : 23.9377   Median : 50.4190   Median : 20.586  
+##  Mean   : 30.5219   Mean   : 50.4873   Mean   : 21.309  
+##  3rd Qu.: 35.1733   3rd Qu.: 65.2587   3rd Qu.: 24.546  
+##  Max.   :515.6581   Max.   :144.9146   Max.   :123.447  
+##  NA&#39;s   :1600       NA&#39;s   :1600       NA&#39;s   :1600</code></pre>
 <pre class="r"><code># check number of cases again
 cases_full &lt;- full_dataset %&gt;%
   dplyr::filter(ck == 1) %&gt;%

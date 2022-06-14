@@ -1602,10 +1602,10 @@ div.tocify {
   ungroup() %&gt;%
    dplyr::select(-year_gap, -one_year, -five_years, -ten_years, -PM25_str, -CO_str, -EC_str, -NOX_str, -O3_str, -PM10_str, -NO2_str, -date_exp) %&gt;% # remove monthly measures and keep only the 1-year average estimates
   unique() </code></pre>
-<pre><code>## Rows: 278211 Columns: 40</code></pre>
+<pre><code>## Rows: 278211 Columns: 41</code></pre>
 <pre><code>## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
-## chr   (4): daars1, daars2, diag, place_birth
+## chr   (5): daars1, daars2, diag, place_birth, residence
 ## dbl  (25): nr, lobnr, ck, diagtype, ID, aegtesocial, civst, diy, family_SES,...
 ## date (11): diagdat, year_gap, one_year, five_years, ten_years, bdate, civstd...</code></pre>
 <pre><code>## 
@@ -1660,29 +1660,29 @@ div.tocify {
 ##  3rd Qu.:2.000   3rd Qu.:9.000   3rd Qu.:2011-12-19   3rd Qu.:90.00  
 ##  Max.   :2.000   Max.   :9.000   Max.   :2017-03-20   Max.   :90.00  
 ##                                  NA&#39;s   :11821                       
-##     stilkod      place_birth          birth_year      PM25_1yr     
-##  Min.   :  0.0   Length:23189       Min.   :1901   Min.   : 6.389  
-##  1st Qu.:204.0   Class :character   1st Qu.:1927   1st Qu.:10.093  
-##  Median :650.0   Mode  :character   Median :1936   Median :11.486  
-##  Mean   :586.3                      Mean   :1937   Mean   :12.002  
-##  3rd Qu.:999.0                      3rd Qu.:1946   3rd Qu.:13.514  
-##  Max.   :999.0                      Max.   :1987   Max.   :28.332  
-##                                                                    
-##      CO_1yr          NO2_1yr          NOX_1yr            O3_1yr     
-##  Min.   : 131.4   Min.   : 5.513   Min.   :  6.019   Min.   :18.65  
-##  1st Qu.: 170.6   1st Qu.:13.151   1st Qu.: 15.091   1st Qu.:49.31  
-##  Median : 198.3   Median :16.741   Median : 20.452   Median :53.44  
-##  Mean   : 224.8   Mean   :18.256   Mean   : 25.773   Mean   :52.55  
-##  3rd Qu.: 241.3   3rd Qu.:21.811   3rd Qu.: 29.206   3rd Qu.:56.70  
-##  Max.   :1466.3   Max.   :65.418   Max.   :303.138   Max.   :68.95  
-##                                                                     
-##     PM10_1yr         EC_1yr      
-##  Min.   :11.60   Min.   :0.2213  
-##  1st Qu.:16.07   1st Qu.:0.5689  
-##  Median :17.50   Median :0.7268  
-##  Mean   :18.13   Mean   :0.8151  
-##  3rd Qu.:19.84   3rd Qu.:0.9266  
-##  Max.   :38.05   Max.   :5.4814  
+##     stilkod      place_birth         residence           birth_year  
+##  Min.   :  0.0   Length:23189       Length:23189       Min.   :1901  
+##  1st Qu.:204.0   Class :character   Class :character   1st Qu.:1927  
+##  Median :650.0   Mode  :character   Mode  :character   Median :1936  
+##  Mean   :586.3                                         Mean   :1937  
+##  3rd Qu.:999.0                                         3rd Qu.:1946  
+##  Max.   :999.0                                         Max.   :1987  
+##                                                                      
+##     PM25_1yr          CO_1yr          NO2_1yr          NOX_1yr       
+##  Min.   : 6.389   Min.   : 131.4   Min.   : 5.513   Min.   :  6.019  
+##  1st Qu.:10.093   1st Qu.: 170.6   1st Qu.:13.151   1st Qu.: 15.091  
+##  Median :11.486   Median : 198.3   Median :16.741   Median : 20.452  
+##  Mean   :12.002   Mean   : 224.8   Mean   :18.256   Mean   : 25.773  
+##  3rd Qu.:13.514   3rd Qu.: 241.3   3rd Qu.:21.811   3rd Qu.: 29.206  
+##  Max.   :28.332   Max.   :1466.3   Max.   :65.418   Max.   :303.138  
+##                                                                      
+##      O3_1yr         PM10_1yr         EC_1yr      
+##  Min.   :18.65   Min.   :11.60   Min.   :0.2213  
+##  1st Qu.:49.31   1st Qu.:16.07   1st Qu.:0.5689  
+##  Median :53.44   Median :17.50   Median :0.7268  
+##  Mean   :52.55   Mean   :18.13   Mean   :0.8151  
+##  3rd Qu.:56.70   3rd Qu.:19.84   3rd Qu.:0.9266  
+##  Max.   :68.95   Max.   :38.05   Max.   :5.4814  
 ## </code></pre>
 <pre class="r"><code># check that we have the 3942 cases 
 check_cases &lt;- avg_1yr %&gt;%
@@ -1712,10 +1712,10 @@ write_csv(avg_1yr, paste0(yanelli_datasets, &quot;one_yr_avg_data.csv&quot;))</c
   ungroup() %&gt;%
    dplyr::select(-year_gap, -one_year, -five_years, -ten_years, -PM25_str, -CO_str, -EC_str, -NOX_str, -O3_str, -PM10_str, -NO2_str, -date_exp) %&gt;%
   unique() </code></pre>
-<pre><code>## Rows: 1387002 Columns: 40</code></pre>
+<pre><code>## Rows: 1387002 Columns: 41</code></pre>
 <pre><code>## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
-## chr   (4): daars1, daars2, diag, place_birth
+## chr   (5): daars1, daars2, diag, place_birth, residence
 ## dbl  (25): nr, lobnr, ck, diagtype, ID, aegtesocial, civst, diy, family_SES,...
 ## date (11): diagdat, year_gap, one_year, five_years, ten_years, bdate, civstd...</code></pre>
 <pre><code>## 
@@ -1770,29 +1770,29 @@ write_csv(avg_1yr, paste0(yanelli_datasets, &quot;one_yr_avg_data.csv&quot;))</c
 ##  3rd Qu.:2.000   3rd Qu.:9.000   3rd Qu.:2011-12-25   3rd Qu.:90.00  
 ##  Max.   :2.000   Max.   :9.000   Max.   :2017-03-20   Max.   :90.00  
 ##                                  NA&#39;s   :11835                       
-##     stilkod      place_birth          birth_year      PM25_5yr     
-##  Min.   :  0.0   Length:23174       Min.   :1901   Min.   : 7.072  
-##  1st Qu.:204.0   Class :character   1st Qu.:1927   1st Qu.:10.727  
-##  Median :641.0   Mode  :character   Median :1936   Median :11.979  
-##  Mean   :585.9                      Mean   :1937   Mean   :12.626  
-##  3rd Qu.:999.0                      3rd Qu.:1946   3rd Qu.:14.257  
-##  Max.   :999.0                      Max.   :1987   Max.   :28.698  
-##                                                                    
-##      CO_5yr          NO2_5yr          NOX_5yr            O3_5yr     
-##  Min.   : 137.2   Min.   : 5.937   Min.   :  6.463   Min.   :18.93  
-##  1st Qu.: 178.5   1st Qu.:13.818   1st Qu.: 16.092   1st Qu.:48.70  
-##  Median : 209.0   Median :17.468   Median : 21.813   Median :52.80  
-##  Mean   : 238.0   Mean   :18.934   Mean   : 27.247   Mean   :51.92  
-##  3rd Qu.: 256.7   3rd Qu.:22.457   3rd Qu.: 30.746   3rd Qu.:56.00  
-##  Max.   :1485.4   Max.   :62.982   Max.   :285.899   Max.   :66.72  
-##                                                                     
-##     PM10_5yr         EC_5yr      
-##  Min.   :12.39   Min.   :0.2433  
-##  1st Qu.:16.61   1st Qu.:0.6028  
-##  Median :18.06   Median :0.7623  
-##  Mean   :18.78   Mean   :0.8518  
-##  3rd Qu.:20.61   3rd Qu.:0.9623  
-##  Max.   :37.65   Max.   :5.3793  
+##     stilkod      place_birth         residence           birth_year  
+##  Min.   :  0.0   Length:23174       Length:23174       Min.   :1901  
+##  1st Qu.:204.0   Class :character   Class :character   1st Qu.:1927  
+##  Median :641.0   Mode  :character   Mode  :character   Median :1936  
+##  Mean   :585.9                                         Mean   :1937  
+##  3rd Qu.:999.0                                         3rd Qu.:1946  
+##  Max.   :999.0                                         Max.   :1987  
+##                                                                      
+##     PM25_5yr          CO_5yr          NO2_5yr          NOX_5yr       
+##  Min.   : 7.072   Min.   : 137.2   Min.   : 5.937   Min.   :  6.463  
+##  1st Qu.:10.727   1st Qu.: 178.5   1st Qu.:13.818   1st Qu.: 16.092  
+##  Median :11.979   Median : 209.0   Median :17.468   Median : 21.813  
+##  Mean   :12.626   Mean   : 238.0   Mean   :18.934   Mean   : 27.247  
+##  3rd Qu.:14.257   3rd Qu.: 256.7   3rd Qu.:22.457   3rd Qu.: 30.746  
+##  Max.   :28.698   Max.   :1485.4   Max.   :62.982   Max.   :285.899  
+##                                                                      
+##      O3_5yr         PM10_5yr         EC_5yr      
+##  Min.   :18.93   Min.   :12.39   Min.   :0.2433  
+##  1st Qu.:48.70   1st Qu.:16.61   1st Qu.:0.6028  
+##  Median :52.80   Median :18.06   Median :0.7623  
+##  Mean   :51.92   Mean   :18.78   Mean   :0.8518  
+##  3rd Qu.:56.00   3rd Qu.:20.61   3rd Qu.:0.9623  
+##  Max.   :66.72   Max.   :37.65   Max.   :5.3793  
 ## </code></pre>
 <pre class="r"><code># check that we have the 3942 cases 
 
@@ -1823,10 +1823,10 @@ write_csv(avg_5yr, paste0(yanelli_datasets, &quot;five_yrs_avg_data.csv&quot;))<
   ungroup() %&gt;%
    dplyr::select(-year_gap, -one_year, -five_years, -ten_years, -PM25_str, -CO_str, -EC_str, -NOX_str, -O3_str, -PM10_str, -NO2_str, -date_exp) %&gt;%
   unique() </code></pre>
-<pre><code>## Rows: 2760877 Columns: 40</code></pre>
+<pre><code>## Rows: 2760877 Columns: 41</code></pre>
 <pre><code>## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
-## chr   (4): daars1, daars2, diag, place_birth
+## chr   (5): daars1, daars2, diag, place_birth, residence
 ## dbl  (25): nr, lobnr, ck, diagtype, ID, aegtesocial, civst, diy, family_SES,...
 ## date (11): diagdat, year_gap, one_year, five_years, ten_years, bdate, civstd...</code></pre>
 <pre><code>## 
@@ -1881,29 +1881,29 @@ write_csv(avg_5yr, paste0(yanelli_datasets, &quot;five_yrs_avg_data.csv&quot;))<
 ##  3rd Qu.:2.000   3rd Qu.:9.000   3rd Qu.:2011-12-22   3rd Qu.:90.00  
 ##  Max.   :2.000   Max.   :9.000   Max.   :2017-03-20   Max.   :90.00  
 ##                                  NA&#39;s   :11808                       
-##     stilkod      place_birth          birth_year     PM25_10yr     
-##  Min.   :  0.0   Length:23134       Min.   :1901   Min.   : 7.777  
-##  1st Qu.:204.0   Class :character   1st Qu.:1927   1st Qu.:11.293  
-##  Median :638.0   Mode  :character   Median :1936   Median :12.753  
-##  Mean   :585.6                      Mean   :1937   Mean   :13.429  
-##  3rd Qu.:999.0                      3rd Qu.:1946   3rd Qu.:15.276  
-##  Max.   :999.0                      Max.   :1987   Max.   :29.387  
-##                                                                    
-##     CO_10yr          NO2_10yr         NOX_10yr          O3_10yr     
-##  Min.   : 143.7   Min.   : 6.395   Min.   :  6.935   Min.   :19.02  
-##  1st Qu.: 188.8   1st Qu.:14.509   1st Qu.: 17.128   1st Qu.:48.02  
-##  Median : 222.7   Median :18.127   Median : 23.227   Median :52.18  
-##  Mean   : 253.6   Mean   :19.550   Mean   : 28.655   Mean   :51.32  
-##  3rd Qu.: 275.2   3rd Qu.:23.120   3rd Qu.: 32.068   3rd Qu.:55.42  
-##  Max.   :1576.5   Max.   :61.826   Max.   :263.118   Max.   :65.62  
-##                                                                     
-##    PM10_10yr        EC_10yr      
-##  Min.   :13.14   Min.   :0.2590  
-##  1st Qu.:17.15   1st Qu.:0.6297  
-##  Median :18.95   Median :0.7939  
-##  Mean   :19.57   Mean   :0.8875  
-##  3rd Qu.:21.63   3rd Qu.:1.0022  
-##  Max.   :38.47   Max.   :5.3694  
+##     stilkod      place_birth         residence           birth_year  
+##  Min.   :  0.0   Length:23134       Length:23134       Min.   :1901  
+##  1st Qu.:204.0   Class :character   Class :character   1st Qu.:1927  
+##  Median :638.0   Mode  :character   Mode  :character   Median :1936  
+##  Mean   :585.6                                         Mean   :1937  
+##  3rd Qu.:999.0                                         3rd Qu.:1946  
+##  Max.   :999.0                                         Max.   :1987  
+##                                                                      
+##    PM25_10yr         CO_10yr          NO2_10yr         NOX_10yr      
+##  Min.   : 7.777   Min.   : 143.7   Min.   : 6.395   Min.   :  6.935  
+##  1st Qu.:11.293   1st Qu.: 188.8   1st Qu.:14.509   1st Qu.: 17.128  
+##  Median :12.753   Median : 222.7   Median :18.127   Median : 23.227  
+##  Mean   :13.429   Mean   : 253.6   Mean   :19.550   Mean   : 28.655  
+##  3rd Qu.:15.276   3rd Qu.: 275.2   3rd Qu.:23.120   3rd Qu.: 32.068  
+##  Max.   :29.387   Max.   :1576.5   Max.   :61.826   Max.   :263.118  
+##                                                                      
+##     O3_10yr        PM10_10yr        EC_10yr      
+##  Min.   :19.02   Min.   :13.14   Min.   :0.2590  
+##  1st Qu.:48.02   1st Qu.:17.15   1st Qu.:0.6297  
+##  Median :52.18   Median :18.95   Median :0.7939  
+##  Mean   :51.32   Mean   :19.57   Mean   :0.8875  
+##  3rd Qu.:55.42   3rd Qu.:21.63   3rd Qu.:1.0022  
+##  Max.   :65.62   Max.   :38.47   Max.   :5.3694  
 ## </code></pre>
 <pre class="r"><code># check that we have the 3938 cases 
 check_cases &lt;- avg_10yr %&gt;%

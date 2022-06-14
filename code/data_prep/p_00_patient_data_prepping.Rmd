@@ -244,6 +244,6 @@ table_1 %>%
 ## 5. Save data
 
 ```{r}
-saveRDS(patient_data, file = "//fsmsph/msph_ehs$/APALS_DanishData/fromJohnni/patient_data_uniform_complete.rds")
+saveRDS(patient_data_resid, file = "//fsmsph/msph_ehs$/APALS_DanishData/fromJohnni/patient_data_uniform_complete.rds")
 ```
 
