@@ -1,6 +1,7 @@
 ---
-title: "m_04_sex_stratified_analysis"
+title: "m_05_age_stratified_lag_analysis"
 author: "Yanelli Nunez"
+date: "6/14/2022"
 output:
  html_document:
     toc: TRUE
@@ -14,10 +15,10 @@ editor_options:
 
 * Objective * 
 
-Construct models stratified by sex (one model per sex). 
+Construct models stratified by age (one model per age group). 
 
-Male = 1
-Female = 2
+- above 65 years of age
+- less or 65 years of age
 
 
 
@@ -47,12 +48,28 @@ source(paste0(file.locations.folder,'file_locations.R'))
 
 ## 1. Organize data 
 
+- Create a variable for age
+
+```{r}
+
+summary(data_lags)
+
+age_data <- data_lags %>%
+  mutate(age = trunc((bdate %--% diagdat) / years(1)))
+
+summary(age_data)
+
+hist(age_data$age)
+
+```
+
+
 - Arrange data into the proper format for the lag analysis
 
 
 ```{r}
 
-lag_wide <- data_lags %>%
+lag_wide <- age_data %>%
  group_by(nr, lobnr) %>%
   mutate(lags = as.character(lags), 
          lags = paste0("lag_", lags)) %>%
@@ -63,12 +80,12 @@ summary(lag_wide)
 
 head(lag_wide, 8)
 
-# sex stratified datasets 
-lag_male <- lag_wide %>%
-  dplyr::filter(sex == 1)
+# age stratified datasets 
+lag_66yr <- lag_wide %>%
+  dplyr::filter(age > 65) # above 65yrs
 
-lag_female <- lag_wide %>%
-  dplyr::filter(sex ==2)
+lag_65yr <- lag_wide %>%
+  dplyr::filter(age <= 65) # equal or below 65yrs
 
 ```
 
@@ -81,16 +98,16 @@ For lags 1-10
 
 # matrix with 10 lags
 
-# male
-m_exp_matrix <- lag_male %>%
-  dplyr::select(33:43) %>%
+# above 65yrs
+exp_matrix_66yr <- lag_66yr %>%
+  dplyr::select(34:44) %>%
   dplyr::select(lag_1, lag_2, lag_3, lag_4, lag_5, lag_6, lag_7, lag_8, lag_9, lag_10)
 
 
 
-# female
-f_exp_matrix <- lag_female %>%
-  dplyr::select(33:43) %>%
+# equal or below 65yrs
+exp_matrix_65yr <- lag_65yr %>%
+  dplyr::select(34:44) %>%
   dplyr::select(lag_1, lag_2, lag_3, lag_4, lag_5, lag_6, lag_7, lag_8, lag_9, lag_10)
 
 
@@ -101,7 +118,7 @@ f_exp_matrix <- lag_female %>%
 
 All crossbases have a linear dose-response relationship
 
-In the main analysis we found that the model with a lag constrained with 3df has a better fit. So here we use 3df for the sex stratified models
+In the main analysis we found that the model with a lag constrained with 3df has a better fit. So here we use 3df for the age stratified models
 
 
 ```{r}
@@ -109,14 +126,14 @@ In the main analysis we found that the model with a lag constrained with 3df has
 # Crossbasis with 10 lags 
 
 # male 
-m.cb.lin <- crossbasis(m_exp_matrix, 
+cb.lin.66yr <- crossbasis(exp_matrix_66yr, 
                  lag=c(1,10),
                  argvar=list(fun = "lin"), # form of the dose-response within each lag
                  arglag=list(fun= "ns", df = 3)) # the form of the curve across all the lags, that is, the lag constrain 
 
 
 # female
-f.cb.lin <- crossbasis(f_exp_matrix, 
+cb.lin.65yr <- crossbasis(exp_matrix_65yr, 
                  lag=c(1,10),
                  argvar=list(fun = "lin"), # form of the dose-response within each lag
                  arglag=list(fun= "ns", df = 3)) # the form of the curve across all the lags, that is, the lag constrain 
@@ -131,26 +148,26 @@ f.cb.lin <- crossbasis(f_exp_matrix,
 Linear conditional logistic models with 10 lags and 3 df in the lag constrain
 
 
-### 4a. Male 
+### 4a. >65 years
 
 
 ```{r}
 
 # run model
-clogit.lin.male <- survival::clogit(ck ~ m.cb.lin + 
+clogit.lin.66yrs <- survival::clogit(ck ~ cb.lin.66yr + 
                                family_SES +
                                place_birth +
                                civst +
                                residence + 
-                               strata(nr), method = "efron", data = lag_male)
+                               strata(nr), method = "efron", data = lag_66yr)
 
-summary(clogit.lin.male)
+summary(clogit.lin.66yrs)
 
 
 # Predict
-pred.lin.male <- crosspred(
-  m.cb.lin, # crossbasis
-  clogit.lin.male, # model
+pred.lin.66yr <- crosspred(
+  cb.lin.66yr, # crossbasis
+  clogit.lin.66yrs, # model
   at = 1:30, # range values of PM2.5 to use for prediction select based on min/max pm2.5 concentrations in dataset
   bylag = 1, # lag increments 
   cumul = TRUE, # estimate cumulative effect
@@ -160,11 +177,11 @@ pred.lin.male <- crosspred(
 ## Visuals
 
 # 3-D plot
-plot(pred.lin.male, zlab="OR", xlab="Exposure", ylab="Lag (years)",
+plot(pred.lin.66yr, zlab="OR", xlab="Exposure", ylab="Lag (years)",
        theta=40, phi=30, lphi=30)
 
 # Plot lag exposure-response at exposure of 10ug/m3
-plot(pred.lin.male, 
+plot(pred.lin.66yr, 
      var = 10, 
      col = "red", 
      ci.arg = list(density = 15, lwd =2),
@@ -174,34 +191,36 @@ plot(pred.lin.male,
 
 ## Extract estimates per lag 
 # I created the OR_lag() and OR_cumm() function to extract the per lag and cummulative estimates and organize them into a dataset to use later for figures. The functions are in  the functions_yanelli.R  file  in this folder
-OR_lag_male <- OR_lag(pred.lin.male, "male")
+OR_lag_66yrs <- OR_lag(pred.lin.66yr, "66yrs")
 
 
 ## Extract cumulative estimates for 1, 5 and 10 lags
 
-OR_cumm_male <- OR_cumm(pred.lin.male, "male")
+OR_cumm_66yrs <- OR_cumm(pred.lin.66yr, "66yrs")
 
 ```
 
-### 4b. Female 
+### 4b. <= 64 years
+
 
 ```{r}
 
 # run model
-clogit.lin.female <- survival::clogit(ck ~ f.cb.lin + 
+
+clogit.lin.65yrs <- survival::clogit(ck ~ cb.lin.65yr + 
                                family_SES +
                                place_birth +
                                civst +
                                residence + 
-                               strata(nr), method = "efron", data = lag_female)
+                               strata(nr), method = "efron", data = lag_65yr)
 
-summary(clogit.lin.female)
+summary(clogit.lin.65yrs)
 
 
 # Predict
-pred.lin.female <- crosspred(
-  f.cb.lin, # crossbasis
-  clogit.lin.female, # model
+pred.lin.65yr <- crosspred(
+  cb.lin.65yr, # crossbasis
+  clogit.lin.65yrs, # model
   at = 1:30, # range values of PM2.5 to use for prediction select based on min/max pm2.5 concentrations in dataset
   bylag = 1, # lag increments 
   cumul = TRUE, # estimate cumulative effect
@@ -211,11 +230,11 @@ pred.lin.female <- crosspred(
 ## Visuals
 
 # 3-D plot
-plot(pred.lin.female, zlab="OR", xlab="Exposure", ylab="Lag (years)",
+plot(pred.lin.65yr, zlab="OR", xlab="Exposure", ylab="Lag (years)",
        theta=40, phi=30, lphi=30)
 
 # Plot lag exposure-response at exposure of 10ug/m3
-plot(pred.lin.female, 
+plot(pred.lin.65yr, 
      var = 10, 
      col = "red", 
      ci.arg = list(density = 15, lwd =2),
@@ -225,12 +244,12 @@ plot(pred.lin.female,
 
 ## Extract estimates per lag 
 # I created the OR_lag() and OR_cumm() function to extract the per lag and cummulative estimates and organize them into a dataset to use later for figures. The functions are in  the functions_yanelli.R  file  in this folder
-OR_lag_female <- OR_lag(pred.lin.female, "female")
+OR_lag_65yrs <- OR_lag(pred.lin.65yr, "65yrs")
 
 
 ## Extract cumulative estimates for 1, 5 and 10 lags
 
-OR_cumm_female <- OR_cumm(pred.lin.female, "female")
+OR_cumm_65yrs <- OR_cumm(pred.lin.65yr, "65yrs")
 
 ```
 
@@ -242,21 +261,20 @@ OR_cumm_female <- OR_cumm(pred.lin.female, "female")
 
 # by lag effect estimates
 
-per_lag_effects <- rbind(OR_lag_female, OR_lag_male) %>%
+per_lag_effects <- rbind(OR_lag_66yrs, OR_lag_65yrs) %>%
 dplyr::rename(model = lag_constr)
 
 knitr::kable(per_lag_effects)
 
- write_csv(per_lag_effects, paste0(output.folder, "sex_distributed_lags_OR.csv"))
+ write_csv(per_lag_effects, paste0(output.folder, "age_distributed_lags_OR.csv"))
 
 # cumulative estimates 
 
-cumm_effects <- rbind(OR_cumm_male, OR_cumm_female) %>%
+cumm_effects <- rbind(OR_cumm_66yrs, OR_cumm_65yrs) %>%
  dplyr::rename(model = lag_constr)
 
 knitr::kable(cumm_effects)
 
- write_csv(cumm_effects, paste0(output.folder, "sex_cumm_lags_OR.csv"))
+ write_csv(cumm_effects, paste0(output.folder, "age_cumm_lags_OR.csv"))
 
 ```
-

@@ -187,8 +187,8 @@ plot(pred.lin.4,
 
 
 ## Extract estimates per lag 
-# I created the OR_lag() and OR_cumm() function to extract the per lag and cummulative estimates and organize them into a dataset to use later for figures. The functions aare in  the functions_yanelli.R  file  in this folder
-OR_4df <- OR_lag(pred.lin.4, "4-df")
+# I created the OR_lag() and OR_cumm() function to extract the per lag and cummulative estimates and organize them into a dataset to use later for figures. The functions are in  the functions_yanelli.R  file  in this folder
+OR_4df <- OR_lag(pred.lin.4, "4-df") 
 
 
 ## Extract cumulative estimates for 1, 5 and 10 lags
