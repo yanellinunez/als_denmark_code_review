@@ -39,7 +39,7 @@ source(paste0(file.locations.folder,'file_locations.R'))
 ### 1a. Load pollution data
 
 - Pollution data are in monthly averages
-- There are two different pollution measures in the dataset but the one we are interested on is the one representing street level concentrations. The street level pollution variables have a _str suffix 
+- There are two different pollution measures in the dataset but the one we are interested in is the one representing street level concentrations. The street level pollution variables have a _str suffix 
 
 ```{r}
 

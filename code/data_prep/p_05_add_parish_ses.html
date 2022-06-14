@@ -1611,7 +1611,7 @@ data_1yr &lt;- read_csv(paste0(yanelli_datasets, &quot;one_yr_avg_data.csv&quot;
   dplyr::filter(sum==1) %&gt;%
    dplyr::select(-sum) %&gt;%
   ungroup()</code></pre>
-<pre><code>## Rows: 23348 Columns: 36</code></pre>
+<pre><code>## Rows: 23189 Columns: 36</code></pre>
 <pre><code>## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
 ## chr   (5): daars1, daars2, diag, place_birth, residence
@@ -1625,30 +1625,30 @@ data_1yr &lt;- read_csv(paste0(yanelli_datasets, &quot;one_yr_avg_data.csv&quot;
 <pre class="r"><code>summary(data_1yr)</code></pre>
 <pre><code>##        nr           lobnr             ck            diagtype
 ##  Min.   :   2   Min.   :0.000   Min.   :0.0000   Min.   :1  
-##  1st Qu.:1208   1st Qu.:1.000   1st Qu.:0.0000   1st Qu.:1  
-##  Median :2396   Median :2.000   Median :0.0000   Median :1  
-##  Mean   :2374   Mean   :2.492   Mean   :0.1689   Mean   :1  
-##  3rd Qu.:3585   3rd Qu.:4.000   3rd Qu.:0.0000   3rd Qu.:1  
+##  1st Qu.:1201   1st Qu.:1.000   1st Qu.:0.0000   1st Qu.:1  
+##  Median :2384   Median :2.000   Median :0.0000   Median :1  
+##  Mean   :2364   Mean   :2.492   Mean   :0.1689   Mean   :1  
+##  3rd Qu.:3563   3rd Qu.:4.000   3rd Qu.:0.0000   3rd Qu.:1  
 ##  Max.   :4608   Max.   :5.000   Max.   :1.0000   Max.   :1  
 ##                                                             
 ##     diagdat                 ID         aegtesocial        bdate           
 ##  Min.   :1989-01-02   Min.   :    9   Min.   :1.000   Min.   :1901-02-06  
-##  1st Qu.:1997-05-27   1st Qu.: 9638   1st Qu.:3.000   1st Qu.:1927-05-07  
-##  Median :2003-11-25   Median :19146   Median :5.000   Median :1936-11-01  
-##  Mean   :2003-02-13   Mean   :18965   Mean   :5.295   Mean   :1937-06-30  
-##  3rd Qu.:2009-02-17   3rd Qu.:28633   3rd Qu.:9.000   3rd Qu.:1946-04-01  
+##  1st Qu.:1997-05-16   1st Qu.: 9589   1st Qu.:3.000   1st Qu.:1927-05-01  
+##  Median :2003-10-30   Median :19051   Median :5.000   Median :1936-10-07  
+##  Mean   :2003-01-29   Mean   :18886   Mean   :5.296   Mean   :1937-06-07  
+##  3rd Qu.:2009-02-04   3rd Qu.:28459   3rd Qu.:9.000   3rd Qu.:1946-04-01  
 ##  Max.   :2013-12-30   Max.   :36806   Max.   :9.000   Max.   :1987-06-01  
-##                                       NA&#39;s   :2600                        
+##                                       NA&#39;s   :2578                        
 ##  civst       civstdat5             d_inddto             d_uddto          
-##  1: 2160   Min.   :1900-07-01   Min.   :1989-01-02   Min.   :1989-01-06  
-##  2: 4223   1st Qu.:1960-09-26   1st Qu.:1997-06-04   1st Qu.:1997-09-29  
-##  3: 2729   Median :1973-04-20   Median :2003-11-27   Median :2004-05-20  
-##  4:14224   Mean   :1974-09-06   Mean   :2003-02-20   Mean   :2003-08-19  
-##            3rd Qu.:1989-07-11   3rd Qu.:2009-03-04   3rd Qu.:2009-10-19  
+##  1: 2132   Min.   :1900-07-01   Min.   :1989-01-02   Min.   :1989-01-06  
+##  2: 4192   1st Qu.:1960-09-10   1st Qu.:1997-05-16   1st Qu.:1997-09-19  
+##  3: 2713   Median :1973-04-07   Median :2003-11-03   Median :2004-04-23  
+##  4:14147   Mean   :1974-08-21   Mean   :2003-02-06   Mean   :2003-08-04  
+##            3rd Qu.:1989-06-27   3rd Qu.:2009-02-19   3rd Qu.:2009-09-22  
 ##            Max.   :2013-08-30   Max.   :2013-12-30   Max.   :2014-11-01  
-##            NA&#39;s   :2160                                                  
+##            NA&#39;s   :2132                                                  
 ##     daars1             daars2              diag                diy      
-##  Length:23336       Length:23336       Length:23336       Min.   :1989  
+##  Length:23184       Length:23184       Length:23184       Min.   :1989  
 ##  Class :character   Class :character   Class :character   1st Qu.:1997  
 ##  Mode  :character   Mode  :character   Mode  :character   Median :2003  
 ##                                                           Mean   :2003  
@@ -1656,43 +1656,43 @@ data_1yr &lt;- read_csv(paste0(yanelli_datasets, &quot;one_yr_avg_data.csv&quot;
 ##                                                           Max.   :2013  
 ##                                                                         
 ##  family_SES    geokode         mynkod        pattype          postnr    
-##  1:2344     4      :6393   Min.   :   0   Min.   :1.000   Min.   :1050  
-##  2:2855     7      :5976   1st Qu.:7103   1st Qu.:1.000   1st Qu.:3060  
-##  3:4369     1      :4877   Median :7727   Median :2.000   Median :5270  
-##  4:6611     5      :1979   Mean   :7105   Mean   :1.591   Mean   :5572  
-##  5:4448     2      :1040   3rd Qu.:8378   3rd Qu.:2.000   3rd Qu.:7840  
-##  9:2709     6      : 608   Max.   :9999   Max.   :3.000   Max.   :9990  
-##             (Other):2463                                  NA&#39;s   :51    
-##  sex           social         statdat               status         stilkod     
-##  1:12305   Min.   :1.000   Min.   :1989-01-18   Min.   : 1.00   Min.   :  0.0  
-##  2:11031   1st Qu.:3.000   1st Qu.:2002-04-07   1st Qu.: 1.00   1st Qu.:204.0  
-##            Median :4.000   Median :2007-11-25   Median : 1.00   Median :650.0  
-##            Mean   :5.187   Mean   :2006-10-04   Mean   :44.26   Mean   :586.8  
-##            3rd Qu.:9.000   3rd Qu.:2011-12-25   3rd Qu.:90.00   3rd Qu.:999.0  
-##            Max.   :9.000   Max.   :2017-03-20   Max.   :90.00   Max.   :999.0  
-##                            NA&#39;s   :11931                                       
-##        place_birth                          residence       birth_year  
-##  copenhagen  :4877   Big cities of Denmark&gt;10,000: 9404   Min.   :1901  
-##  foreign     :1092   Greater Copenhagen          : 1891   1st Qu.:1927  
-##  greenland   : 244   Rest of Denmark             :11990   Median :1936  
-##  other_cities:7942   Unknown                     :   51   Mean   :1937  
-##  other_dk    :9044                                        3rd Qu.:1946  
-##  unknown     : 137                                        Max.   :1987  
-##                                                                         
+##  1:2333     4      :6349   Min.   :   0   Min.   :1.000   Min.   :1050  
+##  2:2835     7      :5944   1st Qu.:7103   1st Qu.:1.000   1st Qu.:3060  
+##  3:4351     1      :4837   Median :7727   Median :2.000   Median :5270  
+##  4:6567     5      :1968   Mean   :7105   Mean   :1.591   Mean   :5573  
+##  5:4417     2      :1036   3rd Qu.:8378   3rd Qu.:2.000   3rd Qu.:7840  
+##  9:2681     6      : 604   Max.   :9999   Max.   :3.000   Max.   :9990  
+##             (Other):2446                                  NA&#39;s   :51    
+##  sex           social         statdat               status        stilkod     
+##  1:12241   Min.   :1.000   Min.   :1989-01-18   Min.   : 1.0   Min.   :  0.0  
+##  2:10943   1st Qu.:3.000   1st Qu.:2002-04-01   1st Qu.: 1.0   1st Qu.:204.0  
+##            Median :4.000   Median :2007-11-17   Median : 1.0   Median :650.0  
+##            Mean   :5.182   Mean   :2006-09-28   Mean   :44.4   Mean   :586.3  
+##            3rd Qu.:9.000   3rd Qu.:2011-12-19   3rd Qu.:90.0   3rd Qu.:999.0  
+##            Max.   :9.000   Max.   :2017-03-20   Max.   :90.0   Max.   :999.0  
+##                            NA&#39;s   :11817                                      
+##        place_birth                       residence       birth_year  
+##  copenhagen  :4837   Capital Region of Denmark: 7750   Min.   :1901  
+##  foreign     :1084   Cities &gt;50K population   : 3682   1st Qu.:1927  
+##  greenland   : 242   Rest of Denmark          :11701   Median :1936  
+##  other_cities:7891   Unknown                  :   51   Mean   :1937  
+##  other_dk    :8993                                     3rd Qu.:1946  
+##  unknown     : 137                                     Max.   :1987  
+##                                                                      
 ##     PM25_1yr          CO_1yr          NO2_1yr          NOX_1yr       
 ##  Min.   : 6.389   Min.   : 131.4   Min.   : 5.513   Min.   :  6.019  
-##  1st Qu.:10.087   1st Qu.: 170.5   1st Qu.:13.137   1st Qu.: 15.080  
-##  Median :11.474   Median : 198.2   Median :16.733   Median : 20.437  
-##  Mean   :11.991   Mean   : 224.5   Mean   :18.245   Mean   : 25.745  
-##  3rd Qu.:13.498   3rd Qu.: 241.0   3rd Qu.:21.798   3rd Qu.: 29.175  
+##  1st Qu.:10.093   1st Qu.: 170.6   1st Qu.:13.151   1st Qu.: 15.091  
+##  Median :11.486   Median : 198.3   Median :16.740   Median : 20.452  
+##  Mean   :12.002   Mean   : 224.8   Mean   :18.256   Mean   : 25.772  
+##  3rd Qu.:13.514   3rd Qu.: 241.3   3rd Qu.:21.811   3rd Qu.: 29.204  
 ##  Max.   :28.332   Max.   :1466.3   Max.   :65.418   Max.   :303.138  
 ##                                                                      
 ##      O3_1yr         PM10_1yr         EC_1yr      
 ##  Min.   :18.65   Min.   :11.60   Min.   :0.2213  
-##  1st Qu.:49.32   1st Qu.:16.06   1st Qu.:0.5686  
-##  Median :53.44   Median :17.49   Median :0.7263  
-##  Mean   :52.55   Mean   :18.12   Mean   :0.8144  
-##  3rd Qu.:56.71   3rd Qu.:19.82   3rd Qu.:0.9262  
+##  1st Qu.:49.31   1st Qu.:16.07   1st Qu.:0.5689  
+##  Median :53.44   Median :17.50   Median :0.7268  
+##  Mean   :52.55   Mean   :18.13   Mean   :0.8150  
+##  3rd Qu.:56.70   3rd Qu.:19.84   3rd Qu.:0.9265  
 ##  Max.   :68.95   Max.   :38.05   Max.   :5.4814  
 ## </code></pre>
 <pre class="r"><code># 5 years
@@ -1711,7 +1711,7 @@ data_5yrs &lt;- read_csv(paste0(yanelli_datasets, &quot;five_yrs_avg_data.csv&qu
   dplyr::filter(sum==1) %&gt;% # keeping only the controls that have a case
    dplyr::select(-sum) %&gt;%
   ungroup() </code></pre>
-<pre><code>## Rows: 23340 Columns: 36</code></pre>
+<pre><code>## Rows: 23174 Columns: 36</code></pre>
 <pre><code>## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
 ## chr   (5): daars1, daars2, diag, place_birth, residence
@@ -1723,30 +1723,30 @@ data_5yrs &lt;- read_csv(paste0(yanelli_datasets, &quot;five_yrs_avg_data.csv&qu
 <pre class="r"><code>summary(data_5yrs)</code></pre>
 <pre><code>##        nr           lobnr             ck            diagtype
 ##  Min.   :   2   Min.   :0.000   Min.   :0.0000   Min.   :1  
-##  1st Qu.:1210   1st Qu.:1.000   1st Qu.:0.0000   1st Qu.:1  
-##  Median :2394   Median :2.000   Median :0.0000   Median :1  
-##  Mean   :2374   Mean   :2.491   Mean   :0.1689   Mean   :1  
-##  3rd Qu.:3586   3rd Qu.:4.000   3rd Qu.:0.0000   3rd Qu.:1  
+##  1st Qu.:1203   1st Qu.:1.000   1st Qu.:0.0000   1st Qu.:1  
+##  Median :2380   Median :2.000   Median :0.0000   Median :1  
+##  Mean   :2364   Mean   :2.491   Mean   :0.1689   Mean   :1  
+##  3rd Qu.:3564   3rd Qu.:4.000   3rd Qu.:0.0000   3rd Qu.:1  
 ##  Max.   :4608   Max.   :5.000   Max.   :1.0000   Max.   :1  
 ##                                                             
 ##     diagdat                 ID         aegtesocial        bdate           
 ##  Min.   :1989-01-02   Min.   :    9   Min.   :1.000   Min.   :1901-02-06  
-##  1st Qu.:1997-06-16   1st Qu.: 9658   1st Qu.:3.000   1st Qu.:1927-05-08  
-##  Median :2003-12-03   Median :19133   Median :5.000   Median :1936-11-01  
-##  Mean   :2003-02-21   Mean   :18964   Mean   :5.293   Mean   :1937-07-14  
-##  3rd Qu.:2009-02-20   3rd Qu.:28644   3rd Qu.:9.000   3rd Qu.:1946-04-01  
+##  1st Qu.:1997-05-27   1st Qu.: 9605   1st Qu.:3.000   1st Qu.:1927-05-01  
+##  Median :2003-11-14   Median :19019   Median :5.000   Median :1936-11-01  
+##  Mean   :2003-02-06   Mean   :18881   Mean   :5.294   Mean   :1937-06-22  
+##  3rd Qu.:2009-02-05   3rd Qu.:28465   3rd Qu.:9.000   3rd Qu.:1946-04-01  
 ##  Max.   :2013-12-30   Max.   :36806   Max.   :9.000   Max.   :1987-06-01  
-##                                       NA&#39;s   :2591                        
+##                                       NA&#39;s   :2567                        
 ##  civst       civstdat5             d_inddto             d_uddto          
-##  1: 2163   Min.   :1900-07-01   Min.   :1989-01-02   Min.   :1989-01-06  
-##  2: 4228   1st Qu.:1960-10-15   1st Qu.:1997-06-16   1st Qu.:1997-10-09  
-##  3: 2731   Median :1973-05-11   Median :2003-12-11   Median :2004-06-08  
-##  4:14205   Mean   :1974-09-22   Mean   :2003-02-28   Mean   :2003-08-27  
-##            3rd Qu.:1989-07-19   3rd Qu.:2009-03-04   3rd Qu.:2009-10-20  
+##  1: 2134   Min.   :1900-07-01   Min.   :1989-01-02   Min.   :1989-01-06  
+##  2: 4192   1st Qu.:1960-09-24   1st Qu.:1997-05-27   1st Qu.:1997-09-25  
+##  3: 2715   Median :1973-04-22   Median :2003-11-20   Median :2004-05-11  
+##  4:14127   Mean   :1974-09-05   Mean   :2003-02-13   Mean   :2003-08-12  
+##            3rd Qu.:1989-07-01   3rd Qu.:2009-02-19   3rd Qu.:2009-09-22  
 ##            Max.   :2013-08-30   Max.   :2013-12-30   Max.   :2014-11-01  
-##            NA&#39;s   :2163                                                  
+##            NA&#39;s   :2134                                                  
 ##     daars1             daars2              diag                diy      
-##  Length:23327       Length:23327       Length:23327       Min.   :1989  
+##  Length:23168       Length:23168       Length:23168       Min.   :1989  
 ##  Class :character   Class :character   Class :character   1st Qu.:1997  
 ##  Mode  :character   Mode  :character   Mode  :character   Median :2003  
 ##                                                           Mean   :2003  
@@ -1754,43 +1754,43 @@ data_5yrs &lt;- read_csv(paste0(yanelli_datasets, &quot;five_yrs_avg_data.csv&qu
 ##                                                           Max.   :2013  
 ##                                                                         
 ##  family_SES    geokode         mynkod        pattype          postnr    
-##  1:2346     4      :6396   Min.   :   0   Min.   :1.000   Min.   :1050  
-##  2:2850     7      :5977   1st Qu.:7103   1st Qu.:1.000   1st Qu.:3060  
-##  3:4376     1      :4890   Median :7730   Median :2.000   Median :5270  
-##  4:6618     5      :1975   Mean   :7107   Mean   :1.593   Mean   :5572  
-##  5:4440     2      :1039   3rd Qu.:8378   3rd Qu.:2.000   3rd Qu.:7840  
-##  9:2697     6      : 608   Max.   :9999   Max.   :3.000   Max.   :9990  
-##             (Other):2442                                  NA&#39;s   :67    
-##  sex           social         statdat               status         stilkod     
-##  1:12313   Min.   :1.000   Min.   :1989-01-18   Min.   : 1.00   Min.   :  0.0  
-##  2:11014   1st Qu.:3.000   1st Qu.:2002-04-14   1st Qu.: 1.00   1st Qu.:204.0  
-##            Median :4.000   Median :2007-12-05   Median : 1.00   Median :650.0  
-##            Mean   :5.183   Mean   :2006-10-12   Mean   :44.19   Mean   :586.5  
-##            3rd Qu.:9.000   3rd Qu.:2011-12-31   3rd Qu.:90.00   3rd Qu.:999.0  
-##            Max.   :9.000   Max.   :2017-03-20   Max.   :90.00   Max.   :999.0  
-##                            NA&#39;s   :11945                                       
-##        place_birth                          residence       birth_year  
-##  copenhagen  :4890   Big cities of Denmark&gt;10,000: 9405   Min.   :1901  
-##  foreign     :1074   Greater Copenhagen          : 1886   1st Qu.:1927  
-##  greenland   : 241   Rest of Denmark             :11969   Median :1936  
-##  other_cities:7947   Unknown                     :   67   Mean   :1937  
-##  other_dk    :9040                                        3rd Qu.:1946  
-##  unknown     : 135                                        Max.   :1987  
-##                                                                         
+##  1:2335     4      :6351   Min.   :   0   Min.   :1.000   Min.   :1050  
+##  2:2828     7      :5941   1st Qu.:7103   1st Qu.:1.000   1st Qu.:3060  
+##  3:4358     1      :4849   Median :7730   Median :2.000   Median :5270  
+##  4:6572     5      :1964   Mean   :7107   Mean   :1.593   Mean   :5573  
+##  5:4408     2      :1035   3rd Qu.:8378   3rd Qu.:2.000   3rd Qu.:7840  
+##  9:2667     6      : 604   Max.   :9999   Max.   :3.000   Max.   :9990  
+##             (Other):2424                                  NA&#39;s   :66    
+##  sex           social         statdat               status         stilkod   
+##  1:12248   Min.   :1.000   Min.   :1989-01-18   Min.   : 1.00   Min.   :  0  
+##  2:10920   1st Qu.:3.000   1st Qu.:2002-04-09   1st Qu.: 1.00   1st Qu.:204  
+##            Median :4.000   Median :2007-11-22   Median : 1.00   Median :641  
+##            Mean   :5.178   Mean   :2006-10-05   Mean   :44.31   Mean   :586  
+##            3rd Qu.:9.000   3rd Qu.:2011-12-24   3rd Qu.:90.00   3rd Qu.:999  
+##            Max.   :9.000   Max.   :2017-03-20   Max.   :90.00   Max.   :999  
+##                            NA&#39;s   :11830                                     
+##        place_birth                       residence       birth_year  
+##  copenhagen  :4849   Capital Region of Denmark: 7734   Min.   :1901  
+##  foreign     :1066   Cities &gt;50K population   : 3686   1st Qu.:1927  
+##  greenland   : 239   Rest of Denmark          :11682   Median :1936  
+##  other_cities:7894   Unknown                  :   66   Mean   :1937  
+##  other_dk    :8985                                     3rd Qu.:1946  
+##  unknown     : 135                                     Max.   :1987  
+##                                                                      
 ##     PM25_5yr          CO_5yr          NO2_5yr          NOX_5yr       
 ##  Min.   : 7.072   Min.   : 137.2   Min.   : 5.937   Min.   :  6.463  
-##  1st Qu.:10.716   1st Qu.: 178.4   1st Qu.:13.813   1st Qu.: 16.082  
-##  Median :11.968   Median : 208.8   Median :17.451   Median : 21.793  
-##  Mean   :12.613   Mean   : 237.7   Mean   :18.924   Mean   : 27.221  
-##  3rd Qu.:14.241   3rd Qu.: 256.3   3rd Qu.:22.450   3rd Qu.: 30.713  
+##  1st Qu.:10.727   1st Qu.: 178.5   1st Qu.:13.818   1st Qu.: 16.093  
+##  Median :11.979   Median : 209.0   Median :17.468   Median : 21.813  
+##  Mean   :12.626   Mean   : 238.0   Mean   :18.935   Mean   : 27.248  
+##  3rd Qu.:14.258   3rd Qu.: 256.7   3rd Qu.:22.457   3rd Qu.: 30.746  
 ##  Max.   :28.698   Max.   :1485.4   Max.   :62.982   Max.   :285.899  
 ##                                                                      
 ##      O3_5yr         PM10_5yr         EC_5yr      
 ##  Min.   :18.93   Min.   :12.39   Min.   :0.2433  
-##  1st Qu.:48.71   1st Qu.:16.60   1st Qu.:0.6025  
-##  Median :52.81   Median :18.05   Median :0.7620  
-##  Mean   :51.93   Mean   :18.76   Mean   :0.8511  
-##  3rd Qu.:56.01   3rd Qu.:20.59   3rd Qu.:0.9614  
+##  1st Qu.:48.70   1st Qu.:16.61   1st Qu.:0.6028  
+##  Median :52.80   Median :18.06   Median :0.7623  
+##  Mean   :51.92   Mean   :18.78   Mean   :0.8518  
+##  3rd Qu.:56.00   3rd Qu.:20.61   3rd Qu.:0.9623  
 ##  Max.   :66.72   Max.   :37.65   Max.   :5.3793  
 ## </code></pre>
 <pre class="r"><code># 10 years
@@ -1809,7 +1809,7 @@ data_10yrs &lt;- read_csv(paste0(yanelli_datasets, &quot;ten_yrs_avg_data.csv&qu
   dplyr::filter(sum==1) %&gt;% #keeping only the controls that have a case
   dplyr::select(-sum) %&gt;%
   ungroup()</code></pre>
-<pre><code>## Rows: 23300 Columns: 36</code></pre>
+<pre><code>## Rows: 23134 Columns: 36</code></pre>
 <pre><code>## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
 ## chr   (5): daars1, daars2, diag, place_birth, residence
@@ -1821,30 +1821,30 @@ data_10yrs &lt;- read_csv(paste0(yanelli_datasets, &quot;ten_yrs_avg_data.csv&qu
 <pre class="r"><code>summary(data_10yrs)</code></pre>
 <pre><code>##        nr           lobnr             ck            diagtype
 ##  Min.   :   2   Min.   :0.000   Min.   :0.0000   Min.   :1  
-##  1st Qu.:1213   1st Qu.:1.000   1st Qu.:0.0000   1st Qu.:1  
-##  Median :2392   Median :2.000   Median :0.0000   Median :1  
-##  Mean   :2374   Mean   :2.492   Mean   :0.1691   Mean   :1  
-##  3rd Qu.:3585   3rd Qu.:4.000   3rd Qu.:0.0000   3rd Qu.:1  
+##  1st Qu.:1205   1st Qu.:1.000   1st Qu.:0.0000   1st Qu.:1  
+##  Median :2377   Median :2.000   Median :0.0000   Median :1  
+##  Mean   :2364   Mean   :2.492   Mean   :0.1691   Mean   :1  
+##  3rd Qu.:3563   3rd Qu.:4.000   3rd Qu.:0.0000   3rd Qu.:1  
 ##  Max.   :4608   Max.   :5.000   Max.   :1.0000   Max.   :1  
 ##                                                             
-##     diagdat                 ID         aegtesocial       bdate           
-##  Min.   :1989-01-02   Min.   :    9   Min.   :1.00   Min.   :1901-02-06  
-##  1st Qu.:1997-06-16   1st Qu.: 9681   1st Qu.:3.00   1st Qu.:1927-05-02  
-##  Median :2003-12-03   Median :19112   Median :5.00   Median :1936-11-01  
-##  Mean   :2003-02-21   Mean   :18965   Mean   :5.29   Mean   :1937-07-12  
-##  3rd Qu.:2009-02-20   3rd Qu.:28638   3rd Qu.:9.00   3rd Qu.:1946-04-01  
-##  Max.   :2013-12-30   Max.   :36806   Max.   :9.00   Max.   :1987-06-01  
-##                                       NA&#39;s   :2586                       
+##     diagdat                 ID         aegtesocial        bdate           
+##  Min.   :1989-01-02   Min.   :    9   Min.   :1.000   Min.   :1901-02-06  
+##  1st Qu.:1997-05-27   1st Qu.: 9620   1st Qu.:3.000   1st Qu.:1927-05-01  
+##  Median :2003-11-14   Median :18995   Median :5.000   Median :1936-11-01  
+##  Mean   :2003-02-06   Mean   :18883   Mean   :5.291   Mean   :1937-06-20  
+##  3rd Qu.:2009-02-05   3rd Qu.:28459   3rd Qu.:9.000   3rd Qu.:1946-04-01  
+##  Max.   :2013-12-30   Max.   :36806   Max.   :9.000   Max.   :1987-06-01  
+##                                       NA&#39;s   :2562                        
 ##  civst       civstdat5             d_inddto             d_uddto          
-##  1: 2162   Min.   :1900-07-01   Min.   :1989-01-02   Min.   :1989-01-06  
-##  2: 4227   1st Qu.:1960-10-15   1st Qu.:1997-06-16   1st Qu.:1997-10-09  
-##  3: 2723   Median :1973-05-07   Median :2003-12-08   Median :2004-06-05  
-##  4:14174   Mean   :1974-09-19   Mean   :2003-03-01   Mean   :2003-08-27  
-##            3rd Qu.:1989-07-13   3rd Qu.:2009-03-05   3rd Qu.:2009-10-20  
+##  1: 2133   Min.   :1900-07-01   Min.   :1989-01-02   Min.   :1989-01-06  
+##  2: 4191   1st Qu.:1960-09-24   1st Qu.:1997-05-27   1st Qu.:1997-09-25  
+##  3: 2707   Median :1973-04-21   Median :2003-11-17   Median :2004-05-03  
+##  4:14096   Mean   :1974-09-03   Mean   :2003-02-13   Mean   :2003-08-12  
+##            3rd Qu.:1989-06-27   3rd Qu.:2009-02-23   3rd Qu.:2009-09-22  
 ##            Max.   :2013-08-30   Max.   :2013-12-30   Max.   :2014-11-01  
-##            NA&#39;s   :2162                                                  
+##            NA&#39;s   :2133                                                  
 ##     daars1             daars2              diag                diy      
-##  Length:23286       Length:23286       Length:23286       Min.   :1989  
+##  Length:23127       Length:23127       Length:23127       Min.   :1989  
 ##  Class :character   Class :character   Class :character   1st Qu.:1997  
 ##  Mode  :character   Mode  :character   Mode  :character   Median :2003  
 ##                                                           Mean   :2003  
@@ -1852,43 +1852,43 @@ data_10yrs &lt;- read_csv(paste0(yanelli_datasets, &quot;ten_yrs_avg_data.csv&qu
 ##                                                           Max.   :2013  
 ##                                                                         
 ##  family_SES    geokode         mynkod        pattype          postnr    
-##  1:2357     4      :6399   Min.   :   0   Min.   :1.000   Min.   :1050  
-##  2:2836     7      :5960   1st Qu.:7103   1st Qu.:1.000   1st Qu.:3060  
-##  3:4367     1      :4888   Median :7728   Median :2.000   Median :5260  
-##  4:6617     5      :1979   Mean   :7107   Mean   :1.593   Mean   :5568  
-##  5:4437     2      :1039   3rd Qu.:8378   3rd Qu.:2.000   3rd Qu.:7840  
-##  9:2672     6      : 608   Max.   :9999   Max.   :3.000   Max.   :9990  
-##             (Other):2413                                  NA&#39;s   :75    
+##  1:2346     4      :6354   Min.   :   0   Min.   :1.000   Min.   :1050  
+##  2:2814     7      :5924   1st Qu.:7103   1st Qu.:1.000   1st Qu.:3060  
+##  3:4349     1      :4847   Median :7728   Median :2.000   Median :5270  
+##  4:6571     5      :1968   Mean   :7107   Mean   :1.593   Mean   :5569  
+##  5:4405     2      :1035   3rd Qu.:8378   3rd Qu.:2.000   3rd Qu.:7840  
+##  9:2642     6      : 604   Max.   :9999   Max.   :3.000   Max.   :9990  
+##             (Other):2395                                  NA&#39;s   :74    
 ##  sex           social         statdat               status         stilkod     
-##  1:12292   Min.   :1.000   Min.   :1989-01-18   Min.   : 1.00   Min.   :  0.0  
-##  2:10994   1st Qu.:3.000   1st Qu.:2002-04-11   1st Qu.: 1.00   1st Qu.:204.0  
-##            Median :4.000   Median :2007-12-01   Median : 1.00   Median :648.0  
-##            Mean   :5.179   Mean   :2006-10-08   Mean   :44.22   Mean   :586.1  
-##            3rd Qu.:9.000   3rd Qu.:2011-12-30   3rd Qu.:90.00   3rd Qu.:999.0  
+##  1:12227   Min.   :1.000   Min.   :1989-01-18   Min.   : 1.00   Min.   :  0.0  
+##  2:10900   1st Qu.:3.000   1st Qu.:2002-04-05   1st Qu.: 1.00   1st Qu.:204.0  
+##            Median :4.000   Median :2007-11-20   Median : 1.00   Median :638.0  
+##            Mean   :5.173   Mean   :2006-09-30   Mean   :44.35   Mean   :585.6  
+##            3rd Qu.:9.000   3rd Qu.:2011-12-22   3rd Qu.:90.00   3rd Qu.:999.0  
 ##            Max.   :9.000   Max.   :2017-03-20   Max.   :90.00   Max.   :999.0  
-##                            NA&#39;s   :11917                                       
-##        place_birth                          residence       birth_year  
-##  copenhagen  :4888   Big cities of Denmark&gt;10,000: 9388   Min.   :1901  
-##  foreign     :1058   Greater Copenhagen          : 1890   1st Qu.:1927  
-##  greenland   : 237   Rest of Denmark             :11933   Median :1936  
-##  other_cities:7946   Unknown                     :   75   Mean   :1937  
-##  other_dk    :9025                                        3rd Qu.:1946  
-##  unknown     : 132                                        Max.   :1987  
-##                                                                         
+##                            NA&#39;s   :11802                                       
+##        place_birth                       residence       birth_year  
+##  copenhagen  :4847   Capital Region of Denmark: 7730   Min.   :1901  
+##  foreign     :1050   Cities &gt;50K population   : 3667   1st Qu.:1927  
+##  greenland   : 235   Rest of Denmark          :11656   Median :1936  
+##  other_cities:7893   Unknown                  :   74   Mean   :1937  
+##  other_dk    :8970                                     3rd Qu.:1946  
+##  unknown     : 132                                     Max.   :1987  
+##                                                                      
 ##    PM25_10yr         CO_10yr          NO2_10yr         NOX_10yr      
-##  Min.   : 7.748   Min.   : 143.7   Min.   : 6.343   Min.   :  6.908  
-##  1st Qu.:11.285   1st Qu.: 188.6   1st Qu.:14.503   1st Qu.: 17.118  
-##  Median :12.732   Median : 222.5   Median :18.120   Median : 23.211  
-##  Mean   :13.416   Mean   : 253.4   Mean   :19.544   Mean   : 28.640  
-##  3rd Qu.:15.257   3rd Qu.: 274.9   3rd Qu.:23.114   3rd Qu.: 32.055  
+##  Min.   : 7.777   Min.   : 143.7   Min.   : 6.395   Min.   :  6.935  
+##  1st Qu.:11.293   1st Qu.: 188.8   1st Qu.:14.509   1st Qu.: 17.128  
+##  Median :12.753   Median : 222.7   Median :18.127   Median : 23.226  
+##  Mean   :13.429   Mean   : 253.6   Mean   :19.550   Mean   : 28.655  
+##  3rd Qu.:15.276   3rd Qu.: 275.2   3rd Qu.:23.119   3rd Qu.: 32.066  
 ##  Max.   :29.387   Max.   :1576.5   Max.   :61.826   Max.   :263.118  
 ##                                                                      
 ##     O3_10yr        PM10_10yr        EC_10yr      
 ##  Min.   :19.02   Min.   :13.14   Min.   :0.2590  
-##  1st Qu.:48.03   1st Qu.:17.14   1st Qu.:0.6295  
-##  Median :52.18   Median :18.93   Median :0.7937  
-##  Mean   :51.33   Mean   :19.55   Mean   :0.8871  
-##  3rd Qu.:55.43   3rd Qu.:21.61   3rd Qu.:1.0019  
+##  1st Qu.:48.02   1st Qu.:17.15   1st Qu.:0.6298  
+##  Median :52.18   Median :18.95   Median :0.7939  
+##  Mean   :51.32   Mean   :19.57   Mean   :0.8876  
+##  3rd Qu.:55.42   3rd Qu.:21.63   3rd Qu.:1.0022  
 ##  Max.   :65.62   Max.   :38.47   Max.   :5.3694  
 ## </code></pre>
 <pre class="r"><code># lags
@@ -1904,7 +1904,7 @@ lag_10yrs &lt;- read_csv(paste0(yanelli_datasets, &quot;lagged_10yrs.csv&quot;))
   dplyr::filter(sum==11) %&gt;% # keeping only the controls that have a case
    dplyr::select(-sum) %&gt;%
   ungroup()</code></pre>
-<pre><code>## Rows: 242726 Columns: 31</code></pre>
+<pre><code>## Rows: 241032 Columns: 31</code></pre>
 <pre><code>## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
 ## chr   (5): daars1, daars2, diag, place_birth, residence
@@ -1941,30 +1941,30 @@ data_1yr = left_join(data_1yr, parish_ses, by=c(&#39;sognecode&#39;))
 summary(data_1yr)</code></pre>
 <pre><code>##        nr           lobnr             ck            diagtype
 ##  Min.   :   2   Min.   :0.000   Min.   :0.0000   Min.   :1  
-##  1st Qu.:1208   1st Qu.:1.000   1st Qu.:0.0000   1st Qu.:1  
-##  Median :2396   Median :2.000   Median :0.0000   Median :1  
-##  Mean   :2374   Mean   :2.492   Mean   :0.1689   Mean   :1  
-##  3rd Qu.:3585   3rd Qu.:4.000   3rd Qu.:0.0000   3rd Qu.:1  
+##  1st Qu.:1201   1st Qu.:1.000   1st Qu.:0.0000   1st Qu.:1  
+##  Median :2384   Median :2.000   Median :0.0000   Median :1  
+##  Mean   :2364   Mean   :2.492   Mean   :0.1689   Mean   :1  
+##  3rd Qu.:3563   3rd Qu.:4.000   3rd Qu.:0.0000   3rd Qu.:1  
 ##  Max.   :4608   Max.   :5.000   Max.   :1.0000   Max.   :1  
 ##                                                             
 ##     diagdat                 ID         aegtesocial        bdate           
 ##  Min.   :1989-01-02   Min.   :    9   Min.   :1.000   Min.   :1901-02-06  
-##  1st Qu.:1997-05-27   1st Qu.: 9638   1st Qu.:3.000   1st Qu.:1927-05-07  
-##  Median :2003-11-25   Median :19146   Median :5.000   Median :1936-11-01  
-##  Mean   :2003-02-13   Mean   :18965   Mean   :5.295   Mean   :1937-06-30  
-##  3rd Qu.:2009-02-17   3rd Qu.:28633   3rd Qu.:9.000   3rd Qu.:1946-04-01  
+##  1st Qu.:1997-05-16   1st Qu.: 9589   1st Qu.:3.000   1st Qu.:1927-05-01  
+##  Median :2003-10-30   Median :19051   Median :5.000   Median :1936-10-07  
+##  Mean   :2003-01-29   Mean   :18886   Mean   :5.296   Mean   :1937-06-07  
+##  3rd Qu.:2009-02-04   3rd Qu.:28459   3rd Qu.:9.000   3rd Qu.:1946-04-01  
 ##  Max.   :2013-12-30   Max.   :36806   Max.   :9.000   Max.   :1987-06-01  
-##                                       NA&#39;s   :2600                        
+##                                       NA&#39;s   :2578                        
 ##  civst       civstdat5             d_inddto             d_uddto          
-##  1: 2160   Min.   :1900-07-01   Min.   :1989-01-02   Min.   :1989-01-06  
-##  2: 4223   1st Qu.:1960-09-26   1st Qu.:1997-06-04   1st Qu.:1997-09-29  
-##  3: 2729   Median :1973-04-20   Median :2003-11-27   Median :2004-05-20  
-##  4:14224   Mean   :1974-09-06   Mean   :2003-02-20   Mean   :2003-08-19  
-##            3rd Qu.:1989-07-11   3rd Qu.:2009-03-04   3rd Qu.:2009-10-19  
+##  1: 2132   Min.   :1900-07-01   Min.   :1989-01-02   Min.   :1989-01-06  
+##  2: 4192   1st Qu.:1960-09-10   1st Qu.:1997-05-16   1st Qu.:1997-09-19  
+##  3: 2713   Median :1973-04-07   Median :2003-11-03   Median :2004-04-23  
+##  4:14147   Mean   :1974-08-21   Mean   :2003-02-06   Mean   :2003-08-04  
+##            3rd Qu.:1989-06-27   3rd Qu.:2009-02-19   3rd Qu.:2009-09-22  
 ##            Max.   :2013-08-30   Max.   :2013-12-30   Max.   :2014-11-01  
-##            NA&#39;s   :2160                                                  
+##            NA&#39;s   :2132                                                  
 ##     daars1             daars2              diag                diy      
-##  Length:23336       Length:23336       Length:23336       Min.   :1989  
+##  Length:23184       Length:23184       Length:23184       Min.   :1989  
 ##  Class :character   Class :character   Class :character   1st Qu.:1997  
 ##  Mode  :character   Mode  :character   Mode  :character   Median :2003  
 ##                                                           Mean   :2003  
@@ -1972,45 +1972,45 @@ summary(data_1yr)</code></pre>
 ##                                                           Max.   :2013  
 ##                                                                         
 ##  family_SES    geokode         mynkod        pattype          postnr    
-##  1:2344     4      :6393   Min.   :   0   Min.   :1.000   Min.   :1050  
-##  2:2855     7      :5976   1st Qu.:7103   1st Qu.:1.000   1st Qu.:3060  
-##  3:4369     1      :4877   Median :7727   Median :2.000   Median :5270  
-##  4:6611     5      :1979   Mean   :7105   Mean   :1.591   Mean   :5572  
-##  5:4448     2      :1040   3rd Qu.:8378   3rd Qu.:2.000   3rd Qu.:7840  
-##  9:2709     6      : 608   Max.   :9999   Max.   :3.000   Max.   :9990  
-##             (Other):2463                                  NA&#39;s   :51    
-##  sex           social         statdat               status         stilkod     
-##  1:12305   Min.   :1.000   Min.   :1989-01-18   Min.   : 1.00   Min.   :  0.0  
-##  2:11031   1st Qu.:3.000   1st Qu.:2002-04-07   1st Qu.: 1.00   1st Qu.:204.0  
-##            Median :4.000   Median :2007-11-25   Median : 1.00   Median :650.0  
-##            Mean   :5.187   Mean   :2006-10-04   Mean   :44.26   Mean   :586.8  
-##            3rd Qu.:9.000   3rd Qu.:2011-12-25   3rd Qu.:90.00   3rd Qu.:999.0  
-##            Max.   :9.000   Max.   :2017-03-20   Max.   :90.00   Max.   :999.0  
-##                            NA&#39;s   :11931                                       
-##        place_birth                          residence       birth_year  
-##  copenhagen  :4877   Big cities of Denmark&gt;10,000: 9404   Min.   :1901  
-##  foreign     :1092   Greater Copenhagen          : 1891   1st Qu.:1927  
-##  greenland   : 244   Rest of Denmark             :11990   Median :1936  
-##  other_cities:7942   Unknown                     :   51   Mean   :1937  
-##  other_dk    :9044                                        3rd Qu.:1946  
-##  unknown     : 137                                        Max.   :1987  
-##                                                                         
+##  1:2333     4      :6349   Min.   :   0   Min.   :1.000   Min.   :1050  
+##  2:2835     7      :5944   1st Qu.:7103   1st Qu.:1.000   1st Qu.:3060  
+##  3:4351     1      :4837   Median :7727   Median :2.000   Median :5270  
+##  4:6567     5      :1968   Mean   :7105   Mean   :1.591   Mean   :5573  
+##  5:4417     2      :1036   3rd Qu.:8378   3rd Qu.:2.000   3rd Qu.:7840  
+##  9:2681     6      : 604   Max.   :9999   Max.   :3.000   Max.   :9990  
+##             (Other):2446                                  NA&#39;s   :51    
+##  sex           social         statdat               status        stilkod     
+##  1:12241   Min.   :1.000   Min.   :1989-01-18   Min.   : 1.0   Min.   :  0.0  
+##  2:10943   1st Qu.:3.000   1st Qu.:2002-04-01   1st Qu.: 1.0   1st Qu.:204.0  
+##            Median :4.000   Median :2007-11-17   Median : 1.0   Median :650.0  
+##            Mean   :5.182   Mean   :2006-09-28   Mean   :44.4   Mean   :586.3  
+##            3rd Qu.:9.000   3rd Qu.:2011-12-19   3rd Qu.:90.0   3rd Qu.:999.0  
+##            Max.   :9.000   Max.   :2017-03-20   Max.   :90.0   Max.   :999.0  
+##                            NA&#39;s   :11817                                      
+##        place_birth                       residence       birth_year  
+##  copenhagen  :4837   Capital Region of Denmark: 7750   Min.   :1901  
+##  foreign     :1084   Cities &gt;50K population   : 3682   1st Qu.:1927  
+##  greenland   : 242   Rest of Denmark          :11701   Median :1936  
+##  other_cities:7891   Unknown                  :   51   Mean   :1937  
+##  other_dk    :8993                                     3rd Qu.:1946  
+##  unknown     : 137                                     Max.   :1987  
+##                                                                      
 ##     PM25_1yr          CO_1yr          NO2_1yr          NOX_1yr       
 ##  Min.   : 6.389   Min.   : 131.4   Min.   : 5.513   Min.   :  6.019  
-##  1st Qu.:10.087   1st Qu.: 170.5   1st Qu.:13.137   1st Qu.: 15.080  
-##  Median :11.474   Median : 198.2   Median :16.733   Median : 20.437  
-##  Mean   :11.991   Mean   : 224.5   Mean   :18.245   Mean   : 25.745  
-##  3rd Qu.:13.498   3rd Qu.: 241.0   3rd Qu.:21.798   3rd Qu.: 29.175  
+##  1st Qu.:10.093   1st Qu.: 170.6   1st Qu.:13.151   1st Qu.: 15.091  
+##  Median :11.486   Median : 198.3   Median :16.740   Median : 20.452  
+##  Mean   :12.002   Mean   : 224.8   Mean   :18.256   Mean   : 25.772  
+##  3rd Qu.:13.514   3rd Qu.: 241.3   3rd Qu.:21.811   3rd Qu.: 29.204  
 ##  Max.   :28.332   Max.   :1466.3   Max.   :65.418   Max.   :303.138  
 ##                                                                      
 ##      O3_1yr         PM10_1yr         EC_1yr           areal       
 ##  Min.   :18.65   Min.   :11.60   Min.   :0.2213   Min.   :  0.16  
-##  1st Qu.:49.32   1st Qu.:16.06   1st Qu.:0.5686   1st Qu.:  4.51  
-##  Median :53.44   Median :17.49   Median :0.7263   Median : 11.97  
-##  Mean   :52.55   Mean   :18.12   Mean   :0.8144   Mean   : 17.14  
-##  3rd Qu.:56.71   3rd Qu.:19.82   3rd Qu.:0.9262   3rd Qu.: 23.31  
+##  1st Qu.:49.31   1st Qu.:16.07   1st Qu.:0.5689   1st Qu.:  4.51  
+##  Median :53.44   Median :17.50   Median :0.7268   Median : 11.97  
+##  Mean   :52.55   Mean   :18.13   Mean   :0.8150   Mean   : 17.16  
+##  3rd Qu.:56.70   3rd Qu.:19.84   3rd Qu.:0.9265   3rd Qu.: 23.31  
 ##  Max.   :68.95   Max.   :38.05   Max.   :5.4814   Max.   :156.57  
-##                                                   NA&#39;s   :555     
+##                                                   NA&#39;s   :554     
 ##    sognecode      parish_ses   
 ##  Min.   :7001   Min.   :40.00  
 ##  1st Qu.:7345   1st Qu.:60.00  
@@ -2018,7 +2018,7 @@ summary(data_1yr)</code></pre>
 ##  Mean   :8028   Mean   :65.29  
 ##  3rd Qu.:8778   3rd Qu.:71.00  
 ##  Max.   :9312   Max.   :87.00  
-##  NA&#39;s   :28     NA&#39;s   :831</code></pre>
+##  NA&#39;s   :30     NA&#39;s   :829</code></pre>
 <pre class="r"><code>write_csv(data_1yr, paste0(yanelli_datasets, &quot;one_yr_avg_data_ses.csv&quot;)) 
 
 
@@ -2027,30 +2027,30 @@ data_5yrs = left_join(data_5yrs, parish_ses, by=c(&#39;sognecode&#39;))
 summary(data_5yrs)</code></pre>
 <pre><code>##        nr           lobnr             ck            diagtype
 ##  Min.   :   2   Min.   :0.000   Min.   :0.0000   Min.   :1  
-##  1st Qu.:1210   1st Qu.:1.000   1st Qu.:0.0000   1st Qu.:1  
-##  Median :2394   Median :2.000   Median :0.0000   Median :1  
-##  Mean   :2374   Mean   :2.491   Mean   :0.1689   Mean   :1  
-##  3rd Qu.:3586   3rd Qu.:4.000   3rd Qu.:0.0000   3rd Qu.:1  
+##  1st Qu.:1203   1st Qu.:1.000   1st Qu.:0.0000   1st Qu.:1  
+##  Median :2380   Median :2.000   Median :0.0000   Median :1  
+##  Mean   :2364   Mean   :2.491   Mean   :0.1689   Mean   :1  
+##  3rd Qu.:3564   3rd Qu.:4.000   3rd Qu.:0.0000   3rd Qu.:1  
 ##  Max.   :4608   Max.   :5.000   Max.   :1.0000   Max.   :1  
 ##                                                             
 ##     diagdat                 ID         aegtesocial        bdate           
 ##  Min.   :1989-01-02   Min.   :    9   Min.   :1.000   Min.   :1901-02-06  
-##  1st Qu.:1997-06-16   1st Qu.: 9658   1st Qu.:3.000   1st Qu.:1927-05-08  
-##  Median :2003-12-03   Median :19133   Median :5.000   Median :1936-11-01  
-##  Mean   :2003-02-21   Mean   :18964   Mean   :5.293   Mean   :1937-07-14  
-##  3rd Qu.:2009-02-20   3rd Qu.:28644   3rd Qu.:9.000   3rd Qu.:1946-04-01  
+##  1st Qu.:1997-05-27   1st Qu.: 9605   1st Qu.:3.000   1st Qu.:1927-05-01  
+##  Median :2003-11-14   Median :19019   Median :5.000   Median :1936-11-01  
+##  Mean   :2003-02-06   Mean   :18881   Mean   :5.294   Mean   :1937-06-22  
+##  3rd Qu.:2009-02-05   3rd Qu.:28465   3rd Qu.:9.000   3rd Qu.:1946-04-01  
 ##  Max.   :2013-12-30   Max.   :36806   Max.   :9.000   Max.   :1987-06-01  
-##                                       NA&#39;s   :2591                        
+##                                       NA&#39;s   :2567                        
 ##  civst       civstdat5             d_inddto             d_uddto          
-##  1: 2163   Min.   :1900-07-01   Min.   :1989-01-02   Min.   :1989-01-06  
-##  2: 4228   1st Qu.:1960-10-15   1st Qu.:1997-06-16   1st Qu.:1997-10-09  
-##  3: 2731   Median :1973-05-11   Median :2003-12-11   Median :2004-06-08  
-##  4:14205   Mean   :1974-09-22   Mean   :2003-02-28   Mean   :2003-08-27  
-##            3rd Qu.:1989-07-19   3rd Qu.:2009-03-04   3rd Qu.:2009-10-20  
+##  1: 2134   Min.   :1900-07-01   Min.   :1989-01-02   Min.   :1989-01-06  
+##  2: 4192   1st Qu.:1960-09-24   1st Qu.:1997-05-27   1st Qu.:1997-09-25  
+##  3: 2715   Median :1973-04-22   Median :2003-11-20   Median :2004-05-11  
+##  4:14127   Mean   :1974-09-05   Mean   :2003-02-13   Mean   :2003-08-12  
+##            3rd Qu.:1989-07-01   3rd Qu.:2009-02-19   3rd Qu.:2009-09-22  
 ##            Max.   :2013-08-30   Max.   :2013-12-30   Max.   :2014-11-01  
-##            NA&#39;s   :2163                                                  
+##            NA&#39;s   :2134                                                  
 ##     daars1             daars2              diag                diy      
-##  Length:23327       Length:23327       Length:23327       Min.   :1989  
+##  Length:23168       Length:23168       Length:23168       Min.   :1989  
 ##  Class :character   Class :character   Class :character   1st Qu.:1997  
 ##  Mode  :character   Mode  :character   Mode  :character   Median :2003  
 ##                                                           Mean   :2003  
@@ -2058,53 +2058,53 @@ summary(data_5yrs)</code></pre>
 ##                                                           Max.   :2013  
 ##                                                                         
 ##  family_SES    geokode         mynkod        pattype          postnr    
-##  1:2346     4      :6396   Min.   :   0   Min.   :1.000   Min.   :1050  
-##  2:2850     7      :5977   1st Qu.:7103   1st Qu.:1.000   1st Qu.:3060  
-##  3:4376     1      :4890   Median :7730   Median :2.000   Median :5270  
-##  4:6618     5      :1975   Mean   :7107   Mean   :1.593   Mean   :5572  
-##  5:4440     2      :1039   3rd Qu.:8378   3rd Qu.:2.000   3rd Qu.:7840  
-##  9:2697     6      : 608   Max.   :9999   Max.   :3.000   Max.   :9990  
-##             (Other):2442                                  NA&#39;s   :67    
-##  sex           social         statdat               status         stilkod     
-##  1:12313   Min.   :1.000   Min.   :1989-01-18   Min.   : 1.00   Min.   :  0.0  
-##  2:11014   1st Qu.:3.000   1st Qu.:2002-04-14   1st Qu.: 1.00   1st Qu.:204.0  
-##            Median :4.000   Median :2007-12-05   Median : 1.00   Median :650.0  
-##            Mean   :5.183   Mean   :2006-10-12   Mean   :44.19   Mean   :586.5  
-##            3rd Qu.:9.000   3rd Qu.:2011-12-31   3rd Qu.:90.00   3rd Qu.:999.0  
-##            Max.   :9.000   Max.   :2017-03-20   Max.   :90.00   Max.   :999.0  
-##                            NA&#39;s   :11945                                       
-##        place_birth                          residence       birth_year  
-##  copenhagen  :4890   Big cities of Denmark&gt;10,000: 9405   Min.   :1901  
-##  foreign     :1074   Greater Copenhagen          : 1886   1st Qu.:1927  
-##  greenland   : 241   Rest of Denmark             :11969   Median :1936  
-##  other_cities:7947   Unknown                     :   67   Mean   :1937  
-##  other_dk    :9040                                        3rd Qu.:1946  
-##  unknown     : 135                                        Max.   :1987  
-##                                                                         
+##  1:2335     4      :6351   Min.   :   0   Min.   :1.000   Min.   :1050  
+##  2:2828     7      :5941   1st Qu.:7103   1st Qu.:1.000   1st Qu.:3060  
+##  3:4358     1      :4849   Median :7730   Median :2.000   Median :5270  
+##  4:6572     5      :1964   Mean   :7107   Mean   :1.593   Mean   :5573  
+##  5:4408     2      :1035   3rd Qu.:8378   3rd Qu.:2.000   3rd Qu.:7840  
+##  9:2667     6      : 604   Max.   :9999   Max.   :3.000   Max.   :9990  
+##             (Other):2424                                  NA&#39;s   :66    
+##  sex           social         statdat               status         stilkod   
+##  1:12248   Min.   :1.000   Min.   :1989-01-18   Min.   : 1.00   Min.   :  0  
+##  2:10920   1st Qu.:3.000   1st Qu.:2002-04-09   1st Qu.: 1.00   1st Qu.:204  
+##            Median :4.000   Median :2007-11-22   Median : 1.00   Median :641  
+##            Mean   :5.178   Mean   :2006-10-05   Mean   :44.31   Mean   :586  
+##            3rd Qu.:9.000   3rd Qu.:2011-12-24   3rd Qu.:90.00   3rd Qu.:999  
+##            Max.   :9.000   Max.   :2017-03-20   Max.   :90.00   Max.   :999  
+##                            NA&#39;s   :11830                                     
+##        place_birth                       residence       birth_year  
+##  copenhagen  :4849   Capital Region of Denmark: 7734   Min.   :1901  
+##  foreign     :1066   Cities &gt;50K population   : 3686   1st Qu.:1927  
+##  greenland   : 239   Rest of Denmark          :11682   Median :1936  
+##  other_cities:7894   Unknown                  :   66   Mean   :1937  
+##  other_dk    :8985                                     3rd Qu.:1946  
+##  unknown     : 135                                     Max.   :1987  
+##                                                                      
 ##     PM25_5yr          CO_5yr          NO2_5yr          NOX_5yr       
 ##  Min.   : 7.072   Min.   : 137.2   Min.   : 5.937   Min.   :  6.463  
-##  1st Qu.:10.716   1st Qu.: 178.4   1st Qu.:13.813   1st Qu.: 16.082  
-##  Median :11.968   Median : 208.8   Median :17.451   Median : 21.793  
-##  Mean   :12.613   Mean   : 237.7   Mean   :18.924   Mean   : 27.221  
-##  3rd Qu.:14.241   3rd Qu.: 256.3   3rd Qu.:22.450   3rd Qu.: 30.713  
+##  1st Qu.:10.727   1st Qu.: 178.5   1st Qu.:13.818   1st Qu.: 16.093  
+##  Median :11.979   Median : 209.0   Median :17.468   Median : 21.813  
+##  Mean   :12.626   Mean   : 238.0   Mean   :18.935   Mean   : 27.248  
+##  3rd Qu.:14.258   3rd Qu.: 256.7   3rd Qu.:22.457   3rd Qu.: 30.746  
 ##  Max.   :28.698   Max.   :1485.4   Max.   :62.982   Max.   :285.899  
 ##                                                                      
 ##      O3_5yr         PM10_5yr         EC_5yr           areal       
 ##  Min.   :18.93   Min.   :12.39   Min.   :0.2433   Min.   :  0.16  
-##  1st Qu.:48.71   1st Qu.:16.60   1st Qu.:0.6025   1st Qu.:  4.51  
-##  Median :52.81   Median :18.05   Median :0.7620   Median : 11.93  
-##  Mean   :51.93   Mean   :18.76   Mean   :0.8511   Mean   : 17.12  
-##  3rd Qu.:56.01   3rd Qu.:20.59   3rd Qu.:0.9614   3rd Qu.: 23.22  
+##  1st Qu.:48.70   1st Qu.:16.61   1st Qu.:0.6028   1st Qu.:  4.51  
+##  Median :52.80   Median :18.06   Median :0.7623   Median : 11.97  
+##  Mean   :51.92   Mean   :18.78   Mean   :0.8518   Mean   : 17.14  
+##  3rd Qu.:56.00   3rd Qu.:20.61   3rd Qu.:0.9623   3rd Qu.: 23.25  
 ##  Max.   :66.72   Max.   :37.65   Max.   :5.3793   Max.   :156.57  
-##                                                   NA&#39;s   :573     
+##                                                   NA&#39;s   :570     
 ##    sognecode      parish_ses   
 ##  Min.   :7001   Min.   :40.00  
 ##  1st Qu.:7345   1st Qu.:60.00  
 ##  Median :7933   Median :65.00  
-##  Mean   :8027   Mean   :65.29  
-##  3rd Qu.:8774   3rd Qu.:71.00  
+##  Mean   :8028   Mean   :65.29  
+##  3rd Qu.:8775   3rd Qu.:71.00  
 ##  Max.   :9312   Max.   :87.00  
-##  NA&#39;s   :47     NA&#39;s   :849</code></pre>
+##  NA&#39;s   :47     NA&#39;s   :845</code></pre>
 <pre class="r"><code># number of cases and controls with missing parish-level SES
 k &lt;- data_10yrs %&gt;% 
   dplyr::filter(ck == 1)
@@ -2123,30 +2123,30 @@ data_10yrs = left_join(data_10yrs, parish_ses, by=c(&#39;sognecode&#39;))
 summary(data_10yrs)</code></pre>
 <pre><code>##        nr           lobnr             ck            diagtype
 ##  Min.   :   2   Min.   :0.000   Min.   :0.0000   Min.   :1  
-##  1st Qu.:1213   1st Qu.:1.000   1st Qu.:0.0000   1st Qu.:1  
-##  Median :2392   Median :2.000   Median :0.0000   Median :1  
-##  Mean   :2374   Mean   :2.492   Mean   :0.1691   Mean   :1  
-##  3rd Qu.:3585   3rd Qu.:4.000   3rd Qu.:0.0000   3rd Qu.:1  
+##  1st Qu.:1205   1st Qu.:1.000   1st Qu.:0.0000   1st Qu.:1  
+##  Median :2377   Median :2.000   Median :0.0000   Median :1  
+##  Mean   :2364   Mean   :2.492   Mean   :0.1691   Mean   :1  
+##  3rd Qu.:3563   3rd Qu.:4.000   3rd Qu.:0.0000   3rd Qu.:1  
 ##  Max.   :4608   Max.   :5.000   Max.   :1.0000   Max.   :1  
 ##                                                             
-##     diagdat                 ID         aegtesocial       bdate           
-##  Min.   :1989-01-02   Min.   :    9   Min.   :1.00   Min.   :1901-02-06  
-##  1st Qu.:1997-06-16   1st Qu.: 9681   1st Qu.:3.00   1st Qu.:1927-05-02  
-##  Median :2003-12-03   Median :19112   Median :5.00   Median :1936-11-01  
-##  Mean   :2003-02-21   Mean   :18965   Mean   :5.29   Mean   :1937-07-12  
-##  3rd Qu.:2009-02-20   3rd Qu.:28638   3rd Qu.:9.00   3rd Qu.:1946-04-01  
-##  Max.   :2013-12-30   Max.   :36806   Max.   :9.00   Max.   :1987-06-01  
-##                                       NA&#39;s   :2586                       
+##     diagdat                 ID         aegtesocial        bdate           
+##  Min.   :1989-01-02   Min.   :    9   Min.   :1.000   Min.   :1901-02-06  
+##  1st Qu.:1997-05-27   1st Qu.: 9620   1st Qu.:3.000   1st Qu.:1927-05-01  
+##  Median :2003-11-14   Median :18995   Median :5.000   Median :1936-11-01  
+##  Mean   :2003-02-06   Mean   :18883   Mean   :5.291   Mean   :1937-06-20  
+##  3rd Qu.:2009-02-05   3rd Qu.:28459   3rd Qu.:9.000   3rd Qu.:1946-04-01  
+##  Max.   :2013-12-30   Max.   :36806   Max.   :9.000   Max.   :1987-06-01  
+##                                       NA&#39;s   :2562                        
 ##  civst       civstdat5             d_inddto             d_uddto          
-##  1: 2162   Min.   :1900-07-01   Min.   :1989-01-02   Min.   :1989-01-06  
-##  2: 4227   1st Qu.:1960-10-15   1st Qu.:1997-06-16   1st Qu.:1997-10-09  
-##  3: 2723   Median :1973-05-07   Median :2003-12-08   Median :2004-06-05  
-##  4:14174   Mean   :1974-09-19   Mean   :2003-03-01   Mean   :2003-08-27  
-##            3rd Qu.:1989-07-13   3rd Qu.:2009-03-05   3rd Qu.:2009-10-20  
+##  1: 2133   Min.   :1900-07-01   Min.   :1989-01-02   Min.   :1989-01-06  
+##  2: 4191   1st Qu.:1960-09-24   1st Qu.:1997-05-27   1st Qu.:1997-09-25  
+##  3: 2707   Median :1973-04-21   Median :2003-11-17   Median :2004-05-03  
+##  4:14096   Mean   :1974-09-03   Mean   :2003-02-13   Mean   :2003-08-12  
+##            3rd Qu.:1989-06-27   3rd Qu.:2009-02-23   3rd Qu.:2009-09-22  
 ##            Max.   :2013-08-30   Max.   :2013-12-30   Max.   :2014-11-01  
-##            NA&#39;s   :2162                                                  
+##            NA&#39;s   :2133                                                  
 ##     daars1             daars2              diag                diy      
-##  Length:23286       Length:23286       Length:23286       Min.   :1989  
+##  Length:23127       Length:23127       Length:23127       Min.   :1989  
 ##  Class :character   Class :character   Class :character   1st Qu.:1997  
 ##  Mode  :character   Mode  :character   Mode  :character   Median :2003  
 ##                                                           Mean   :2003  
@@ -2154,53 +2154,53 @@ summary(data_10yrs)</code></pre>
 ##                                                           Max.   :2013  
 ##                                                                         
 ##  family_SES    geokode         mynkod        pattype          postnr    
-##  1:2357     4      :6399   Min.   :   0   Min.   :1.000   Min.   :1050  
-##  2:2836     7      :5960   1st Qu.:7103   1st Qu.:1.000   1st Qu.:3060  
-##  3:4367     1      :4888   Median :7728   Median :2.000   Median :5260  
-##  4:6617     5      :1979   Mean   :7107   Mean   :1.593   Mean   :5568  
-##  5:4437     2      :1039   3rd Qu.:8378   3rd Qu.:2.000   3rd Qu.:7840  
-##  9:2672     6      : 608   Max.   :9999   Max.   :3.000   Max.   :9990  
-##             (Other):2413                                  NA&#39;s   :75    
+##  1:2346     4      :6354   Min.   :   0   Min.   :1.000   Min.   :1050  
+##  2:2814     7      :5924   1st Qu.:7103   1st Qu.:1.000   1st Qu.:3060  
+##  3:4349     1      :4847   Median :7728   Median :2.000   Median :5270  
+##  4:6571     5      :1968   Mean   :7107   Mean   :1.593   Mean   :5569  
+##  5:4405     2      :1035   3rd Qu.:8378   3rd Qu.:2.000   3rd Qu.:7840  
+##  9:2642     6      : 604   Max.   :9999   Max.   :3.000   Max.   :9990  
+##             (Other):2395                                  NA&#39;s   :74    
 ##  sex           social         statdat               status         stilkod     
-##  1:12292   Min.   :1.000   Min.   :1989-01-18   Min.   : 1.00   Min.   :  0.0  
-##  2:10994   1st Qu.:3.000   1st Qu.:2002-04-11   1st Qu.: 1.00   1st Qu.:204.0  
-##            Median :4.000   Median :2007-12-01   Median : 1.00   Median :648.0  
-##            Mean   :5.179   Mean   :2006-10-08   Mean   :44.22   Mean   :586.1  
-##            3rd Qu.:9.000   3rd Qu.:2011-12-30   3rd Qu.:90.00   3rd Qu.:999.0  
+##  1:12227   Min.   :1.000   Min.   :1989-01-18   Min.   : 1.00   Min.   :  0.0  
+##  2:10900   1st Qu.:3.000   1st Qu.:2002-04-05   1st Qu.: 1.00   1st Qu.:204.0  
+##            Median :4.000   Median :2007-11-20   Median : 1.00   Median :638.0  
+##            Mean   :5.173   Mean   :2006-09-30   Mean   :44.35   Mean   :585.6  
+##            3rd Qu.:9.000   3rd Qu.:2011-12-22   3rd Qu.:90.00   3rd Qu.:999.0  
 ##            Max.   :9.000   Max.   :2017-03-20   Max.   :90.00   Max.   :999.0  
-##                            NA&#39;s   :11917                                       
-##        place_birth                          residence       birth_year  
-##  copenhagen  :4888   Big cities of Denmark&gt;10,000: 9388   Min.   :1901  
-##  foreign     :1058   Greater Copenhagen          : 1890   1st Qu.:1927  
-##  greenland   : 237   Rest of Denmark             :11933   Median :1936  
-##  other_cities:7946   Unknown                     :   75   Mean   :1937  
-##  other_dk    :9025                                        3rd Qu.:1946  
-##  unknown     : 132                                        Max.   :1987  
-##                                                                         
+##                            NA&#39;s   :11802                                       
+##        place_birth                       residence       birth_year  
+##  copenhagen  :4847   Capital Region of Denmark: 7730   Min.   :1901  
+##  foreign     :1050   Cities &gt;50K population   : 3667   1st Qu.:1927  
+##  greenland   : 235   Rest of Denmark          :11656   Median :1936  
+##  other_cities:7893   Unknown                  :   74   Mean   :1937  
+##  other_dk    :8970                                     3rd Qu.:1946  
+##  unknown     : 132                                     Max.   :1987  
+##                                                                      
 ##    PM25_10yr         CO_10yr          NO2_10yr         NOX_10yr      
-##  Min.   : 7.748   Min.   : 143.7   Min.   : 6.343   Min.   :  6.908  
-##  1st Qu.:11.285   1st Qu.: 188.6   1st Qu.:14.503   1st Qu.: 17.118  
-##  Median :12.732   Median : 222.5   Median :18.120   Median : 23.211  
-##  Mean   :13.416   Mean   : 253.4   Mean   :19.544   Mean   : 28.640  
-##  3rd Qu.:15.257   3rd Qu.: 274.9   3rd Qu.:23.114   3rd Qu.: 32.055  
+##  Min.   : 7.777   Min.   : 143.7   Min.   : 6.395   Min.   :  6.935  
+##  1st Qu.:11.293   1st Qu.: 188.8   1st Qu.:14.509   1st Qu.: 17.128  
+##  Median :12.753   Median : 222.7   Median :18.127   Median : 23.226  
+##  Mean   :13.429   Mean   : 253.6   Mean   :19.550   Mean   : 28.655  
+##  3rd Qu.:15.276   3rd Qu.: 275.2   3rd Qu.:23.119   3rd Qu.: 32.066  
 ##  Max.   :29.387   Max.   :1576.5   Max.   :61.826   Max.   :263.118  
 ##                                                                      
 ##     O3_10yr        PM10_10yr        EC_10yr           areal       
 ##  Min.   :19.02   Min.   :13.14   Min.   :0.2590   Min.   :  0.16  
-##  1st Qu.:48.03   1st Qu.:17.14   1st Qu.:0.6295   1st Qu.:  4.51  
-##  Median :52.18   Median :18.93   Median :0.7937   Median : 11.93  
-##  Mean   :51.33   Mean   :19.55   Mean   :0.8871   Mean   : 17.10  
-##  3rd Qu.:55.43   3rd Qu.:21.61   3rd Qu.:1.0019   3rd Qu.: 23.19  
+##  1st Qu.:48.02   1st Qu.:17.15   1st Qu.:0.6298   1st Qu.:  4.51  
+##  Median :52.18   Median :18.95   Median :0.7939   Median : 11.93  
+##  Mean   :51.32   Mean   :19.57   Mean   :0.8876   Mean   : 17.11  
+##  3rd Qu.:55.42   3rd Qu.:21.63   3rd Qu.:1.0022   3rd Qu.: 23.22  
 ##  Max.   :65.62   Max.   :38.47   Max.   :5.3694   Max.   :156.57  
-##                                                   NA&#39;s   :587     
-##    sognecode      parish_ses   
-##  Min.   :7001   Min.   :40.00  
-##  1st Qu.:7342   1st Qu.:60.00  
-##  Median :7932   Median :65.00  
-##  Mean   :8026   Mean   :65.31  
-##  3rd Qu.:8772   3rd Qu.:71.00  
-##  Max.   :9312   Max.   :87.00  
-##  NA&#39;s   :62     NA&#39;s   :863</code></pre>
+##                                                   NA&#39;s   :584     
+##    sognecode      parish_ses  
+##  Min.   :7001   Min.   :40.0  
+##  1st Qu.:7345   1st Qu.:60.0  
+##  Median :7932   Median :65.0  
+##  Mean   :8027   Mean   :65.3  
+##  3rd Qu.:8774   3rd Qu.:71.0  
+##  Max.   :9312   Max.   :87.0  
+##  NA&#39;s   :62     NA&#39;s   :859</code></pre>
 <pre class="r"><code>write_csv(data_10yrs, paste0(yanelli_datasets, &quot;ten_yrs_avg_data_ses.csv&quot;)) 
 
 lag_10yrs = left_join(lag_10yrs, parish_lookup, by=c(&#39;nr&#39;,&#39;lobnr&#39;,&#39;ck&#39;))
@@ -2208,30 +2208,30 @@ lag_10yrs = left_join(lag_10yrs, parish_ses, by=c(&#39;sognecode&#39;))
 summary(lag_10yrs)</code></pre>
 <pre><code>##        nr           lobnr             ck            diagtype
 ##  Min.   :   2   Min.   :0.000   Min.   :0.0000   Min.   :1  
-##  1st Qu.:1215   1st Qu.:1.000   1st Qu.:0.0000   1st Qu.:1  
-##  Median :2404   Median :2.000   Median :0.0000   Median :1  
-##  Mean   :2382   Mean   :2.484   Mean   :0.1723   Mean   :1  
-##  3rd Qu.:3601   3rd Qu.:4.000   3rd Qu.:0.0000   3rd Qu.:1  
+##  1st Qu.:1208   1st Qu.:1.000   1st Qu.:0.0000   1st Qu.:1  
+##  Median :2392   Median :2.000   Median :0.0000   Median :1  
+##  Mean   :2371   Mean   :2.484   Mean   :0.1722   Mean   :1  
+##  3rd Qu.:3580   3rd Qu.:4.000   3rd Qu.:0.0000   3rd Qu.:1  
 ##  Max.   :4608   Max.   :5.000   Max.   :1.0000   Max.   :1  
 ##                                                             
 ##     diagdat                 ID         aegtesocial        bdate           
 ##  Min.   :1989-09-04   Min.   :    9   Min.   :1.000   Min.   :1901-02-06  
-##  1st Qu.:1997-08-15   1st Qu.: 9700   1st Qu.:3.000   1st Qu.:1927-06-02  
-##  Median :2004-01-28   Median :19211   Median :5.000   Median :1936-11-01  
-##  Mean   :2003-04-22   Mean   :19022   Mean   :5.256   Mean   :1937-06-06  
-##  3rd Qu.:2009-03-14   3rd Qu.:28765   3rd Qu.:9.000   3rd Qu.:1946-03-02  
+##  1st Qu.:1997-08-05   1st Qu.: 9646   1st Qu.:3.000   1st Qu.:1927-05-02  
+##  Median :2004-01-13   Median :19113   Median :5.000   Median :1936-10-03  
+##  Mean   :2003-04-07   Mean   :18940   Mean   :5.258   Mean   :1937-05-12  
+##  3rd Qu.:2009-02-27   3rd Qu.:28593   3rd Qu.:9.000   3rd Qu.:1946-03-01  
 ##  Max.   :2013-12-30   Max.   :36806   Max.   :9.000   Max.   :1987-06-01  
-##                                       NA&#39;s   :26257                       
+##                                       NA&#39;s   :26004                       
 ##  civst        civstdat5             d_inddto             d_uddto          
-##  1: 21901   Min.   :1900-07-01   Min.   :1989-09-04   Min.   :1989-09-07  
-##  2: 44308   1st Qu.:1960-09-29   1st Qu.:1997-08-15   1st Qu.:1998-01-01  
-##  3: 28061   Median :1973-02-11   Median :2004-02-07   Median :2004-08-03  
-##  4:148445   Mean   :1974-09-02   Mean   :2003-04-29   Mean   :2003-10-27  
-##             3rd Qu.:1989-06-23   3rd Qu.:2009-03-27   3rd Qu.:2009-11-24  
+##  1: 21593   Min.   :1900-07-01   Min.   :1989-09-04   Min.   :1989-09-07  
+##  2: 43967   1st Qu.:1960-09-10   1st Qu.:1997-08-05   1st Qu.:1997-12-18  
+##  3: 27885   Median :1973-01-28   Median :2004-01-14   Median :2004-06-29  
+##  4:147576   Mean   :1974-08-15   Mean   :2003-04-15   Mean   :2003-10-12  
+##             3rd Qu.:1989-06-03   3rd Qu.:2009-03-14   3rd Qu.:2009-11-03  
 ##             Max.   :2013-08-30   Max.   :2013-12-30   Max.   :2014-11-01  
-##             NA&#39;s   :21901                                                 
+##             NA&#39;s   :21593                                                 
 ##     daars1             daars2              diag                diy      
-##  Length:242715      Length:242715      Length:242715      Min.   :1989  
+##  Length:241021      Length:241021      Length:241021      Min.   :1989  
 ##  Class :character   Class :character   Class :character   1st Qu.:1997  
 ##  Mode  :character   Mode  :character   Mode  :character   Median :2004  
 ##                                                           Mean   :2003  
@@ -2239,37 +2239,37 @@ summary(lag_10yrs)</code></pre>
 ##                                                           Max.   :2013  
 ##                                                                         
 ##  family_SES    geokode           mynkod        pattype          postnr    
-##  1:24431    Min.   : 1.000   Min.   :   0   Min.   :1.000   Min.   :1050  
-##  2:29766    1st Qu.: 2.000   1st Qu.:7104   1st Qu.:1.000   1st Qu.:3070  
-##  3:46343    Median : 4.000   Median :7746   Median :2.000   Median :5270  
-##  4:69553    Mean   : 6.822   Mean   :7117   Mean   :1.598   Mean   :5580  
-##  5:46717    3rd Qu.: 7.000   3rd Qu.:8383   3rd Qu.:2.000   3rd Qu.:7850  
-##  9:25905    Max.   :62.000   Max.   :9999   Max.   :3.000   Max.   :9990  
+##  1:24299    Min.   : 1.000   Min.   :   0   Min.   :1.000   Min.   :1050  
+##  2:29546    1st Qu.: 2.000   1st Qu.:7104   1st Qu.:1.000   1st Qu.:3070  
+##  3:46134    Median : 4.000   Median :7746   Median :2.000   Median :5270  
+##  4:69047    Mean   : 6.819   Mean   :7117   Mean   :1.598   Mean   :5581  
+##  5:46376    3rd Qu.: 7.000   3rd Qu.:8383   3rd Qu.:2.000   3rd Qu.:7850  
+##  9:25619    Max.   :62.000   Max.   :9999   Max.   :3.000   Max.   :9990  
 ##                                                             NA&#39;s   :418   
 ##       sex            social         statdat               status     
 ##  Min.   :1.000   Min.   :1.000   Min.   :1989-10-16   Min.   : 1.00  
-##  1st Qu.:1.000   1st Qu.:3.000   1st Qu.:2002-06-23   1st Qu.: 1.00  
-##  Median :1.000   Median :4.000   Median :2007-12-23   Median : 1.00  
-##  Mean   :1.475   Mean   :5.147   Mean   :2006-11-23   Mean   :44.14  
-##  3rd Qu.:2.000   3rd Qu.:9.000   3rd Qu.:2012-01-05   3rd Qu.:90.00  
+##  1st Qu.:1.000   1st Qu.:3.000   1st Qu.:2002-06-08   1st Qu.: 1.00  
+##  Median :1.000   Median :4.000   Median :2007-12-12   Median : 1.00  
+##  Mean   :1.474   Mean   :5.143   Mean   :2006-11-16   Mean   :44.28  
+##  3rd Qu.:2.000   3rd Qu.:9.000   3rd Qu.:2011-12-31   3rd Qu.:90.00  
 ##  Max.   :2.000   Max.   :9.000   Max.   :2017-03-20   Max.   :90.00  
-##                                  NA&#39;s   :124498                      
-##     stilkod            place_birth                           residence     
-##  Min.   :  0.0   copenhagen  :51018   Big cities of Denmark&gt;10,000: 97614  
-##  1st Qu.:202.0   foreign     : 9933   Greater Copenhagen          : 19371  
-##  Median :628.0   greenland   : 2387   Rest of Denmark             :125312  
-##  Mean   :582.1   other_cities:82995   Unknown                     :   418  
-##  3rd Qu.:999.0   other_dk    :94996                                        
-##  Max.   :999.0   unknown     : 1386                                        
-##                                                                            
+##                                  NA&#39;s   :123244                      
+##     stilkod            place_birth                        residence     
+##  Min.   :  0.0   copenhagen  :50589   Capital Region of Denmark: 80267  
+##  1st Qu.:202.0   foreign     : 9856   Cities &gt;50K population   : 37972  
+##  Median :628.0   greenland   : 2354   Rest of Denmark          :122364  
+##  Mean   :581.7   other_cities:82401   Unknown                  :   418  
+##  3rd Qu.:999.0   other_dk    :94435                                     
+##  Max.   :999.0   unknown     : 1386                                     
+##                                                                         
 ##    birth_year        lags      mean_pm2.5         areal          sognecode   
 ##  Min.   :1901   Min.   : 0   Min.   : 6.087   Min.   :  0.16   Min.   :7001  
-##  1st Qu.:1927   1st Qu.: 2   1st Qu.:10.912   1st Qu.:  4.56   1st Qu.:7345  
-##  Median :1936   Median : 5   Median :12.501   Median : 12.02   Median :7934  
-##  Mean   :1937   Mean   : 5   Mean   :13.191   Mean   : 17.19   Mean   :8029  
-##  3rd Qu.:1946   3rd Qu.: 8   3rd Qu.:15.214   3rd Qu.: 23.36   3rd Qu.:8775  
+##  1st Qu.:1927   1st Qu.: 2   1st Qu.:10.921   1st Qu.:  4.56   1st Qu.:7347  
+##  Median :1936   Median : 5   Median :12.516   Median : 12.02   Median :7934  
+##  Mean   :1937   Mean   : 5   Mean   :13.204   Mean   : 17.20   Mean   :8029  
+##  3rd Qu.:1946   3rd Qu.: 8   3rd Qu.:15.233   3rd Qu.: 23.36   3rd Qu.:8775  
 ##  Max.   :1987   Max.   :10   Max.   :32.699   Max.   :156.57   Max.   :9312  
-##                                               NA&#39;s   :5621     NA&#39;s   :165   
+##                                               NA&#39;s   :5588     NA&#39;s   :165   
 ##    parish_ses   
 ##  Min.   :40.00  
 ##  1st Qu.:60.00  
@@ -2277,7 +2277,7 @@ summary(lag_10yrs)</code></pre>
 ##  Mean   :65.29  
 ##  3rd Qu.:71.00  
 ##  Max.   :87.00  
-##  NA&#39;s   :8448</code></pre>
+##  NA&#39;s   :8393</code></pre>
 <pre class="r"><code>write_csv(lag_10yrs, paste0(yanelli_datasets, &quot;lagged_10yrs_parishSES.csv&quot;)) </code></pre>
 </div>
 

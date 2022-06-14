@@ -257,3 +257,223 @@ distr_lag_missing <- distrib_lags %>%
 
 ```
 
+## 4. Sex stratified analysis
+
+### 4c. Organize data
+
+
+```{r}
+
+# lag effect estimates from distributed lag models
+
+sex_lags <- read_csv(paste0(output.folder, "sex_distributed_lags_OR.csv")) %>%
+  mutate(lag = factor(lag, levels = c("lag1", "lag2", "lag3", "lag4", "lag5", "lag6", "lag7", "lag8", "lag9", "lag10")),
+         lag = recode_factor(lag,       # made names tidyer
+                          `lag1` = 'Lag 1',
+                          `lag2` = 'Lag 2',
+                          `lag3` = 'Lag 3',
+                          `lag4` = 'Lag 4',
+                          `lag5` = 'Lag 5',
+                          `lag6` = 'Lag 6',
+                          `lag7` = 'Lag 7',
+                          `lag8` = 'Lag 8',
+                          `lag9` = 'Lag 9',
+                          `lag10` = 'Lag 10'))
+
+
+# lag Cumulative estimates 
+
+sex_cum_lags <- read_csv(paste0(output.folder, "sex_cumm_lags_OR.csv")) %>%
+  dplyr::filter(lag %in% c("lag1", "lag5", "lag10")) %>%
+  mutate(exp_wind = as.factor(if_else(lag == "lag1", "1-year",
+                               if_else(lag == "lag5", "5-years",
+                                       if_else(lag == "lag10", "10-years", "x"))))) %>%
+  mutate(exp_wind = factor(exp_wind, levels = c("1-year", "5-years", "10-years"))) %>% 
+  dplyr::select(-lag)
+
+```
+
+### 4b. Sex stratified figure 
+
+```{r}
+
+# cummulative lag effects
+pd <- position_dodge(width = 0.5)
+
+
+sex_fig_cum_lags <- sex_cum_lags %>%
+  ggplot(aes(x = exp_wind, y = OR_cumm, ymin = lower_CI, ymax = upper_CI)) +
+   geom_hline(yintercept = 1, linetype = 1) +
+    geom_pointrange(aes(linetype = model), position = pd, size = 0.5) +
+    ylab("") +
+    xlab("") +
+  ggtitle("(B) Cumulative effect estimates") +
+   #geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
+ #coord_flip()  +
+ # scale_y_continuous(limits = c(0.95, 1.10), breaks = seq(.95, 1.10, by = 0.05)) +
+  theme_minimal() +
+    theme(
+        axis.ticks.y=element_blank(),
+        axis.text.x = element_text(size = 17),
+        axis.title.x = element_text(vjust = - 0.3),
+        axis.text.y = element_text(size = 17),
+        axis.title = element_text(size = 18),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        legend.text = element_text(size = 17),
+        strip.text = element_text(size = 18),
+        legend.key.size = unit(2.5, "lines"),
+         plot.title = element_text(size=18)) +
+  scale_linetype_manual(labels = c("Female", "Male"), values = c("solid", "dashed") )
+ 
+sex_fig_cum_lags
+
+# lag effects
+
+sex_fig_lags <- sex_lags %>%
+  ggplot(aes(x = lag, y = OR, ymin = lower_CI, ymax = upper_CI)) +
+   geom_hline(yintercept = 1, linetype = 1) +
+   geom_pointrange(aes(linetype = model), position = pd, size = 0.5) +
+    ylab("") +
+    xlab("") +
+  ggtitle("(A) Effect estimates per lag") +
+    #geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
+  scale_y_continuous(limits = c(0.93, 1.13), breaks = seq(.95, 1.10, by = 0.05)) +
+  theme_minimal() +
+    theme(
+        axis.ticks.y=element_blank(),
+        axis.text.x = element_text(size = 17, angle = 75),
+        axis.title.x = element_text(vjust = - 0.2),
+        axis.text.y = element_text(size = 17),
+        axis.title = element_text(size = 18),
+        legend.position = "none",
+        legend.title = element_blank(),
+        legend.text = element_text(size = 17),
+        strip.text = element_text(size = 18),
+        legend.key.size = unit(2.5, "lines"),
+        plot.title = element_text(size=18))  +
+   scale_linetype_manual(labels = c("Female", "Male"), values = c("solid", "dashed"),
+                         guide = guide_legend(override.aes = list(shape = NA)))
+
+
+# combine figures 
+
+yleft <- textGrob("Odds ratio per"~mu*g/m^3~PM[2.5]~increase, rot = 90, gp = gpar(fontsize = 20))
+
+grid.arrange(sex_fig_lags,
+             sex_fig_cum_lags,
+             nrow = 2, ncol = 1, left = yleft)
+
+
+```
+
+## 5. Age stratified analysis
+
+### 5a. Organize data
+
+
+```{r}
+
+# lag effect estimates from distributed lag models
+
+age_lags <- read_csv(paste0(output.folder, "age_distributed_lags_OR.csv")) %>%
+  mutate(lag = factor(lag, levels = c("lag1", "lag2", "lag3", "lag4", "lag5", "lag6", "lag7", "lag8", "lag9", "lag10")),
+         lag = recode_factor(lag,       # made names tidyer
+                          `lag1` = 'Lag 1',
+                          `lag2` = 'Lag 2',
+                          `lag3` = 'Lag 3',
+                          `lag4` = 'Lag 4',
+                          `lag5` = 'Lag 5',
+                          `lag6` = 'Lag 6',
+                          `lag7` = 'Lag 7',
+                          `lag8` = 'Lag 8',
+                          `lag9` = 'Lag 9',
+                          `lag10` = 'Lag 10'))
+
+
+# lag Cumulative estimates 
+
+age_cum_lags <- read_csv(paste0(output.folder, "age_cumm_lags_OR.csv")) %>%
+  dplyr::filter(lag %in% c("lag1", "lag5", "lag10")) %>%
+  mutate(exp_wind = as.factor(if_else(lag == "lag1", "1-year",
+                               if_else(lag == "lag5", "5-years",
+                                       if_else(lag == "lag10", "10-years", "x"))))) %>%
+  mutate(exp_wind = factor(exp_wind, levels = c("1-year", "5-years", "10-years"))) %>% 
+  dplyr::select(-lag)
+
+```
+
+### 5b. Age stratified figure 
+
+```{r}
+
+# cummulative lag effects
+pd <- position_dodge(width = 0.5)
+
+
+age_fig_cum_lags <- age_cum_lags %>%
+  ggplot(aes(x = exp_wind, y = OR_cumm, ymin = lower_CI, ymax = upper_CI)) +
+   geom_hline(yintercept = 1, linetype = 1) +
+    geom_pointrange(aes(linetype = model), position = pd, size = 0.5) +
+    ylab("") +
+    xlab("") +
+  ggtitle("(B) Cumulative effect estimates") +
+   #geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
+ #coord_flip()  +
+ scale_y_continuous(limits = c(0.92, 1.23), breaks = seq(.95, 1.20, by = 0.05)) +
+  theme_minimal() +
+    theme(
+        axis.ticks.y=element_blank(),
+        axis.text.x = element_text(size = 17),
+        axis.title.x = element_text(vjust = - 0.3),
+        axis.text.y = element_text(size = 17),
+        axis.title = element_text(size = 18),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        legend.text = element_text(size = 17),
+        strip.text = element_text(size = 18),
+        legend.key.size = unit(2.5, "lines"),
+         plot.title = element_text(size=18)) +
+  scale_linetype_manual(labels = c(expression(phantom(x)<=65~years), ">65 years"), values = c("solid", "dashed") )
+ 
+age_fig_cum_lags
+
+# lag effects
+
+age_fig_lags <- age_lags %>%
+  ggplot(aes(x = lag, y = OR, ymin = lower_CI, ymax = upper_CI)) +
+   geom_hline(yintercept = 1, linetype = 1) +
+   geom_pointrange(aes(linetype = model), position = pd, size = 0.5) +
+    ylab("") +
+    xlab("") +
+  ggtitle("(A) Effect estimates per lag") +
+    #geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
+ scale_y_continuous(limits = c(0.92, 1.23), breaks = seq(.95, 1.20, by = 0.05)) +
+  theme_minimal() +
+    theme(
+        axis.ticks.y=element_blank(),
+        axis.text.x = element_text(size = 17, angle = 75),
+        axis.title.x = element_text(vjust = - 0.2),
+        axis.text.y = element_text(size = 17),
+        axis.title = element_text(size = 18),
+        legend.position = "none",
+        legend.title = element_blank(),
+        legend.text = element_text(size = 17),
+        strip.text = element_text(size = 18),
+        legend.key.size = unit(2.5, "lines"),
+        plot.title = element_text(size=18))  +
+  scale_linetype_manual(labels = c(expression(phantom(x)<=65~years), ">65 years"), values = c("solid", "dashed") )
+                         
+
+
+# combine figures 
+
+yleft <- textGrob("Odds ratio per"~mu*g/m^3~PM[2.5]~increase, rot = 90, gp = gpar(fontsize = 20))
+
+grid.arrange(age_fig_lags,
+             age_fig_cum_lags,
+             nrow = 2, ncol = 1, left = yleft)
+
+
+```
+

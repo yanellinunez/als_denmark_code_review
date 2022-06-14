@@ -47,20 +47,20 @@ beta_trans_clog <- function(model, label) {
 
 # Extracting lag estimates from distributed lag model 
 
-OR_lag <- function(model, lag_df) {
+OR_lag <- function(pred_matrix, lag_df) {
   
-OR_fit <- as.data.frame(model[["matRRfit"]]) %>%
+OR_fit <- as.data.frame(pred_matrix[["matRRfit"]]) %>%
   rownames_to_column(., "PM2.5") %>%
   dplyr::filter(PM2.5 == 1) %>%
   gather(., "lag", "OR", -PM2.5)
 
 # 95% CI
-OR_low <- as.data.frame(model[["matRRlow"]]) %>%
+OR_low <- as.data.frame(pred_matrix[["matRRlow"]]) %>%
   rownames_to_column(., "PM2.5") %>%
   dplyr::filter(PM2.5 == 1) %>%
   gather(., "lag", "lower_CI", -PM2.5)
 
-OR_upper <- as.data.frame(model[["matRRhigh"]]) %>%
+OR_upper <- as.data.frame(pred_matrix[["matRRhigh"]]) %>%
   rownames_to_column(., "PM2.5") %>%
   dplyr::filter(PM2.5 == 1) %>%
   gather(., "lag", "upper_CI", -PM2.5)
@@ -76,21 +76,21 @@ OR_4df <- left_join(OR_fit, OR_low, by = c("PM2.5", "lag")) %>%
 
 # Extracting cumulative estimates from distributed lag model 
 
-OR_cumm <- function(model, lag_df){
+OR_cumm <- function(pred_matrix, lag_df){
   
 # OR  
-OR_fit_cumm <- as.data.frame(model[["cumRRfit"]]) %>%
+OR_fit_cumm <- as.data.frame(pred_matrix[["cumRRfit"]]) %>%
   rownames_to_column(., "PM2.5") %>%
   dplyr::filter(PM2.5 == 1) %>%
   gather(., "lag", "OR_cumm", -PM2.5)
 
 # 95% CI
-OR_low_cumm <- as.data.frame(model[["cumRRlow"]]) %>%
+OR_low_cumm <- as.data.frame(pred_matrix[["cumRRlow"]]) %>%
   rownames_to_column(., "PM2.5") %>%
   dplyr::filter(PM2.5 == 1) %>%
   gather(., "lag", "lower_CI", -PM2.5)
 
-OR_upper_cumm <- as.data.frame(model[["cumRRhigh"]]) %>%
+OR_upper_cumm <- as.data.frame(pred_matrix[["cumRRhigh"]]) %>%
   rownames_to_column(., "PM2.5") %>%
   dplyr::filter(PM2.5 == 1) %>%
   gather(., "lag", "upper_CI", -PM2.5)
