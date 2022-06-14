@@ -1,0 +1,187 @@
+---
+title: "m_06_inpatient_only_lag_analysis"
+author: "Yanelli Nunez"
+date: "6/14/2022"
+output:
+ html_document:
+    toc: TRUE
+    toc_float: TRUE
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+## i.  Loading needed packages
+
+* Objective * 
+
+Construct model that includes only inpatient hospitalizations
+
+I used the variable "pattype" to select only inpatient hospitalizations
+
+0 = "Never hospital patient"
+1 = "inpatient"
+2 = "outpatient"
+3 = "Emergency
+
+
+```{r include=FALSE}
+
+rm(list=ls())
+
+# 1a Declare root directory
+project.folder <- paste0(print(here::here()),'/')
+
+# add folder locations
+source(paste0(project.folder,'0_00_create_folder_structure.R'))
+
+# add file locations
+source(paste0(file.locations.folder,'file_locations.R'))
+
+# load packages
+ source(paste0(packages.folder,'packages.R'))
+
+# load functions
+ source(paste0(code.folder, 'models/functions_yanelli.R'))
+
+# load data
+ source(paste0(code.folder, 'models/m_00_load_datasets.R'))
+
+```
+
+## 1. Organize data 
+
+
+- Arrange data into the proper format for the lag analysis
+
+Notes: 
+
+Most cases were outpatient. See the breakdowns below:
+
+inpatient = 1526
+Outpatient = 2237
+emergency = 11
+
+```{r}
+
+lag_wide <- data_lags %>%
+ group_by(nr, lobnr) %>%
+  mutate(lags = as.character(lags), 
+         lags = paste0("lag_", lags)) %>%
+  ungroup() %>%
+ spread(lags, mean_pm2.5)
+
+# check how many inpatients we have
+lag_wide %>%
+  dplyr::filter(ck == 1) %>%
+  mutate(pattype = as.factor(pattype)) %>%
+  summary()
+
+head(lag_wide, 8)
+
+# select only inpatient cases 
+lag_inpatient <- lag_wide %>%
+  dplyr::filter(pattype == 1) 
+
+```
+
+ 
+## 2. Create matrix of exposure histories 
+
+For lags 1-10
+
+```{r exposure histories}
+
+# matrix with 10 lags
+
+exp_matrix <- lag_inpatient %>%
+  dplyr::select(33:43) %>%
+  dplyr::select(lag_1, lag_2, lag_3, lag_4, lag_5, lag_6, lag_7, lag_8, lag_9, lag_10)
+
+
+```
+
+## 3. Crossbasis
+
+
+All crossbases have a linear dose-response relationship
+
+In the main analysis we found that the model with a lag constrained with 3df has a better fit. So here we use 3df for the age stratified models
+
+
+```{r}
+
+# Crossbasis with 10 lags 
+
+
+cb.lin.inpatient <- crossbasis(exp_matrix, 
+                 lag=c(1,10),
+                 argvar=list(fun = "lin"), # form of the dose-response within each lag
+                 arglag=list(fun= "ns", df = 3)) # the form of the curve across all the lags, that is, the lag constrain 
+
+
+
+```
+
+
+## 4. Lag Models
+
+Linear conditional logistic models with 10 lags and 3 df in the lag constrain
+
+```{r}
+
+# run model
+clogit.lin <- survival::clogit(ck ~ cb.lin.inpatient + 
+                               family_SES +
+                               place_birth +
+                               civst +
+                               residence + 
+                               strata(nr), method = "efron", data = lag_inpatient)
+
+summary(clogit.lin)
+
+
+# Predict
+pred.lin <- crosspred(
+  cb.lin.inpatient, # crossbasis
+  clogit.lin, # model
+  at = 1:30, # range values of PM2.5 to use for prediction select based on min/max pm2.5 concentrations in dataset
+  bylag = 1, # lag increments 
+  cumul = TRUE, # estimate cumulative effect
+  cen = 0) # references for estimate
+
+
+## Visuals
+
+# 3-D plot
+plot(pred.lin, zlab="OR", xlab="Exposure", ylab="Lag (years)",
+       theta=40, phi=30, lphi=30)
+
+# Plot lag exposure-response at exposure of 10ug/m3
+plot(pred.lin, 
+     var = 10, 
+     col = "red", 
+     ci.arg = list(density = 15, lwd =2),
+      ylab = "OR at 10ug/m3 PM2.5", xlab = "lag (years)")
+
+
+
+## Extract estimates per lag 
+# I created the OR_lag() and OR_cumm() function to extract the per lag and cummulative estimates and organize them into a dataset to use later for figures. The functions are in  the functions_yanelli.R  file  in this folder
+OR_lag_inpat <- OR_lag(pred.lin, "inpatient")
+
+knitr::kable(OR_lag_inpat)
+
+ write_csv(OR_lag_inpat, paste0(output.folder, "inpatients_distributed_lags_OR.csv"))
+
+
+
+## Extract cumulative estimates for 1, 5 and 10 lags
+
+OR_cumm_inpat <- OR_cumm(pred.lin, "inpatient")
+
+knitr::kable(OR_cumm_inpat)
+
+ write_csv(OR_cumm_inpat, paste0(output.folder, "inpatients_cumm_lags_OR.csv"))
+
+```
