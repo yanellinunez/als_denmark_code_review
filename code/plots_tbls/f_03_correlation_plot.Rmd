@@ -11,7 +11,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-This code you can run because it doesn't use patient data. Here I used the effect estimates I save from the models to make a figure for the effect estimates of average exposures and the distributed lags
+
 
 ```{r include=FALSE}
 

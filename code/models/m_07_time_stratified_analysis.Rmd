@@ -1,0 +1,269 @@
+---
+title: "m_07_time_stratified_analysis"
+author: "Yanelli Nunez"
+date: "6/15/2022"
+output:
+ html_document:
+    toc: TRUE
+    toc_float: TRUE
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+## i.  Loading needed packages
+
+* Objective * 
+
+Construct stratified models for pre 2000 and after 2000
+
+
+```{r include=FALSE}
+
+rm(list=ls())
+
+# 1a Declare root directory
+project.folder <- paste0(print(here::here()),'/')
+
+# add folder locations
+source(paste0(project.folder,'0_00_create_folder_structure.R'))
+
+# add file locations
+source(paste0(file.locations.folder,'file_locations.R'))
+
+# load packages
+ source(paste0(packages.folder,'packages.R'))
+
+# load functions
+ source(paste0(code.folder, 'models/functions_yanelli.R'))
+
+# load data
+ source(paste0(code.folder, 'models/m_00_load_datasets.R'))
+
+```
+
+## 1. Organize data 
+
+
+- Arrange data into the proper format for the lag analysis
+
+Notes: 
+
+Time range: 1989 to 2013
+
+Later years have higher case counts
+
+```{r}
+
+lag_wide <- data_lags %>%
+ group_by(nr, lobnr) %>%
+  mutate(lags = as.character(lags), 
+         lags = paste0("lag_", lags)) %>%
+  ungroup() %>%
+ spread(lags, mean_pm2.5) %>%
+  mutate(year_hosp = year(diagdat))
+
+# check how many patients we have for each year
+years_counts <- lag_wide %>%
+ group_by(year_hosp) %>%
+  summarize(n())
+
+head(lag_wide, 8)
+
+# Before 2000
+lag_post_2000 <- lag_wide %>%
+  dplyr::filter(year_hosp >= 2000) %>%
+  dplyr::select(-year_hosp)
+
+
+# After 2000
+lag_pre_2000 <- lag_wide %>%
+  dplyr::filter(year_hosp < 2000) %>%
+  dplyr::select(-year_hosp)
+
+
+```
+
+## 2. Create matrix of exposure histories 
+
+For lags 1-10
+
+```{r exposure histories}
+
+# matrix with 10 lags
+
+# Before 2000
+exp_matrix_pre_2000 <- lag_pre_2000 %>%
+  dplyr::select(33:43) %>%
+  dplyr::select(lag_1, lag_2, lag_3, lag_4, lag_5, lag_6, lag_7, lag_8, lag_9, lag_10)
+
+# After 2000
+
+exp_matrix_post_2000 <- lag_post_2000 %>%
+  dplyr::select(33:43) %>%
+  dplyr::select(lag_1, lag_2, lag_3, lag_4, lag_5, lag_6, lag_7, lag_8, lag_9, lag_10)
+
+```
+
+## 3. Crossbasis
+
+
+All crossbases have a linear dose-response relationship
+
+In the main analysis we found that the model with a lag constrained with 3df has a better fit. So here we use 3df for the sex stratified models
+
+
+```{r}
+
+# Crossbasis with 10 lags 
+
+# pre 2000
+pre.2000.cb.lin <- crossbasis(exp_matrix_pre_2000, 
+                 lag=c(1,10),
+                 argvar=list(fun = "lin"), # form of the dose-response within each lag
+                 arglag=list(fun= "ns", df = 3)) # the form of the curve across all the lags, that is, the lag constrain 
+
+
+# post 2000
+post.2000.cb.lin <- crossbasis(exp_matrix_post_2000, 
+                 lag=c(1,10),
+                 argvar=list(fun = "lin"), # form of the dose-response within each lag
+                 arglag=list(fun= "ns", df = 3)) # the form of the curve across all the lags, that is, the lag constrain 
+
+
+
+```
+
+## 4. Lag Models
+
+Linear conditional logistic models with 10 lags and 3 df in the lag constrain
+
+
+### 4a. Before 2000
+
+
+```{r}
+
+# run model
+clogit.lin.pre.2000 <- survival::clogit(ck ~ pre.2000.cb.lin + 
+                               family_SES +
+                               place_birth +
+                               civst +
+                               residence + 
+                               strata(nr), method = "efron", data = lag_pre_2000)
+
+summary(clogit.lin.pre.2000)
+
+
+# Predict
+pred.lin.pre.2000 <- crosspred(
+  pre.2000.cb.lin, # crossbasis
+  clogit.lin.pre.2000, # model
+  at = 1:30, # range values of PM2.5 to use for prediction select based on min/max pm2.5 concentrations in dataset
+  bylag = 1, # lag increments 
+  cumul = TRUE, # estimate cumulative effect
+  cen = 0) # references for estimate
+
+
+## Visuals
+
+# 3-D plot
+plot(pred.lin.pre.2000, zlab="OR", xlab="Exposure", ylab="Lag (years)",
+       theta=40, phi=30, lphi=30)
+
+# Plot lag exposure-response at exposure of 10ug/m3
+plot(pred.lin.pre.2000, 
+     var = 10, 
+     col = "red", 
+     ci.arg = list(density = 15, lwd =2),
+      ylab = "OR at 10ug/m3 PM2.5", xlab = "lag (years)")
+
+
+
+## Extract estimates per lag 
+# I created the OR_lag() and OR_cumm() function to extract the per lag and cummulative estimates and organize them into a dataset to use later for figures. The functions are in  the functions_yanelli.R  file  in this folder
+OR_lag_pre_2000 <- OR_lag(pred.lin.pre.2000, "Pre-2000")
+
+
+## Extract cumulative estimates for 1, 5 and 10 lags
+
+OR_cumm_pre_2000 <- OR_cumm(pred.lin.pre.2000, "Pre-2000")
+
+```
+
+### 4b. After 2000 
+
+```{r}
+
+# run model
+clogit.lin.post.2000 <- survival::clogit(ck ~ post.2000.cb.lin + 
+                               family_SES +
+                               place_birth +
+                               civst +
+                               residence + 
+                               strata(nr), method = "efron", data = lag_post_2000)
+
+summary(clogit.lin.post.2000)
+
+
+# Predict
+pred.lin.post.2000 <- crosspred(
+  post.2000.cb.lin, # crossbasis
+  clogit.lin.post.2000, # model
+  at = 1:30, # range values of PM2.5 to use for prediction select based on min/max pm2.5 concentrations in dataset
+  bylag = 1, # lag increments 
+  cumul = TRUE, # estimate cumulative effect
+  cen = 0) # references for estimate
+
+
+## Visuals
+
+# 3-D plot
+plot(pred.lin.post.2000, zlab="OR", xlab="Exposure", ylab="Lag (years)",
+       theta=40, phi=30, lphi=30)
+
+# Plot lag exposure-response at exposure of 10ug/m3
+plot(pred.lin.post.2000, 
+     var = 10, 
+     col = "red", 
+     ci.arg = list(density = 15, lwd =2),
+      ylab = "OR at 10ug/m3 PM2.5", xlab = "lag (years)")
+
+
+
+## Extract estimates per lag 
+# I created the OR_lag() and OR_cumm() function to extract the per lag and cummulative estimates and organize them into a dataset to use later for figures. The functions are in  the functions_yanelli.R  file  in this folder
+OR_lag_post_2000 <- OR_lag(pred.lin.post.2000, "post-2000")
+
+
+## Extract cumulative estimates for 1, 5 and 10 lags
+
+OR_cumm_post_2000 <- OR_cumm(pred.lin.post.2000, "post-2000")
+
+```
+
+## 5. Compile and save effect estimates
+
+- I combined the effect estimates from the two models (female and male) into a single dataset both for the single lag effect estimates and the cumulative effect estimates. I saved the dataset as a .csv into the output folder
+
+```{r}
+
+# by lag effect estimates
+
+per_lag_effects <- rbind(OR_lag_pre_2000, OR_lag_post_2000) %>%
+dplyr::rename(model = lag_constr)
+
+knitr::kable(per_lag_effects)
+
+ write_csv(per_lag_effects, paste0(output.folder, "time_stratified_distributed_lags_OR.csv"))
+
+# cumulative estimates 
+
+cumm_effects <- rbind(OR_cumm_pre_2000, OR_cumm_post_2000) %>%
+ dplyr::rename(model = lag_constr)
+
+knitr::kable(cumm_effects)
+
+ write_csv(cumm_effects, paste0(output.folder, "time_stratified_cumm_lags_OR.csv"))
+
+```

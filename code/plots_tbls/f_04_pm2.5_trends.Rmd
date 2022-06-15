@@ -1,0 +1,78 @@
+---
+title: "pm2.5 trends"
+author: "Yanelli Nunez"
+date: "6/15/2022"
+output:
+ html_document:
+    toc: TRUE
+    toc_float: TRUE
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+* Objective * 
+
+Estimate annual PM2.5 concentrations and plot 
+
+
+```{r include=FALSE}
+
+rm(list=ls())
+
+# 1a Declare root directory
+project.folder <- paste0(print(here::here()),'/')
+
+# add folder locations
+source(paste0(project.folder,'0_00_create_folder_structure.R'))
+
+# add file locations
+source(paste0(file.locations.folder,'file_locations.R'))
+
+# load packages
+ source(paste0(packages.folder,'packages.R'))
+
+
+```
+
+ ## 1. Load data
+
+```{r}
+
+data_full <- readRDS(paste0(yanelli_datasets, "joined_datasets.rds")) %>%
+  mutate(year_exp = year(date_exp)) %>%
+   dplyr::filter(year_exp >= 1989) %>%
+  group_by(year_exp) %>%
+  summarize(mean_pm2.5 = mean(PM25_str),
+           perc_25 = quantile(PM25_str, probs = c(.25), na.rm = TRUE),
+           perc_75 = quantile(PM25_str, probs = c(.75), na.rm = TRUE)) %>%
+ungroup() %>%
+  drop_na()
+
+summary(data_full)
+
+```
+
+## 2. Figure 
+
+```{r}
+
+data_full %>%
+  ggplot(aes(x = year_exp)) +
+  geom_path(aes(y = mean_pm2.5), size = 1) +
+ #geom_ribbon(aes(ymin = perc_25, ymax = perc_75), alpha = 0.3) +
+  geom_path(aes(y = perc_25), linetype = "dashed") + 
+  geom_path(aes(y = perc_75), linetype = "dashed") +
+    theme_minimal_grid() +
+    ylab("PM"[2.5]~(mu*g/m^3)) +
+    xlab("Year") +
+    #ggtitle("Poverty/Unemployment mean population % trends") +
+   theme(legend.title = element_blank(),
+          axis.title = element_text( size = 18),
+         # strip.text = element_text(size = 14),
+         axis.text = element_text(size = 17)) +
+  scale_x_continuous(breaks = seq(1989, 2013, by = 2)) +
+   scale_y_continuous(breaks = seq(8, 18, by = 2))
+
+```
+
