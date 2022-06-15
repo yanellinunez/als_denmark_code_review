@@ -87,6 +87,7 @@ http://www.danieldsjoberg.com/gtsummary/articles/tbl_summary.html
 ```{r}
 
 table1_prep <- data_5yrs %>%
+  mutate(age_diag = trunc((bdate %--% diagdat) / years(1))) %>%
   dplyr::select(ck, sex, age_diag, civst, place_birth, residence, family_SES, PM25_5yr) %>%
   unique() %>%
   mutate(ck = as.factor(if_else(ck == "0", "control", "case")),
@@ -104,10 +105,10 @@ table1_prep <- data_5yrs %>%
          `2`='Widower',
          `1`='Never married'),
   residence = recode_factor(residence, 
-        `Greater Copenhagen`='Greater Copenhagen',
-        `Big cities of Denmark>10,000`='Big cities of Denmark',
+        `Capital Region of Denmark`='Capital Region of Denmark',
+        `Cities >50K population`='Cities >50K population',
         `Rest of Denmark`='Rest of Denmark',
-        `Greenland`='Greenland'),
+        `Unknown`='Unknown'),
   place_birth=recode_factor(place_birth, 
        `copenhagen`='Greater Copenhagen',
        `other_cities`='Big cities of Denmark',
@@ -141,6 +142,6 @@ table_1
 ```{r}
 table_1 %>%
   gtsummary::as_flex_table() %>%
-  flextable::save_as_docx(path = paste0(tables.folder,'table_1.docx'))
+  flextable::save_as_docx(path = paste0(tables.folder,'table_1_updated.docx'))
 ```
 
