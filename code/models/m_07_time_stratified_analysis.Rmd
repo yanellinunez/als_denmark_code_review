@@ -70,13 +70,13 @@ years_counts <- lag_wide %>%
 
 head(lag_wide, 8)
 
-# Before 2000
+# After 2000
 lag_post_2000 <- lag_wide %>%
   dplyr::filter(year_hosp >= 2000) %>%
   dplyr::select(-year_hosp)
 
 
-# After 2000
+# Before 2000
 lag_pre_2000 <- lag_wide %>%
   dplyr::filter(year_hosp < 2000) %>%
   dplyr::select(-year_hosp)
