@@ -304,6 +304,7 @@ pd <- position_dodge(width = 0.5)
 
 
 sex_fig_cum_lags <- sex_cum_lags %>%
+  dplyr::filter(exp_wind != "1-year") %>%
   ggplot(aes(x = exp_wind, y = OR_cumm, ymin = lower_CI, ymax = upper_CI)) +
    geom_hline(yintercept = 1, linetype = 1) +
     geom_pointrange(aes(linetype = model), position = pd, size = 0.5) +
@@ -414,6 +415,7 @@ pd <- position_dodge(width = 0.5)
 
 
 age_fig_cum_lags <- age_cum_lags %>%
+   dplyr::filter(exp_wind != "1-year") %>%
   ggplot(aes(x = exp_wind, y = OR_cumm, ymin = lower_CI, ymax = upper_CI)) +
    geom_hline(yintercept = 1, linetype = 1) +
     geom_pointrange(aes(linetype = model), position = pd, size = 0.5) +
@@ -524,6 +526,7 @@ pd <- position_dodge(width = 0.5)
 
 
 inpatients_fig_cum_lags <- inpatients_cum_lags %>%
+   dplyr::filter(exp_wind != "1-year") %>%
   ggplot(aes(x = exp_wind, y = OR_cumm, ymin = lower_CI, ymax = upper_CI)) +
    geom_hline(yintercept = 1, linetype = 1) +
     geom_pointrange(aes(), position = pd, size = 0.5) +
@@ -555,26 +558,26 @@ inpatients_fig_cum_lags
 inpatients_fig_lags <- inpatients_lags %>%
   ggplot(aes(x = lag, y = OR, ymin = lower_CI, ymax = upper_CI)) +
    geom_hline(yintercept = 1, linetype = 1) +
-   geom_pointrange(aes(), position = pd, size = 0.5) +
+ geom_pointrange(aes(), position = pd, size = 0.5) +
     ylab("") +
     xlab("") +
-  ggtitle("(A) Effect estimates per lag") +
-    #geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
+   ggtitle("(A) Effect estimates per lag") +
+   #geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
+ #coord_flip()  +
  scale_y_continuous(limits = c(0.93, 1.15), breaks = seq(.95, 1.15, by = 0.05)) +
   theme_minimal() +
     theme(
         axis.ticks.y=element_blank(),
         axis.text.x = element_text(size = 17, angle = 75),
-        axis.title.x = element_text(vjust = - 0.2),
+        axis.title.x = element_text(vjust = - 0.3),
         axis.text.y = element_text(size = 17),
         axis.title = element_text(size = 18),
-        legend.position = "none",
+        legend.position = "bottom",
         legend.title = element_blank(),
         legend.text = element_text(size = 17),
         strip.text = element_text(size = 18),
         legend.key.size = unit(2.5, "lines"),
-        plot.title = element_text(size=18))  
-                         
+         plot.title = element_text(size=18))       
 
 
 # combine figures 
@@ -583,6 +586,120 @@ yleft <- textGrob("Odds ratio per"~mu*g/m^3~PM[2.5]~increase, rot = 90, gp = gpa
 
 grid.arrange(inpatients_fig_lags,
              inpatients_fig_cum_lags,
+             nrow = 2, ncol = 1, left = yleft)
+
+
+```
+
+## 7. Time-stratified analyses
+
+### 7a. Organize data
+
+
+```{r}
+
+# lag effect estimates from distributed lag models
+
+time_lags <- read_csv(paste0(output.folder, "time_stratified_cumm_lags_OR.csv")) %>%
+  mutate(lag = factor(lag, levels = c("lag1", "lag2", "lag3", "lag4", "lag5", "lag6", "lag7", "lag8", "lag9", "lag10")),
+         model = factor(model, levels = c("Pre-2000", "post-2000")),
+         lag = recode_factor(lag,       # made names tidyer
+                          `lag1` = 'Lag 1',
+                          `lag2` = 'Lag 2',
+                          `lag3` = 'Lag 3',
+                          `lag4` = 'Lag 4',
+                          `lag5` = 'Lag 5',
+                          `lag6` = 'Lag 6',
+                          `lag7` = 'Lag 7',
+                          `lag8` = 'Lag 8',
+                          `lag9` = 'Lag 9',
+                          `lag10` = 'Lag 10'))
+
+
+# lag Cumulative estimates 
+
+time_cum_lags <- read_csv(paste0(output.folder, "time_stratified_cumm_lags_OR.csv")) %>%
+  dplyr::filter(lag %in% c("lag1", "lag5", "lag10")) %>%
+  mutate(exp_wind = as.factor(if_else(lag == "lag1", "1-year",
+                               if_else(lag == "lag5", "5-years",
+                                       if_else(lag == "lag10", "10-years", "x"))))) %>%
+  mutate(exp_wind = factor(exp_wind, levels = c("1-year", "5-years", "10-years")),
+            model = factor(model, levels = c("Pre-2000", "post-2000")),) %>% 
+  dplyr::select(-lag)
+
+```
+
+### 6b. Time stratified figure 
+
+```{r}
+
+# cummulative lag effects
+pd <- position_dodge(width = 0.5)
+
+
+time_fig_cum_lags <- time_cum_lags %>%
+   dplyr::filter(exp_wind != "1-year") %>%
+  ggplot(aes(x = exp_wind, y = OR_cumm, ymin = lower_CI, ymax = upper_CI)) +
+   geom_hline(yintercept = 1, linetype = 1) +
+    geom_pointrange(aes(linetype = model), position = pd, size = 0.5) +
+    ylab("") +
+    xlab("") +
+  ggtitle("(B) Cumulative effect estimates") +
+   #geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
+ #coord_flip()  +
+ scale_y_continuous(limits = c(0.90, 1.3), breaks = seq(.90, 1.3, by = 0.05)) +
+  theme_minimal() +
+    theme(
+        axis.ticks.y=element_blank(),
+        axis.text.x = element_text(size = 17),
+        axis.title.x = element_text(vjust = - 0.3),
+        axis.text.y = element_text(size = 17),
+        axis.title = element_text(size = 18),
+        legend.position = "bottom",
+        legend.title = element_text(size = 17),
+        legend.text = element_text(size = 17),
+        strip.text = element_text(size = 18),
+        legend.key.size = unit(2.5, "lines"),
+         plot.title = element_text(size=18)) +
+  scale_linetype_manual(labels = c("1989-1999", "2000-2013"), values = c("solid", "dashed")) +
+  labs(linetype = "Time period:")
+ 
+ 
+time_fig_cum_lags
+
+# lag effects
+
+time_fig_lags <- time_lags %>%
+  ggplot(aes(x = lag, y = OR_cumm, ymin = lower_CI, ymax = upper_CI)) +
+   geom_hline(yintercept = 1, linetype = 1) +
+  geom_pointrange(aes(linetype = model), position = pd, size = 0.5) +
+    ylab("") +
+    xlab("") +
+  ggtitle("(A) Effect estimates per lag") +
+   #geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), position = pd, width = 0.20) +
+ #coord_flip()  +
+ scale_y_continuous(limits = c(0.90, 1.3), breaks = seq(.90, 1.3, by = 0.05)) +
+  theme_minimal() +
+    theme(
+         axis.ticks.y=element_blank(),
+        axis.text.x = element_text(size = 17, angle = 75),
+        axis.title.x = element_text(vjust = - 0.3),
+        axis.text.y = element_text(size = 17),
+        axis.title = element_text(size = 18),
+        legend.position = "none",
+        legend.title = element_blank(),
+        legend.text = element_text(size = 17),
+        strip.text = element_text(size = 18),
+        legend.key.size = unit(2.5, "lines"),
+         plot.title = element_text(size=18)) 
+
+
+# combine figures 
+
+yleft <- textGrob("Odds ratio per"~mu*g/m^3~PM[2.5]~increase, rot = 90, gp = gpar(fontsize = 20))
+
+grid.arrange(time_fig_lags,
+             time_fig_cum_lags,
              nrow = 2, ncol = 1, left = yleft)
 
 
