@@ -58,17 +58,22 @@ avg_1yr <- read_csv(paste0(yanelli_datasets, "one_yr_filtered_data.csv")) %>%
 
 summary(avg_1yr)
 
-# check that we have the 3942 cases 
+# check that we have the 3915 cases 
 check_cases <- avg_1yr %>%
   group_by(nr) %>%
   summarise()
 
 count(check_cases)
 
+# check_controls 
+avg_1yr %>%
+dplyr::filter(ck == 0) %>%
+  count()
+
 
 # save data file 
 
-write_csv(avg_1yr, paste0(yanelli_datasets, "one_yr_avg_data.csv"))
+#write_csv(avg_1yr, paste0(yanelli_datasets, "one_yr_avg_data.csv"))
 
 ```
 
@@ -101,9 +106,16 @@ check_cases <- avg_5yr %>%
 
 count(check_cases)
 
+# check_controls 
+avg_5yr %>%
+dplyr::filter(ck == 0) %>%
+  count()
+
+
+
 # save data file 
 
-write_csv(avg_5yr, paste0(yanelli_datasets, "five_yrs_avg_data.csv"))
+#write_csv(avg_5yr, paste0(yanelli_datasets, "five_yrs_avg_data.csv"))
 
 ```
 

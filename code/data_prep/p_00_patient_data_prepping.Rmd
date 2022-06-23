@@ -182,6 +182,30 @@ summary(patient_data_resid)
                                   
 ```
 
+## 3b. summaries
+```{r}
+# cases
+cases <- patient_data_resid %>%
+  dplyr::filter(ck == 1)
+
+summary(cases)
+
+# case number
+count(cases)
+
+
+# controls
+controls <- patient_data_resid %>%
+  dplyr::filter(ck == 0)
+
+summary(controls)
+
+#controls numbers
+count(controls)
+
+
+```
+
 
 
 ## 4. Make a table 1
@@ -236,15 +260,15 @@ table_1 <- table1_prep %>%
 
 table_1
 
-table_1 %>%
-  gtsummary::as_flex_table() %>%
-  flextable::save_as_docx(path = paste0(tables.folder,'table_1_full_data.docx'))
+#table_1 %>%
+ # gtsummary::as_flex_table() %>%
+  #flextable::save_as_docx(path = paste0(tables.folder,'table_1_full_data.docx'))
 ```
 
 
 ## 5. Save data
 
 ```{r}
-saveRDS(patient_data_resid, file = "//fsmsph/msph_ehs$/APALS_DanishData/fromJohnni/patient_data_uniform_complete.rds")
+#saveRDS(patient_data_resid, file = "//fsmsph/msph_ehs$/APALS_DanishData/fromJohnni/patient_data_uniform_complete.rds")
 ```
 

@@ -1610,7 +1610,7 @@ data_1yr &lt;- read_csv(paste0(yanelli_datasets, &quot;one_yr_avg_data.csv&quot;
   mutate(sum=sum(ck)) %&gt;% 
   dplyr::filter(sum==1) %&gt;%
    dplyr::select(-sum) %&gt;%
-  ungroup()</code></pre>
+  ungroup() </code></pre>
 <pre><code>## Rows: 23189 Columns: 36</code></pre>
 <pre><code>## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
@@ -1620,33 +1620,33 @@ data_1yr &lt;- read_csv(paste0(yanelli_datasets, &quot;one_yr_avg_data.csv&quot;
 <pre><code>## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>class(data_1yr)</code></pre>
-<pre><code>## [1] &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
-<pre class="r"><code>summary(data_1yr)</code></pre>
-<pre><code>##        nr           lobnr             ck            diagtype
-##  Min.   :   2   Min.   :0.000   Min.   :0.0000   Min.   :1  
-##  1st Qu.:1201   1st Qu.:1.000   1st Qu.:0.0000   1st Qu.:1  
-##  Median :2384   Median :2.000   Median :0.0000   Median :1  
-##  Mean   :2364   Mean   :2.492   Mean   :0.1689   Mean   :1  
-##  3rd Qu.:3563   3rd Qu.:4.000   3rd Qu.:0.0000   3rd Qu.:1  
-##  Max.   :4608   Max.   :5.000   Max.   :1.0000   Max.   :1  
-##                                                             
-##     diagdat                 ID         aegtesocial        bdate           
-##  Min.   :1989-01-02   Min.   :    9   Min.   :1.000   Min.   :1901-02-06  
-##  1st Qu.:1997-05-16   1st Qu.: 9589   1st Qu.:3.000   1st Qu.:1927-05-01  
-##  Median :2003-10-30   Median :19051   Median :5.000   Median :1936-10-07  
-##  Mean   :2003-01-29   Mean   :18886   Mean   :5.296   Mean   :1937-06-07  
-##  3rd Qu.:2009-02-04   3rd Qu.:28459   3rd Qu.:9.000   3rd Qu.:1946-04-01  
-##  Max.   :2013-12-30   Max.   :36806   Max.   :9.000   Max.   :1987-06-01  
-##                                       NA&#39;s   :2578                        
-##  civst       civstdat5             d_inddto             d_uddto          
-##  1: 2132   Min.   :1900-07-01   Min.   :1989-01-02   Min.   :1989-01-06  
-##  2: 4192   1st Qu.:1960-09-10   1st Qu.:1997-05-16   1st Qu.:1997-09-19  
-##  3: 2713   Median :1973-04-07   Median :2003-11-03   Median :2004-04-23  
-##  4:14147   Mean   :1974-08-21   Mean   :2003-02-06   Mean   :2003-08-04  
-##            3rd Qu.:1989-06-27   3rd Qu.:2009-02-19   3rd Qu.:2009-09-22  
-##            Max.   :2013-08-30   Max.   :2013-12-30   Max.   :2014-11-01  
-##            NA&#39;s   :2132                                                  
+<pre class="r"><code>data_1yr %&gt;%
+  mutate(ck = as.factor(ck)) %&gt;%
+  summary()</code></pre>
+<pre><code>##        nr           lobnr       ck           diagtype    diagdat          
+##  Min.   :   2   Min.   :0.000   0:19269   Min.   :1   Min.   :1989-01-02  
+##  1st Qu.:1201   1st Qu.:1.000   1: 3915   1st Qu.:1   1st Qu.:1997-05-16  
+##  Median :2384   Median :2.000             Median :1   Median :2003-10-30  
+##  Mean   :2364   Mean   :2.492             Mean   :1   Mean   :2003-01-29  
+##  3rd Qu.:3563   3rd Qu.:4.000             3rd Qu.:1   3rd Qu.:2009-02-04  
+##  Max.   :4608   Max.   :5.000             Max.   :1   Max.   :2013-12-30  
+##                                                                           
+##        ID         aegtesocial        bdate            civst    
+##  Min.   :    9   Min.   :1.000   Min.   :1901-02-06   1: 2132  
+##  1st Qu.: 9589   1st Qu.:3.000   1st Qu.:1927-05-01   2: 4192  
+##  Median :19051   Median :5.000   Median :1936-10-07   3: 2713  
+##  Mean   :18886   Mean   :5.296   Mean   :1937-06-07   4:14147  
+##  3rd Qu.:28459   3rd Qu.:9.000   3rd Qu.:1946-04-01            
+##  Max.   :36806   Max.   :9.000   Max.   :1987-06-01            
+##                  NA&#39;s   :2578                                  
+##    civstdat5             d_inddto             d_uddto          
+##  Min.   :1900-07-01   Min.   :1989-01-02   Min.   :1989-01-06  
+##  1st Qu.:1960-09-10   1st Qu.:1997-05-16   1st Qu.:1997-09-19  
+##  Median :1973-04-07   Median :2003-11-03   Median :2004-04-23  
+##  Mean   :1974-08-21   Mean   :2003-02-06   Mean   :2003-08-04  
+##  3rd Qu.:1989-06-27   3rd Qu.:2009-02-19   3rd Qu.:2009-09-22  
+##  Max.   :2013-08-30   Max.   :2013-12-30   Max.   :2014-11-01  
+##  NA&#39;s   :2132                                                  
 ##     daars1             daars2              diag                diy      
 ##  Length:23184       Length:23184       Length:23184       Min.   :1989  
 ##  Class :character   Class :character   Class :character   1st Qu.:1997  
@@ -1695,6 +1695,8 @@ data_1yr &lt;- read_csv(paste0(yanelli_datasets, &quot;one_yr_avg_data.csv&quot;
 ##  3rd Qu.:56.70   3rd Qu.:19.84   3rd Qu.:0.9265  
 ##  Max.   :68.95   Max.   :38.05   Max.   :5.4814  
 ## </code></pre>
+<pre class="r"><code>class(data_1yr)</code></pre>
+<pre><code>## [1] &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
 <pre class="r"><code># 5 years
 
 data_5yrs &lt;- read_csv(paste0(yanelli_datasets, &quot;five_yrs_avg_data.csv&quot;)) %&gt;%
@@ -1720,31 +1722,33 @@ data_5yrs &lt;- read_csv(paste0(yanelli_datasets, &quot;five_yrs_avg_data.csv&qu
 <pre><code>## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>summary(data_5yrs)</code></pre>
-<pre><code>##        nr           lobnr             ck            diagtype
-##  Min.   :   2   Min.   :0.000   Min.   :0.0000   Min.   :1  
-##  1st Qu.:1203   1st Qu.:1.000   1st Qu.:0.0000   1st Qu.:1  
-##  Median :2380   Median :2.000   Median :0.0000   Median :1  
-##  Mean   :2364   Mean   :2.491   Mean   :0.1689   Mean   :1  
-##  3rd Qu.:3564   3rd Qu.:4.000   3rd Qu.:0.0000   3rd Qu.:1  
-##  Max.   :4608   Max.   :5.000   Max.   :1.0000   Max.   :1  
-##                                                             
-##     diagdat                 ID         aegtesocial        bdate           
-##  Min.   :1989-01-02   Min.   :    9   Min.   :1.000   Min.   :1901-02-06  
-##  1st Qu.:1997-05-27   1st Qu.: 9605   1st Qu.:3.000   1st Qu.:1927-05-01  
-##  Median :2003-11-14   Median :19019   Median :5.000   Median :1936-11-01  
-##  Mean   :2003-02-06   Mean   :18881   Mean   :5.294   Mean   :1937-06-22  
-##  3rd Qu.:2009-02-05   3rd Qu.:28465   3rd Qu.:9.000   3rd Qu.:1946-04-01  
-##  Max.   :2013-12-30   Max.   :36806   Max.   :9.000   Max.   :1987-06-01  
-##                                       NA&#39;s   :2567                        
-##  civst       civstdat5             d_inddto             d_uddto          
-##  1: 2134   Min.   :1900-07-01   Min.   :1989-01-02   Min.   :1989-01-06  
-##  2: 4192   1st Qu.:1960-09-24   1st Qu.:1997-05-27   1st Qu.:1997-09-25  
-##  3: 2715   Median :1973-04-22   Median :2003-11-20   Median :2004-05-11  
-##  4:14127   Mean   :1974-09-05   Mean   :2003-02-13   Mean   :2003-08-12  
-##            3rd Qu.:1989-07-01   3rd Qu.:2009-02-19   3rd Qu.:2009-09-22  
-##            Max.   :2013-08-30   Max.   :2013-12-30   Max.   :2014-11-01  
-##            NA&#39;s   :2134                                                  
+<pre class="r"><code>data_5yrs %&gt;%
+  mutate(ck = as.factor(ck)) %&gt;%
+  summary()</code></pre>
+<pre><code>##        nr           lobnr       ck           diagtype    diagdat          
+##  Min.   :   2   Min.   :0.000   0:19254   Min.   :1   Min.   :1989-01-02  
+##  1st Qu.:1203   1st Qu.:1.000   1: 3914   1st Qu.:1   1st Qu.:1997-05-27  
+##  Median :2380   Median :2.000             Median :1   Median :2003-11-14  
+##  Mean   :2364   Mean   :2.491             Mean   :1   Mean   :2003-02-06  
+##  3rd Qu.:3564   3rd Qu.:4.000             3rd Qu.:1   3rd Qu.:2009-02-05  
+##  Max.   :4608   Max.   :5.000             Max.   :1   Max.   :2013-12-30  
+##                                                                           
+##        ID         aegtesocial        bdate            civst    
+##  Min.   :    9   Min.   :1.000   Min.   :1901-02-06   1: 2134  
+##  1st Qu.: 9605   1st Qu.:3.000   1st Qu.:1927-05-01   2: 4192  
+##  Median :19019   Median :5.000   Median :1936-11-01   3: 2715  
+##  Mean   :18881   Mean   :5.294   Mean   :1937-06-22   4:14127  
+##  3rd Qu.:28465   3rd Qu.:9.000   3rd Qu.:1946-04-01            
+##  Max.   :36806   Max.   :9.000   Max.   :1987-06-01            
+##                  NA&#39;s   :2567                                  
+##    civstdat5             d_inddto             d_uddto          
+##  Min.   :1900-07-01   Min.   :1989-01-02   Min.   :1989-01-06  
+##  1st Qu.:1960-09-24   1st Qu.:1997-05-27   1st Qu.:1997-09-25  
+##  Median :1973-04-22   Median :2003-11-20   Median :2004-05-11  
+##  Mean   :1974-09-05   Mean   :2003-02-13   Mean   :2003-08-12  
+##  3rd Qu.:1989-07-01   3rd Qu.:2009-02-19   3rd Qu.:2009-09-22  
+##  Max.   :2013-08-30   Max.   :2013-12-30   Max.   :2014-11-01  
+##  NA&#39;s   :2134                                                  
 ##     daars1             daars2              diag                diy      
 ##  Length:23168       Length:23168       Length:23168       Min.   :1989  
 ##  Class :character   Class :character   Class :character   1st Qu.:1997  
@@ -1818,31 +1822,33 @@ data_10yrs &lt;- read_csv(paste0(yanelli_datasets, &quot;ten_yrs_avg_data.csv&qu
 <pre><code>## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>summary(data_10yrs)</code></pre>
-<pre><code>##        nr           lobnr             ck            diagtype
-##  Min.   :   2   Min.   :0.000   Min.   :0.0000   Min.   :1  
-##  1st Qu.:1205   1st Qu.:1.000   1st Qu.:0.0000   1st Qu.:1  
-##  Median :2377   Median :2.000   Median :0.0000   Median :1  
-##  Mean   :2364   Mean   :2.492   Mean   :0.1691   Mean   :1  
-##  3rd Qu.:3563   3rd Qu.:4.000   3rd Qu.:0.0000   3rd Qu.:1  
-##  Max.   :4608   Max.   :5.000   Max.   :1.0000   Max.   :1  
-##                                                             
-##     diagdat                 ID         aegtesocial        bdate           
-##  Min.   :1989-01-02   Min.   :    9   Min.   :1.000   Min.   :1901-02-06  
-##  1st Qu.:1997-05-27   1st Qu.: 9620   1st Qu.:3.000   1st Qu.:1927-05-01  
-##  Median :2003-11-14   Median :18995   Median :5.000   Median :1936-11-01  
-##  Mean   :2003-02-06   Mean   :18883   Mean   :5.291   Mean   :1937-06-20  
-##  3rd Qu.:2009-02-05   3rd Qu.:28459   3rd Qu.:9.000   3rd Qu.:1946-04-01  
-##  Max.   :2013-12-30   Max.   :36806   Max.   :9.000   Max.   :1987-06-01  
-##                                       NA&#39;s   :2562                        
-##  civst       civstdat5             d_inddto             d_uddto          
-##  1: 2133   Min.   :1900-07-01   Min.   :1989-01-02   Min.   :1989-01-06  
-##  2: 4191   1st Qu.:1960-09-24   1st Qu.:1997-05-27   1st Qu.:1997-09-25  
-##  3: 2707   Median :1973-04-21   Median :2003-11-17   Median :2004-05-03  
-##  4:14096   Mean   :1974-09-03   Mean   :2003-02-13   Mean   :2003-08-12  
-##            3rd Qu.:1989-06-27   3rd Qu.:2009-02-23   3rd Qu.:2009-09-22  
-##            Max.   :2013-08-30   Max.   :2013-12-30   Max.   :2014-11-01  
-##            NA&#39;s   :2133                                                  
+<pre class="r"><code>data_10yrs %&gt;%
+  mutate(ck = as.factor(ck)) %&gt;%
+  summary()</code></pre>
+<pre><code>##        nr           lobnr       ck           diagtype    diagdat          
+##  Min.   :   2   Min.   :0.000   0:19217   Min.   :1   Min.   :1989-01-02  
+##  1st Qu.:1205   1st Qu.:1.000   1: 3910   1st Qu.:1   1st Qu.:1997-05-27  
+##  Median :2377   Median :2.000             Median :1   Median :2003-11-14  
+##  Mean   :2364   Mean   :2.492             Mean   :1   Mean   :2003-02-06  
+##  3rd Qu.:3563   3rd Qu.:4.000             3rd Qu.:1   3rd Qu.:2009-02-05  
+##  Max.   :4608   Max.   :5.000             Max.   :1   Max.   :2013-12-30  
+##                                                                           
+##        ID         aegtesocial        bdate            civst    
+##  Min.   :    9   Min.   :1.000   Min.   :1901-02-06   1: 2133  
+##  1st Qu.: 9620   1st Qu.:3.000   1st Qu.:1927-05-01   2: 4191  
+##  Median :18995   Median :5.000   Median :1936-11-01   3: 2707  
+##  Mean   :18883   Mean   :5.291   Mean   :1937-06-20   4:14096  
+##  3rd Qu.:28459   3rd Qu.:9.000   3rd Qu.:1946-04-01            
+##  Max.   :36806   Max.   :9.000   Max.   :1987-06-01            
+##                  NA&#39;s   :2562                                  
+##    civstdat5             d_inddto             d_uddto          
+##  Min.   :1900-07-01   Min.   :1989-01-02   Min.   :1989-01-06  
+##  1st Qu.:1960-09-24   1st Qu.:1997-05-27   1st Qu.:1997-09-25  
+##  Median :1973-04-21   Median :2003-11-17   Median :2004-05-03  
+##  Mean   :1974-09-03   Mean   :2003-02-13   Mean   :2003-08-12  
+##  3rd Qu.:1989-06-27   3rd Qu.:2009-02-23   3rd Qu.:2009-09-22  
+##  Max.   :2013-08-30   Max.   :2013-12-30   Max.   :2014-11-01  
+##  NA&#39;s   :2133                                                  
 ##     daars1             daars2              diag                diy      
 ##  Length:23127       Length:23127       Length:23127       Min.   :1989  
 ##  Class :character   Class :character   Class :character   1st Qu.:1997  
@@ -1903,7 +1909,7 @@ lag_10yrs &lt;- read_csv(paste0(yanelli_datasets, &quot;lagged_10yrs.csv&quot;))
   group_by(nr) %&gt;% mutate(sum=sum(ck)) %&gt;% 
   dplyr::filter(sum==11) %&gt;% # keeping only the controls that have a case
    dplyr::select(-sum) %&gt;%
-  ungroup()</code></pre>
+  ungroup( )</code></pre>
 <pre><code>## Rows: 241032 Columns: 31</code></pre>
 <pre><code>## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
@@ -1913,6 +1919,22 @@ lag_10yrs &lt;- read_csv(paste0(yanelli_datasets, &quot;lagged_10yrs.csv&quot;))
 <pre><code>## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code># case number
+lag_10yrs %&gt;%
+dplyr::filter(ck == 1) %&gt;%
+  group_by(nr) %&gt;%
+  count() %&gt;%
+  nrow()</code></pre>
+<pre><code>## [1] 3774</code></pre>
+<pre class="r"><code># control number
+lag_10yrs %&gt;%
+dplyr::filter(ck == 0,
+              lags == 1) %&gt;%
+  count()</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##       n
+##   &lt;int&gt;
+## 1 18137</code></pre>
 <pre class="r"><code>class(lag_10yrs)</code></pre>
 <pre><code>## [1] &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
 </div>
@@ -2019,7 +2041,7 @@ summary(data_1yr)</code></pre>
 ##  3rd Qu.:8778   3rd Qu.:71.00  
 ##  Max.   :9312   Max.   :87.00  
 ##  NA&#39;s   :30     NA&#39;s   :829</code></pre>
-<pre class="r"><code>write_csv(data_1yr, paste0(yanelli_datasets, &quot;one_yr_avg_data_ses.csv&quot;)) 
+<pre class="r"><code>#write_csv(data_1yr, paste0(yanelli_datasets, &quot;one_yr_avg_data_ses.csv&quot;)) 
 
 
 data_5yrs = left_join(data_5yrs, parish_lookup, by=c(&#39;nr&#39;,&#39;lobnr&#39;,&#39;ck&#39;))
@@ -2116,7 +2138,7 @@ sum(is.na(k$parish_ses))</code></pre>
 sum(is.na(c$parish_ses))</code></pre>
 <pre><code>## Warning: Unknown or uninitialised column: `parish_ses`.</code></pre>
 <pre><code>## [1] 0</code></pre>
-<pre class="r"><code>write_csv(data_5yrs, paste0(yanelli_datasets, &quot;five_yr_avg_data_ses.csv&quot;)) 
+<pre class="r"><code>#write_csv(data_5yrs, paste0(yanelli_datasets, &quot;five_yr_avg_data_ses.csv&quot;)) 
 
 data_10yrs = left_join(data_10yrs, parish_lookup, by=c(&#39;nr&#39;,&#39;lobnr&#39;,&#39;ck&#39;))
 data_10yrs = left_join(data_10yrs, parish_ses, by=c(&#39;sognecode&#39;))
@@ -2201,7 +2223,7 @@ summary(data_10yrs)</code></pre>
 ##  3rd Qu.:8774   3rd Qu.:71.0  
 ##  Max.   :9312   Max.   :87.0  
 ##  NA&#39;s   :62     NA&#39;s   :859</code></pre>
-<pre class="r"><code>write_csv(data_10yrs, paste0(yanelli_datasets, &quot;ten_yrs_avg_data_ses.csv&quot;)) 
+<pre class="r"><code>#write_csv(data_10yrs, paste0(yanelli_datasets, &quot;ten_yrs_avg_data_ses.csv&quot;)) 
 
 lag_10yrs = left_join(lag_10yrs, parish_lookup, by=c(&#39;nr&#39;,&#39;lobnr&#39;,&#39;ck&#39;))
 lag_10yrs = left_join(lag_10yrs, parish_ses, by=c(&#39;sognecode&#39;))
@@ -2278,7 +2300,7 @@ summary(lag_10yrs)</code></pre>
 ##  3rd Qu.:71.00  
 ##  Max.   :87.00  
 ##  NA&#39;s   :8393</code></pre>
-<pre class="r"><code>write_csv(lag_10yrs, paste0(yanelli_datasets, &quot;lagged_10yrs_parishSES.csv&quot;)) </code></pre>
+<pre class="r"><code>#write_csv(lag_10yrs, paste0(yanelli_datasets, &quot;lagged_10yrs_parishSES.csv&quot;)) </code></pre>
 </div>
 
 

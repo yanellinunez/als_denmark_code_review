@@ -88,8 +88,7 @@ http://www.danieldsjoberg.com/gtsummary/articles/tbl_summary.html
 
 table1_prep <- data_5yrs %>%
   mutate(age_diag = trunc((bdate %--% diagdat) / years(1))) %>%
-  dplyr::select(ck, sex, age_diag, civst, place_birth, residence, family_SES, PM25_5yr) %>%
-  unique() %>%
+  dplyr::select(ck, sex, age_diag, civst, place_birth, residence, family_SES, PM25_5yr) %>% 
   mutate(ck = as.factor(if_else(ck == "0", "control", "case")),
         sex = as.factor(if_else(sex == "2", "Female", "Male")),
  family_SES = recode_factor(family_SES, 
@@ -134,6 +133,7 @@ table_1 <- table1_prep %>%
   bold_labels()
 
 table_1
+
 
 ```
 

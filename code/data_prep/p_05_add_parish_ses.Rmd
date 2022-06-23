@@ -70,10 +70,14 @@ data_1yr <- read_csv(paste0(yanelli_datasets, "one_yr_avg_data.csv")) %>%
   mutate(sum=sum(ck)) %>% 
   dplyr::filter(sum==1) %>%
    dplyr::select(-sum) %>%
-  ungroup()
+  ungroup() 
+
+data_1yr %>%
+  mutate(ck = as.factor(ck)) %>%
+  summary()
 
 class(data_1yr)
-summary(data_1yr)
+
 
 # 5 years
 
@@ -92,8 +96,9 @@ data_5yrs <- read_csv(paste0(yanelli_datasets, "five_yrs_avg_data.csv")) %>%
    dplyr::select(-sum) %>%
   ungroup() 
 
-
-summary(data_5yrs)
+data_5yrs %>%
+  mutate(ck = as.factor(ck)) %>%
+  summary()
 
 # 10 years
 
@@ -112,7 +117,9 @@ data_10yrs <- read_csv(paste0(yanelli_datasets, "ten_yrs_avg_data.csv"))%>%
   dplyr::select(-sum) %>%
   ungroup()
 
-summary(data_10yrs)
+data_10yrs %>%
+  mutate(ck = as.factor(ck)) %>%
+  summary()
 
 # lags
 lag_10yrs <- read_csv(paste0(yanelli_datasets, "lagged_10yrs.csv")) %>%
@@ -126,9 +133,24 @@ lag_10yrs <- read_csv(paste0(yanelli_datasets, "lagged_10yrs.csv")) %>%
   group_by(nr) %>% mutate(sum=sum(ck)) %>% 
   dplyr::filter(sum==11) %>% # keeping only the controls that have a case
    dplyr::select(-sum) %>%
-  ungroup()
+  ungroup( )
+
+# case number
+lag_10yrs %>%
+dplyr::filter(ck == 1) %>%
+  group_by(nr) %>%
+  count() %>%
+  nrow()
+
+# control number
+lag_10yrs %>%
+dplyr::filter(ck == 0,
+              lags == 1) %>%
+  count()
+  
 
 class(lag_10yrs)
+
 
 ```
 
@@ -157,7 +179,7 @@ data_1yr = left_join(data_1yr, parish_lookup, by=c('nr','lobnr','ck'))
 data_1yr = left_join(data_1yr, parish_ses, by=c('sognecode'))
 summary(data_1yr)
 
-write_csv(data_1yr, paste0(yanelli_datasets, "one_yr_avg_data_ses.csv")) 
+#write_csv(data_1yr, paste0(yanelli_datasets, "one_yr_avg_data_ses.csv")) 
 
 
 data_5yrs = left_join(data_5yrs, parish_lookup, by=c('nr','lobnr','ck'))
@@ -173,19 +195,19 @@ c <- data_10yrs %>%
   dplyr::filter(ck == 0)
 sum(is.na(c$parish_ses))
 
-write_csv(data_5yrs, paste0(yanelli_datasets, "five_yr_avg_data_ses.csv")) 
+#write_csv(data_5yrs, paste0(yanelli_datasets, "five_yr_avg_data_ses.csv")) 
 
 data_10yrs = left_join(data_10yrs, parish_lookup, by=c('nr','lobnr','ck'))
 data_10yrs = left_join(data_10yrs, parish_ses, by=c('sognecode'))
 summary(data_10yrs)
 
-write_csv(data_10yrs, paste0(yanelli_datasets, "ten_yrs_avg_data_ses.csv")) 
+#write_csv(data_10yrs, paste0(yanelli_datasets, "ten_yrs_avg_data_ses.csv")) 
 
 lag_10yrs = left_join(lag_10yrs, parish_lookup, by=c('nr','lobnr','ck'))
 lag_10yrs = left_join(lag_10yrs, parish_ses, by=c('sognecode'))
 summary(lag_10yrs)
 
-write_csv(lag_10yrs, paste0(yanelli_datasets, "lagged_10yrs_parishSES.csv")) 
+#write_csv(lag_10yrs, paste0(yanelli_datasets, "lagged_10yrs_parishSES.csv")) 
 
 ```
 
