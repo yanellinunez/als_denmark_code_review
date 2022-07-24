@@ -1629,46 +1629,49 @@ knitr::kable(ck_full)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">control</td>
-<td align="right">19269</td>
+<td align="right">19199</td>
 <td align="left">1 yrs</td>
-</tr>
-<tr class="even">
-<td align="left">case</td>
-<td align="right">3915</td>
-<td align="left">1 yrs</td>
-</tr>
-<tr class="odd">
-<td align="left">control</td>
-<td align="right">19254</td>
-<td align="left">5 yrs</td>
-</tr>
-<tr class="even">
-<td align="left">case</td>
-<td align="right">3914</td>
-<td align="left">5 yrs</td>
-</tr>
-<tr class="odd">
-<td align="left">control</td>
-<td align="right">19217</td>
-<td align="left">10 yrs</td>
 </tr>
 <tr class="even">
 <td align="left">case</td>
 <td align="right">3910</td>
+<td align="left">1 yrs</td>
+</tr>
+<tr class="odd">
+<td align="left">control</td>
+<td align="right">19157</td>
+<td align="left">5 yrs</td>
+</tr>
+<tr class="even">
+<td align="left">case</td>
+<td align="right">3906</td>
+<td align="left">5 yrs</td>
+</tr>
+<tr class="odd">
+<td align="left">control</td>
+<td align="right">19108</td>
+<td align="left">10 yrs</td>
+</tr>
+<tr class="even">
+<td align="left">case</td>
+<td align="right">3901</td>
 <td align="left">10 yrs</td>
 </tr>
 <tr class="odd">
 <td align="left">control</td>
-<td align="right">18137</td>
+<td align="right">18080</td>
 <td align="left">1-yr lags</td>
 </tr>
 <tr class="even">
 <td align="left">case</td>
-<td align="right">3774</td>
+<td align="right">3769</td>
 <td align="left">1-yr lags</td>
 </tr>
 </tbody>
 </table>
+</div>
+<div id="i.-missing-ses" class="section level2">
+<h2>i. Missing SES</h2>
 </div>
 <div id="table-1" class="section level2">
 <h2>1. Table 1</h2>
@@ -1676,8 +1679,7 @@ knitr::kable(ck_full)</code></pre>
 <p>Used Package suggested by Jenni to create tables (it’s so helpful!) <a href="http://www.danieldsjoberg.com/gtsummary/articles/tbl_summary.html" class="uri">http://www.danieldsjoberg.com/gtsummary/articles/tbl_summary.html</a></p>
 <pre class="r"><code>table1_prep &lt;- data_5yrs %&gt;%
   mutate(age_diag = trunc((bdate %--% diagdat) / years(1))) %&gt;%
-  dplyr::select(ck, sex, age_diag, civst, place_birth, residence, family_SES, PM25_5yr) %&gt;%
-  unique() %&gt;%
+  dplyr::select(ck, sex, age_diag, civst, place_birth, residence, family_SES, PM25_5yr) %&gt;% 
   mutate(ck = as.factor(if_else(ck == &quot;0&quot;, &quot;control&quot;, &quot;case&quot;)),
         sex = as.factor(if_else(sex == &quot;2&quot;, &quot;Female&quot;, &quot;Male&quot;)),
  family_SES = recode_factor(family_SES, 
@@ -1722,12 +1724,12 @@ table_1 &lt;- table1_prep %&gt;%
   bold_labels()
 
 table_1</code></pre>
-<div id="fycgndmbcw" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="tekpfttzgk" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#fycgndmbcw .gt_table {
+#tekpfttzgk .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1752,7 +1754,7 @@ table_1</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#fycgndmbcw .gt_heading {
+#tekpfttzgk .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1764,7 +1766,7 @@ table_1</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#fycgndmbcw .gt_title {
+#tekpfttzgk .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1774,7 +1776,7 @@ table_1</code></pre>
   border-bottom-width: 0;
 }
 
-#fycgndmbcw .gt_subtitle {
+#tekpfttzgk .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1784,13 +1786,13 @@ table_1</code></pre>
   border-top-width: 0;
 }
 
-#fycgndmbcw .gt_bottom_border {
+#tekpfttzgk .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#fycgndmbcw .gt_col_headings {
+#tekpfttzgk .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1805,7 +1807,7 @@ table_1</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#fycgndmbcw .gt_col_heading {
+#tekpfttzgk .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1825,7 +1827,7 @@ table_1</code></pre>
   overflow-x: hidden;
 }
 
-#fycgndmbcw .gt_column_spanner_outer {
+#tekpfttzgk .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1837,15 +1839,15 @@ table_1</code></pre>
   padding-right: 4px;
 }
 
-#fycgndmbcw .gt_column_spanner_outer:first-child {
+#tekpfttzgk .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#fycgndmbcw .gt_column_spanner_outer:last-child {
+#tekpfttzgk .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#fycgndmbcw .gt_column_spanner {
+#tekpfttzgk .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1857,7 +1859,7 @@ table_1</code></pre>
   width: 100%;
 }
 
-#fycgndmbcw .gt_group_heading {
+#tekpfttzgk .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1879,7 +1881,7 @@ table_1</code></pre>
   vertical-align: middle;
 }
 
-#fycgndmbcw .gt_empty_group_heading {
+#tekpfttzgk .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1894,15 +1896,15 @@ table_1</code></pre>
   vertical-align: middle;
 }
 
-#fycgndmbcw .gt_from_md > :first-child {
+#tekpfttzgk .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#fycgndmbcw .gt_from_md > :last-child {
+#tekpfttzgk .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#fycgndmbcw .gt_row {
+#tekpfttzgk .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1921,7 +1923,7 @@ table_1</code></pre>
   overflow-x: hidden;
 }
 
-#fycgndmbcw .gt_stub {
+#tekpfttzgk .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1933,7 +1935,7 @@ table_1</code></pre>
   padding-left: 12px;
 }
 
-#fycgndmbcw .gt_summary_row {
+#tekpfttzgk .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1943,7 +1945,7 @@ table_1</code></pre>
   padding-right: 5px;
 }
 
-#fycgndmbcw .gt_first_summary_row {
+#tekpfttzgk .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1953,7 +1955,7 @@ table_1</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#fycgndmbcw .gt_grand_summary_row {
+#tekpfttzgk .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1963,7 +1965,7 @@ table_1</code></pre>
   padding-right: 5px;
 }
 
-#fycgndmbcw .gt_first_grand_summary_row {
+#tekpfttzgk .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1973,11 +1975,11 @@ table_1</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#fycgndmbcw .gt_striped {
+#tekpfttzgk .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#fycgndmbcw .gt_table_body {
+#tekpfttzgk .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1986,7 +1988,7 @@ table_1</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#fycgndmbcw .gt_footnotes {
+#tekpfttzgk .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2000,13 +2002,13 @@ table_1</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#fycgndmbcw .gt_footnote {
+#tekpfttzgk .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#fycgndmbcw .gt_sourcenotes {
+#tekpfttzgk .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2020,41 +2022,41 @@ table_1</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#fycgndmbcw .gt_sourcenote {
+#tekpfttzgk .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#fycgndmbcw .gt_left {
+#tekpfttzgk .gt_left {
   text-align: left;
 }
 
-#fycgndmbcw .gt_center {
+#tekpfttzgk .gt_center {
   text-align: center;
 }
 
-#fycgndmbcw .gt_right {
+#tekpfttzgk .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#fycgndmbcw .gt_font_normal {
+#tekpfttzgk .gt_font_normal {
   font-weight: normal;
 }
 
-#fycgndmbcw .gt_font_bold {
+#tekpfttzgk .gt_font_bold {
   font-weight: bold;
 }
 
-#fycgndmbcw .gt_font_italic {
+#tekpfttzgk .gt_font_italic {
   font-style: italic;
 }
 
-#fycgndmbcw .gt_super {
+#tekpfttzgk .gt_super {
   font-size: 65%;
 }
 
-#fycgndmbcw .gt_footnote_marks {
+#tekpfttzgk .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 65%;
@@ -2065,9 +2067,9 @@ table_1</code></pre>
   <thead class="gt_col_headings">
     <tr>
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"><strong>Characteristic</strong></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>Overall</strong>, N = 23,167<sup class="gt_footnote_marks">1</sup></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>case</strong>, N = 3,914<sup class="gt_footnote_marks">1</sup></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>control</strong>, N = 19,253<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>Overall</strong>, N = 23,063<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>case</strong>, N = 3,906<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>control</strong>, N = 19,157<sup class="gt_footnote_marks">1</sup></th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
@@ -2076,13 +2078,13 @@ table_1</code></pre>
 <td class="gt_row gt_center"></td>
 <td class="gt_row gt_center"></td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Female</td>
-<td class="gt_row gt_center">10,919 (47%)</td>
-<td class="gt_row gt_center">1,842 (47%)</td>
-<td class="gt_row gt_center">9,077 (47%)</td></tr>
+<td class="gt_row gt_center">10,876 (47%)</td>
+<td class="gt_row gt_center">1,838 (47%)</td>
+<td class="gt_row gt_center">9,038 (47%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Male</td>
-<td class="gt_row gt_center">12,248 (53%)</td>
-<td class="gt_row gt_center">2,072 (53%)</td>
-<td class="gt_row gt_center">10,176 (53%)</td></tr>
+<td class="gt_row gt_center">12,187 (53%)</td>
+<td class="gt_row gt_center">2,068 (53%)</td>
+<td class="gt_row gt_center">10,119 (53%)</td></tr>
     <tr><td class="gt_row gt_left" style="font-weight: bold;">Average age (years)</td>
 <td class="gt_row gt_center">65 (12)</td>
 <td class="gt_row gt_center">65 (12)</td>
@@ -2092,99 +2094,95 @@ table_1</code></pre>
 <td class="gt_row gt_center"></td>
 <td class="gt_row gt_center"></td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Married</td>
-<td class="gt_row gt_center">14,126 (61%)</td>
-<td class="gt_row gt_center">2,401 (61%)</td>
-<td class="gt_row gt_center">11,725 (61%)</td></tr>
+<td class="gt_row gt_center">14,074 (61%)</td>
+<td class="gt_row gt_center">2,400 (61%)</td>
+<td class="gt_row gt_center">11,674 (61%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Divorced</td>
-<td class="gt_row gt_center">2,715 (12%)</td>
-<td class="gt_row gt_center">432 (11%)</td>
-<td class="gt_row gt_center">2,283 (12%)</td></tr>
+<td class="gt_row gt_center">2,685 (12%)</td>
+<td class="gt_row gt_center">427 (11%)</td>
+<td class="gt_row gt_center">2,258 (12%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Widower</td>
-<td class="gt_row gt_center">4,192 (18%)</td>
-<td class="gt_row gt_center">723 (18%)</td>
-<td class="gt_row gt_center">3,469 (18%)</td></tr>
+<td class="gt_row gt_center">4,188 (18%)</td>
+<td class="gt_row gt_center">722 (18%)</td>
+<td class="gt_row gt_center">3,466 (18%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Never married</td>
-<td class="gt_row gt_center">2,134 (9.2%)</td>
-<td class="gt_row gt_center">358 (9.1%)</td>
-<td class="gt_row gt_center">1,776 (9.2%)</td></tr>
+<td class="gt_row gt_center">2,116 (9.2%)</td>
+<td class="gt_row gt_center">357 (9.1%)</td>
+<td class="gt_row gt_center">1,759 (9.2%)</td></tr>
     <tr><td class="gt_row gt_left" style="font-weight: bold;">Place of birth</td>
 <td class="gt_row gt_center"></td>
 <td class="gt_row gt_center"></td>
 <td class="gt_row gt_center"></td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Greater Copenhagen</td>
-<td class="gt_row gt_center">4,849 (21%)</td>
-<td class="gt_row gt_center">829 (21%)</td>
-<td class="gt_row gt_center">4,020 (21%)</td></tr>
+<td class="gt_row gt_center">4,816 (21%)</td>
+<td class="gt_row gt_center">826 (21%)</td>
+<td class="gt_row gt_center">3,990 (21%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Big cities of Denmark</td>
-<td class="gt_row gt_center">7,894 (34%)</td>
-<td class="gt_row gt_center">1,351 (35%)</td>
-<td class="gt_row gt_center">6,543 (34%)</td></tr>
+<td class="gt_row gt_center">7,866 (34%)</td>
+<td class="gt_row gt_center">1,349 (35%)</td>
+<td class="gt_row gt_center">6,517 (34%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Rest of Denmark</td>
-<td class="gt_row gt_center">8,985 (39%)</td>
-<td class="gt_row gt_center">1,538 (39%)</td>
-<td class="gt_row gt_center">7,447 (39%)</td></tr>
+<td class="gt_row gt_center">8,951 (39%)</td>
+<td class="gt_row gt_center">1,535 (39%)</td>
+<td class="gt_row gt_center">7,416 (39%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Greenland</td>
 <td class="gt_row gt_center">239 (1.0%)</td>
 <td class="gt_row gt_center">52 (1.3%)</td>
 <td class="gt_row gt_center">187 (1.0%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Foreign</td>
-<td class="gt_row gt_center">1,065 (4.6%)</td>
+<td class="gt_row gt_center">1,057 (4.6%)</td>
 <td class="gt_row gt_center">121 (3.1%)</td>
-<td class="gt_row gt_center">944 (4.9%)</td></tr>
+<td class="gt_row gt_center">936 (4.9%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Unknown</td>
-<td class="gt_row gt_center">135 (0.6%)</td>
+<td class="gt_row gt_center">134 (0.6%)</td>
 <td class="gt_row gt_center">23 (0.6%)</td>
-<td class="gt_row gt_center">112 (0.6%)</td></tr>
+<td class="gt_row gt_center">111 (0.6%)</td></tr>
     <tr><td class="gt_row gt_left" style="font-weight: bold;">Place of residence</td>
 <td class="gt_row gt_center"></td>
 <td class="gt_row gt_center"></td>
 <td class="gt_row gt_center"></td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Capital Region of Denmark</td>
-<td class="gt_row gt_center">7,733 (33%)</td>
+<td class="gt_row gt_center">7,721 (33%)</td>
 <td class="gt_row gt_center">1,321 (34%)</td>
-<td class="gt_row gt_center">6,412 (33%)</td></tr>
+<td class="gt_row gt_center">6,400 (33%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Cities &gt;50K population</td>
-<td class="gt_row gt_center">3,686 (16%)</td>
+<td class="gt_row gt_center">3,675 (16%)</td>
 <td class="gt_row gt_center">612 (16%)</td>
-<td class="gt_row gt_center">3,074 (16%)</td></tr>
+<td class="gt_row gt_center">3,063 (16%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Rest of Denmark</td>
-<td class="gt_row gt_center">11,682 (50%)</td>
-<td class="gt_row gt_center">1,973 (50%)</td>
-<td class="gt_row gt_center">9,709 (50%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Unknown</td>
-<td class="gt_row gt_center">66 (0.3%)</td>
-<td class="gt_row gt_center">8 (0.2%)</td>
-<td class="gt_row gt_center">58 (0.3%)</td></tr>
+<td class="gt_row gt_center">11,667 (51%)</td>
+<td class="gt_row gt_center">1,973 (51%)</td>
+<td class="gt_row gt_center">9,694 (51%)</td></tr>
     <tr><td class="gt_row gt_left" style="font-weight: bold;">Family SES</td>
 <td class="gt_row gt_center"></td>
 <td class="gt_row gt_center"></td>
 <td class="gt_row gt_center"></td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Group 1 (Highest)</td>
-<td class="gt_row gt_center">2,335 (10%)</td>
-<td class="gt_row gt_center">452 (12%)</td>
-<td class="gt_row gt_center">1,883 (9.8%)</td></tr>
+<td class="gt_row gt_center">2,325 (10%)</td>
+<td class="gt_row gt_center">451 (12%)</td>
+<td class="gt_row gt_center">1,874 (9.8%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Group 2</td>
-<td class="gt_row gt_center">2,828 (12%)</td>
-<td class="gt_row gt_center">498 (13%)</td>
-<td class="gt_row gt_center">2,330 (12%)</td></tr>
+<td class="gt_row gt_center">2,816 (12%)</td>
+<td class="gt_row gt_center">497 (13%)</td>
+<td class="gt_row gt_center">2,319 (12%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Group 3</td>
-<td class="gt_row gt_center">4,358 (19%)</td>
+<td class="gt_row gt_center">4,340 (19%)</td>
 <td class="gt_row gt_center">783 (20%)</td>
-<td class="gt_row gt_center">3,575 (19%)</td></tr>
+<td class="gt_row gt_center">3,557 (19%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Group 4</td>
-<td class="gt_row gt_center">6,572 (28%)</td>
-<td class="gt_row gt_center">1,067 (27%)</td>
-<td class="gt_row gt_center">5,505 (29%)</td></tr>
+<td class="gt_row gt_center">6,547 (28%)</td>
+<td class="gt_row gt_center">1,066 (27%)</td>
+<td class="gt_row gt_center">5,481 (29%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Group 5 (Lowest)</td>
-<td class="gt_row gt_center">4,407 (19%)</td>
-<td class="gt_row gt_center">712 (18%)</td>
-<td class="gt_row gt_center">3,695 (19%)</td></tr>
+<td class="gt_row gt_center">4,385 (19%)</td>
+<td class="gt_row gt_center">709 (18%)</td>
+<td class="gt_row gt_center">3,676 (19%)</td></tr>
     <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">Group 9 (Unknown)</td>
-<td class="gt_row gt_center">2,667 (12%)</td>
-<td class="gt_row gt_center">402 (10%)</td>
-<td class="gt_row gt_center">2,265 (12%)</td></tr>
+<td class="gt_row gt_center">2,650 (11%)</td>
+<td class="gt_row gt_center">400 (10%)</td>
+<td class="gt_row gt_center">2,250 (12%)</td></tr>
     <tr><td class="gt_row gt_left" style="font-weight: bold;">PM2.5</td>
-<td class="gt_row gt_center">12.63 (2.64)</td>
+<td class="gt_row gt_center">12.62 (2.64)</td>
 <td class="gt_row gt_center">12.65 (2.68)</td>
 <td class="gt_row gt_center">12.62 (2.63)</td></tr>
   </tbody>
@@ -2209,7 +2207,7 @@ table_1</code></pre>
 <h3>i. Save Table</h3>
 <pre class="r"><code>table_1 %&gt;%
   gtsummary::as_flex_table() %&gt;%
-  flextable::save_as_docx(path = paste0(tables.folder,&#39;table_1_updated.docx&#39;))</code></pre>
+  flextable::save_as_docx(path = paste0(tables.folder,&#39;table_1_final.docx&#39;))</code></pre>
 </div>
 </div>
 

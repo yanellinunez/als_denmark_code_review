@@ -77,6 +77,13 @@ knitr::kable(ck_full)
 
 ```
 
+## i. Missing SES
+
+```{r}
+
+
+```
+
 ## 1. Table 1
 
 Since there is a significant amount of overlapping between the datasets, I would use the 5-year average to create table 1
@@ -142,6 +149,6 @@ table_1
 ```{r}
 table_1 %>%
   gtsummary::as_flex_table() %>%
-  flextable::save_as_docx(path = paste0(tables.folder,'table_1_updated.docx'))
+  flextable::save_as_docx(path = paste0(tables.folder,'table_1_final.docx'))
 ```
 
