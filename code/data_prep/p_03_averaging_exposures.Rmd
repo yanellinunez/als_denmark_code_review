@@ -73,7 +73,7 @@ dplyr::filter(ck == 0) %>%
 
 # save data file 
 
-#write_csv(avg_1yr, paste0(yanelli_datasets, "one_yr_avg_data.csv"))
+write_csv(avg_1yr, paste0(yanelli_datasets, "one_yr_avg_data.csv"))
 
 ```
 
@@ -115,7 +115,7 @@ dplyr::filter(ck == 0) %>%
 
 # save data file 
 
-#write_csv(avg_5yr, paste0(yanelli_datasets, "five_yrs_avg_data.csv"))
+write_csv(avg_5yr, paste0(yanelli_datasets, "five_yrs_avg_data.csv"))
 
 ```
 

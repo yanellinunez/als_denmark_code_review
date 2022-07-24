@@ -45,6 +45,20 @@ full_dataset <- readRDS(paste0(yanelli_datasets, "joined_datasets.rds")) # this 
 
 summary(full_dataset)
 
+select_dataset <- full_dataset %>%
+    drop_na(civst) %>%
+  dplyr::filter(residence != "Greenland",
+                residence != "Unknown") # remove greenland residents 
+
+case_num <- select_dataset %>%
+  dplyr::filter(ck == 1) %>% # selecting only cases
+  count(nr) # count number of unique "nr" (cases)
+
+control_num <- select_dataset %>%
+ dplyr::filter(ck == 0) %>% # selecting controls
+  group_by(nr) %>% 
+   count(lobnr)
+
 ```
 
 
@@ -55,7 +69,7 @@ This allow us to more easily create windows of exposure for each case
 ```{r}
 
 # a data set made up of sub-dataset. Each data subset corresponds to a patient and his/her controls
-nested_data <- full_dataset %>% 
+nested_data <- select_dataset %>% 
   mutate(nr = as.factor(nr),
          lobnr = as.factor(lobnr),
          ck = as.factor(ck)) %>%
@@ -112,11 +126,7 @@ Notes:
 
 Notes: 
 
-1) In the original dataset there is a total of 3,941 cases. If each case has 5 controls then there should be a total of 19,705 controls, that is, 23,326 net total. 
 
-2) The one-year window of exposure has a total of 23,567 case/controls with a **total of 3,924 cases** specifically and ***19,643 controls***. This means **28 cases** from the original data have zero observations during this year. That is, the data is missing ***0.7%*** of cases from the original dataset
-
-3) Overall 92 out of 23,326 cases/controls **(0.39%)** are missing one or more of the 12 months for the one year exposure window
 
 
 ```{r}
@@ -293,7 +303,10 @@ summary(filter_1yr)
 
 
 # final number of cases
-length(unique(filter_1yr$nr))
+filter_1yr %>%
+ dplyr::filter(ck == 1) %>% # selecting only cases
+  count(nr) %>%
+  nrow()
 
 #final number of controls
 filter_1yr %>%
@@ -330,7 +343,10 @@ group_by(nr) %>%
 summary(filter_5yrs)
 
 # final number of cases
-length(unique(filter_5yrs$nr))
+ filter_5yrs %>%
+   dplyr::filter(ck == 1) %>% # selecting only cases
+  count(nr) %>%
+  nrow()
 
 #final number of controls
 filter_5yrs %>%
@@ -366,7 +382,10 @@ group_by(nr) %>%
 summary(filter_10yrs)
 
 # final number of cases
-length(unique(filter_10yrs$nr))
+ filter_10yrs %>%
+   dplyr::filter(ck == 1) %>% # selecting only cases
+  count(nr) %>%
+  nrow()
 
 #final number of controls
 filter_10yrs %>%

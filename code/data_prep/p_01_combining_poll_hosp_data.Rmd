@@ -103,7 +103,7 @@ contrl <- patient_data %>%
 
 ```{r}
 
-full_dataset <- full_join(patient_data, pollution_data, by = c("nr", "lobnr")) %>%
+full_dataset <- left_join(patient_data, pollution_data, by = c("nr", "lobnr")) %>%
   ungroup()
 
 summary(full_dataset)

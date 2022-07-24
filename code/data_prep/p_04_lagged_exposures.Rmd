@@ -59,7 +59,10 @@ full_dataset <- readRDS(paste0(yanelli_datasets, "joined_datasets.rds")) %>%
          lag_8 = lag_7 - lubridate::years(1),
          lag_9 = lag_8 - lubridate::years(1),
          lag_10 = lag_9 - lubridate::years(1)) %>%
-  dplyr::select(nr, lobnr, ck, diagtype, diagdat, everything())
+  dplyr::select(nr, lobnr, ck, diagtype, diagdat, everything()) %>%
+  drop_na(civst) %>%
+  dplyr::filter(residence != "Greenland",
+                residence != "Unknown") # remove greenland residents 
 
 summary(full_dataset)
 
