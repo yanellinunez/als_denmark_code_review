@@ -81,6 +81,41 @@ knitr::kable(ck_full)
 
 ```{r}
 
+# missing 149
+data_1yr %>% 
+  dplyr::select(parish_ses, nr, ck) %>%
+  dplyr::filter(ck == 1) %>%
+  summary
+
+# missing 663
+data_1yr %>% 
+  dplyr::select(parish_ses, nr, ck) %>%
+  dplyr::filter(ck == 0) %>%
+  summary
+
+# missing 151
+data_5yrs %>% 
+  dplyr::select(parish_ses, nr, ck) %>%
+  dplyr::filter(ck == 1) %>%
+  summary
+
+# missing 665
+data_5yrs %>% 
+  dplyr::select(parish_ses, nr, ck) %>%
+  dplyr::filter(ck == 0) %>%
+  summary
+
+# missing 153
+data_10yrs %>% 
+  dplyr::select(parish_ses, nr, ck) %>%
+  dplyr::filter(ck == 1) %>%
+  summary
+
+# missing 674
+data_10yrs %>% 
+  dplyr::select(parish_ses, nr, ck) %>%
+  dplyr::filter(ck == 0) %>%
+  summary
 
 ```
 
